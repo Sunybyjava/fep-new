@@ -6,7 +6,9 @@
 	<version>0.0.1</version>
 	<name>communicate</name>
 	<description>通讯服务</description>
-
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.chooshine.fep</groupId>

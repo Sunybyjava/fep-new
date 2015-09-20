@@ -15,4 +15,8 @@
 		<module>fep-realtimecom</module>
 		<module>fep-tcpchannel</module>
 	</modules>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 </project>

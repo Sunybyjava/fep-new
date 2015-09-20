@@ -7,6 +7,9 @@
 	<name>frame</name>
 	<description>组帧解帧程序</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<dependencies>
 		<dependency>

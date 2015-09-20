@@ -7,7 +7,9 @@
 	<name>fepex</name>
 	<description>附加模块轮召、补召</description>
 
-
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.chooshine.fep</groupId>
