@@ -69,6 +69,20 @@ public class applicationFunction {
             System.out.println("ReConnected Error:" + ex.toString());
        }
    }
+    
+    /**
+     * 新增固定功率报文的数据区生成处理
+     */
+    public static boolean ReadCurrentData(RealTimeCommunication rtc,int TerminalCount,
+            List TerminalInfoList)
+    {
+    	String sGnm = "0C";
+    	List terminalInfoStructList = new LinkedList(); //调用前置机接口用的终端信息列表
+    	for (int i = 0; i < TerminalCount; i++) {
+    		
+    	}
+    	return true;
+    }
 
     /*历史数据查询：国网二类数据/230M历史日、月数据查询--发送*/
     /*入参:实时通讯对象,应用ID,终端信息,参数数目,参数列表,时间标签,查询数据类型,数据起始时间,数据密度,数据点数,组合类型*/

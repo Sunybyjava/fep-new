@@ -62,7 +62,8 @@ public class CustomTaskAutomaticDemand extends Thread {
             } catch (Exception ex) {
             }
         } catch (Exception ex2) {
-        } while (true) {
+        } 
+        while (true) {
             //2、判断时间是否到达
             Calendar c = Calendar.getInstance();
             if (c.after(RedoTime)) {

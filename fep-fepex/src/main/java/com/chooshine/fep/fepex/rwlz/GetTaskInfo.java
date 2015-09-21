@@ -68,6 +68,7 @@ public class GetTaskInfo {
             }
         }  
     }
+    
     //获取存在主站任务漏点的终端信息
     public void GetTaskInforList() {
         String sSQL = "SELECT C.ZDLJDZ,C.CLDXH,D.CLDDZ,A.ZZRWBH,E.GJMM,E.DQTXFS,A.GYH,A.ZZRWLX,A.DXLX,A.YXJ,A.ZXCS,A.ZXJG,A.ZXZQ,A.ZXKSSJ,A.ZXJSSJ,B.SJYXH,B.SJYBS"
@@ -76,8 +77,9 @@ public class GetTaskInfo {
         			+" AND C.CLDXH=D.CLDXH AND D.ZDJH=E.ZDJH AND A.GYH=106"
         			+" ORDER BY A.GYH,C.CLDXH,A.ZZRWBH,C.ZDLJDZ,B.SJYXH";
         utils.PrintDebugMessage("获取终端任务信息SQL:" + sSQL, "D");
-        BuildTaskAndTerminalInfoList(sSQL);        
+        BuildTaskAndTerminalInfoList(sSQL);
     }
+    
     public void BuildTaskAndTerminalInfoList(String sSQL){
     	int iOldRWH = -1, iOldGYH = -1, iOldCLDXH = -1;
     	String sOLDZDLJDZ = "";
@@ -161,6 +163,7 @@ public class GetTaskInfo {
             }
         }    	
     }
+    
     public String GetRecentCallTime(String StartTime, String FinishTime, int FrequencyTime) throws ParseException{
     	String NextTime = "";
     	Calendar NowTime = Calendar.getInstance();
@@ -225,6 +228,7 @@ public class GetTaskInfo {
     	}
     	return NextTime;
     }
+    
     private void jbInit() throws Exception {
     }
 
