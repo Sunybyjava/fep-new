@@ -37,6 +37,8 @@ public class DataAccess {
             sID = GetSequence(SequenceName);
         } else if (FDataBaseType == 20) { //Sybase  数据库
             //可以采用存储过程方式调用
+        } else if (FDataBaseType == 30){//mysql
+        	
         }
         return sID;
     }
@@ -87,6 +89,18 @@ public class DataAccess {
             return true; //没有绑定操作只连接数据库
         } else if (FDataBaseType == 20) { //Sybase 数据库
             return false;
+        }else if (FDataBaseType == 30){//mysql
+        	try {
+        		Class.forName("com.mysql.jdbc.Driver");
+        	} catch (ClassNotFoundException ex) {
+            }
+            try {
+                conn = DriverManager.getConnection(FConnectURL, FUserName,
+                        FPassWord);
+            } catch (SQLException ex1) {
+                return false;
+            }	
+        	return true;
         }
         return false;
     }
@@ -104,6 +118,12 @@ public class DataAccess {
         //Sybase 数据库
         else if (FDataBaseType == 20) {
             return false;
+        }else if (FDataBaseType == 30){//mysql
+        	try {
+                conn.close();
+                return true;
+            } catch (SQLException ex2) {
+            }
         }
         return false;
     }
@@ -159,6 +179,7 @@ public class DataAccess {
         }
         return iResult;
     }
+    
     public boolean SaveBalanceToDB(String sZDLJDZ,String sDBDZ,String sBalance,String sYEZT){    	
     	try {    		
     		String sSQL = "UPDATE RW_YEXX SET YE='" + sBalance +

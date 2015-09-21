@@ -10,7 +10,7 @@ public class CommonClass {
     public static int REALTIME_COMMUNICATION_PORT = 3000;
     public static int JDBC_DATABASETYPE = 10;
     public static String JDBC_CONNECTIONURL =
-            "jdbc:oracle:thin:@127.0.0.1:1521:hxv10";
+            "jdbc:mysql://192.168.1.81:3306/kddj";
     public static String JDBC_USERNAME = "gd";
     public static String JDBC_PASSWORD = "gd";
     public static int REDOTIMES = 2; //轮召次数
