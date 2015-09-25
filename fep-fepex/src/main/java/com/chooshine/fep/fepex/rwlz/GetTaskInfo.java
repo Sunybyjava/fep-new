@@ -37,14 +37,24 @@ public class GetTaskInfo {
     public void GetTerminalInforList(){
     	ResultSet rset = null;
     	TerminalTaskInfo TaskInfoList = null;
-    	String sSQL = "SELECT ZDLJDZ,GYH,DQTXFS,GJMM FROM DA_ZDGZ WHERE GYH=200 AND LENGTH(ZDLJDZ)=4 ORDER BY ZDLJDZ";
+    	String sSQL = "SELECT ZDLJDZ,CLDXH FROM RW_LZ_XL order by ZDLJDZ,CLDXH";
         try {
             rset = dataAccess.executeQuery(sSQL);
+            String sOld = "";
             while (rset.next()) {                
                 try {  
-                	TaskInfoList = new TerminalTaskInfo();
-                	TaskInfoList.ZDLJDZ = rset.getString("ZDLJDZ").trim();
-                	TaskInfoList.CLDXH = 0;
+                	
+                	if (!sOld.equalsIgnoreCase(rset.getString("ZDLJDZ").trim()))
+                	{
+                		if (TaskInfoList != null)
+                			applicationFunction.gTerminalList.add(TaskInfoList);
+                		TaskInfoList = new TerminalTaskInfo();
+                    	TaskInfoList.ZDLJDZ = rset.getString("ZDLJDZ").trim();
+                		TaskInfoList.CLDXH = new LinkedList<Integer>();
+                		sOld = rset.getString("ZDLJDZ").trim();
+                		TaskInfoList.CLDXH.add(rset.getInt("CLDXH"));
+                	}
+                	TaskInfoList.CLDXH.add(rset.getInt("CLDXH"));
                 	TaskInfoList.TaskNo = 0;
                 	TaskInfoList.CLDDZ = "";
                 	TaskInfoList.DataCout = 1;
@@ -55,10 +65,11 @@ public class GetTaskInfo {
                 	TaskInfoList.GYH = Integer.parseInt(rset.getString("GYH").trim());
                 	TaskInfoList.MM = rset.getString("GJMM").trim();
                 	TaskInfoList.TXFS = Integer.parseInt(rset.getString("DQTXFS").trim());
-                	applicationFunction.gTerminalList.add(TaskInfoList);
+                	
                 }catch (Exception ex2) {
                 }
             }
+            applicationFunction.gTerminalList.add(TaskInfoList);
         }
         catch (Exception ex) {
         } finally {
@@ -106,7 +117,7 @@ public class GetTaskInfo {
                     	TaskInfoList.ZDLJDZ = sZDLJDZ;
                     	TaskInfoList.TaskNo = iRWH;
                     	TaskInfoList.GYH = iGYH;
-                    	TaskInfoList.CLDXH = iCLDXH;
+//                    	TaskInfoList.CLDXH = iCLDXH;
                     	TaskInfoList.TXFS = Integer.parseInt(rset.getString("DQTXFS").trim());
                     	TaskInfoList.CLDDZ = rset.getString("CLDDZ").trim();
                     	TaskInfoList.MM = rset.getString("GJMM");

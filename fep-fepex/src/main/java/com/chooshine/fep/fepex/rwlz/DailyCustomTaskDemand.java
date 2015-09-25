@@ -16,19 +16,7 @@ import com.chooshine.fep.fas.realtimecom.RealTimeCommunication;
 import com.chooshine.fep.fepex.common.CommonClass;
 import com.chooshine.fep.fepex.common.DataAccess;
 import com.chooshine.fep.fepex.common.TerminalInfo;
-//import hexing.fep.hxv10.common.StructAmmeterInfo;
-/**
- * <p>Title: CustomTaskAutomaticDemand</p>
- *
- * <p>Description: 自定义任务轮召</p>
- *
- * <p>Copyright: Copyright (c) 2006</p>
- *
- * <p>Company: Hualong Technology Hangzhou </p>
- *
- * @author jimmy
- * @version 1.0
- */
+
 public class DailyCustomTaskDemand extends Thread {
     SFE_ParamItem[] ParamItem = null;
     String[] DataItem = null;

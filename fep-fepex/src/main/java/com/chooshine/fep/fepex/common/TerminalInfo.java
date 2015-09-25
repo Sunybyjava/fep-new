@@ -1,5 +1,7 @@
 package com.chooshine.fep.fepex.common;
 
+import java.util.LinkedList;
+
 public class TerminalInfo {
 	public char[] TerminalAddress; //终端逻辑地址
     public int TerminalProtocol; //终端规约号
@@ -11,7 +13,7 @@ public class TerminalInfo {
     public int EffectTime; //有效时间（分）
    // public int CldCount; //测量点数目
     public int CldLx; //测量点类型
-    public int Cldxh; //测量点序号
+    public LinkedList<Integer> Cldxh; //测量点序号
     public String Clddz; //测量点地址
     public int Dxxbz; //大小项标志
     public int Sfbh = 0; //密码算法编号

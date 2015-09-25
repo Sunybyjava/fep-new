@@ -1,9 +1,10 @@
 package com.chooshine.fep.fepex.rwlz;
 
+import java.util.LinkedList;
 
 public class TerminalTaskInfo {
     public String ZDLJDZ; //终端逻辑地址
-    public int CLDXH; //测量点序号
+    public LinkedList<Integer> CLDXH; //测量点序号
     public String CLDDZ; //测量点地址
     public int GYH; //规约号
     public int TXFS;//当前通讯方式

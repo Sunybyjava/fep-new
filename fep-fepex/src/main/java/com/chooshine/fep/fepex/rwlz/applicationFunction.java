@@ -18,7 +18,7 @@ public class applicationFunction {
     public static IFE_FrameDataAreaExplain FrameDataAreaExplain; //数据区解释
     public static Glu_DataAccess dataAccess = null;
     public static List gTaskTerminalList; //任务数据信息列表
-    public static List gTerminalList; //终端信息列表
+    public static List<TerminalTaskInfo> gTerminalList; //终端信息列表
 
     static {
         init();
@@ -74,10 +74,10 @@ public class applicationFunction {
      * 新增固定功率报文的数据区生成处理
      */
     public static boolean ReadCurrentData(RealTimeCommunication rtc,int TerminalCount,
-            List TerminalInfoList)
+            List<TerminalInfo> TerminalInfoList)
     {
     	String sGnm = "0C";
-    	List terminalInfoStructList = new LinkedList(); //调用前置机接口用的终端信息列表
+    	List<TerminalInfoStruct> terminalInfoStructList = new LinkedList<TerminalInfoStruct>(); //调用前置机接口用的终端信息列表
     	for (int i = 0; i < TerminalCount; i++) {
     		
     	}
@@ -91,7 +91,7 @@ public class applicationFunction {
     public static boolean ReadHistoryParameter(RealTimeCommunication
                                                RealTimeCommunication,
                                                int AppID, int TerminalCount,
-                                               List TerminalInfoList,
+                                               List<TerminalInfo> TerminalInfoList,
                                                int DataItemCount,
                                                SFE_ParamItem[] DataItem,
                                                SFE_QGSer_TimeLabel TimeLabel,
@@ -104,16 +104,16 @@ public class applicationFunction {
         char[] DataArea = null; //数据区
         String sGnm = "0D";
         int Priority = 3; //读取优先级设置为3
-        List DataContentInfo = new LinkedList(); //数据区内容列表
-        List terminalInfoStructList = new LinkedList(); //调用前置机接口用的终端信息列表
+        List<DataContentStruct> DataContentInfo = new LinkedList<DataContentStruct>(); //数据区内容列表
+        List<TerminalInfoStruct> terminalInfoStructList = new LinkedList<TerminalInfoStruct>(); //调用前置机接口用的终端信息列表
         for (int i = 0; i < TerminalCount; i++) {
             TerminalInfo strTerminalInfo = (TerminalInfo) TerminalInfoList.get(
                     i);
             terminalInfoStructList.add(CopyInfo_TerminalInfo(strTerminalInfo));
             GYH = strTerminalInfo.TerminalProtocol;
             //测量点信息
-            int[] PnList = new int[64];
-            PnList[0] = strTerminalInfo.Cldxh;
+            int[] PnList = new int[strTerminalInfo.Cldxh.size()];
+            PnList[0] = strTerminalInfo.Cldxh.getFirst();
             //组数据区
             DataArea = FrameDataAreaExplain.IFE_QGSer_HistoryDataQuery(GYH,
                     1, PnList, DataItemCount, DataItem, TimeLabel,
