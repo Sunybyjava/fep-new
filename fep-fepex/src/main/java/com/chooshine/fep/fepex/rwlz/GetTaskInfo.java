@@ -3,19 +3,19 @@ package com.chooshine.fep.fepex.rwlz;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ArrayList;
+//import java.util.List;
+//import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.util.Calendar;
-import java.sql.*;
-import java.util.Hashtable;
+//import java.sql.*;
+//import java.util.Hashtable;
 
 import com.chooshine.fep.communicate.utils;
 import com.chooshine.fep.fepex.common.DataAccess;
 
 public class GetTaskInfo {
-    public List TerminalTaskInfoList = new ArrayList();
-    public List TaskAndTerminalInfoList = new ArrayList();
+//    public List TerminalTaskInfoList = new ArrayList();
+//    public List TaskAndTerminalInfoList = new ArrayList();
     public DataAccess dataAccess = null;
 
     public GetTaskInfo() {
@@ -38,6 +38,7 @@ public class GetTaskInfo {
     	ResultSet rset = null;
     	TerminalTaskInfo TaskInfoList = null;
     	String sSQL = "SELECT ZDLJDZ,CLDXH FROM RW_LZ_XL order by ZDLJDZ,CLDXH";
+    	utils.PrintDebugMessage("获取终端任务信息SQL:" + sSQL, "D");
         try {
             rset = dataAccess.executeQuery(sSQL);
             String sOld = "";
@@ -55,17 +56,6 @@ public class GetTaskInfo {
                 		TaskInfoList.CLDXH.add(rset.getInt("CLDXH"));
                 	}
                 	TaskInfoList.CLDXH.add(rset.getInt("CLDXH"));
-                	TaskInfoList.TaskNo = 0;
-                	TaskInfoList.CLDDZ = "";
-                	TaskInfoList.DataCout = 1;
-                	TaskInfoList.DataItemList = new String[1];
-                	TaskInfoList.DataItemList[0] = "HX2067";
-                	TaskInfoList.FinishTime = "";
-                	TaskInfoList.FrequencyTime = 0;
-                	TaskInfoList.GYH = Integer.parseInt(rset.getString("GYH").trim());
-                	TaskInfoList.MM = rset.getString("GJMM").trim();
-                	TaskInfoList.TXFS = Integer.parseInt(rset.getString("DQTXFS").trim());
-                	
                 }catch (Exception ex2) {
                 }
             }
@@ -82,13 +72,15 @@ public class GetTaskInfo {
     
     //获取存在主站任务漏点的终端信息
     public void GetTaskInforList() {
-        String sSQL = "SELECT C.ZDLJDZ,C.CLDXH,D.CLDDZ,A.ZZRWBH,E.GJMM,E.DQTXFS,A.GYH,A.ZZRWLX,A.DXLX,A.YXJ,A.ZXCS,A.ZXJG,A.ZXZQ,A.ZXKSSJ,A.ZXJSSJ,B.SJYXH,B.SJYBS"
-        			+" FROM RW_ZZRWXX A,RW_ZZRWMX B,RW_ZDZZRWPZ C,DA_CLDXX D,DA_ZDGZ E"
-        			+" WHERE A.ZZRWBH=B.ZZRWBH AND A.QDBZ=1 AND C.ZZRWBH=A.ZZRWBH AND C.GYH=A.GYH AND C.ZDLJDZ=E.ZDLJDZ"
-        			+" AND C.CLDXH=D.CLDXH AND D.ZDJH=E.ZDJH AND A.GYH=106"
-        			+" ORDER BY A.GYH,C.CLDXH,A.ZZRWBH,C.ZDLJDZ,B.SJYXH";
-        utils.PrintDebugMessage("获取终端任务信息SQL:" + sSQL, "D");
-        BuildTaskAndTerminalInfoList(sSQL);
+    	//只取数据库中配置了需要召测需量的终端信息即可
+//    	String sSQL = "SELECT ZDLJDZ,CLDXH FROM RW_LZ_XL ORDER BY ZDLJDZ,CLDXH";
+//        String sSQL = "SELECT C.ZDLJDZ,C.CLDXH,D.CLDDZ,A.ZZRWBH,E.GJMM,E.DQTXFS,A.GYH,A.ZZRWLX,A.DXLX,A.YXJ,A.ZXCS,A.ZXJG,A.ZXZQ,A.ZXKSSJ,A.ZXJSSJ,B.SJYXH,B.SJYBS"
+//        			+" FROM RW_ZZRWXX A,RW_ZZRWMX B,RW_ZDZZRWPZ C,DA_CLDXX D,DA_ZDGZ E"
+//        			+" WHERE A.ZZRWBH=B.ZZRWBH AND A.QDBZ=1 AND C.ZZRWBH=A.ZZRWBH AND C.GYH=A.GYH AND C.ZDLJDZ=E.ZDLJDZ"
+//        			+" AND C.CLDXH=D.CLDXH AND D.ZDJH=E.ZDJH AND A.GYH=106"
+//        			+" ORDER BY A.GYH,C.CLDXH,A.ZZRWBH,C.ZDLJDZ,B.SJYXH";
+//        utils.PrintDebugMessage("获取终端任务信息SQL:" + sSQL, "D");
+        GetTerminalInforList();
     }
     
     public void BuildTaskAndTerminalInfoList(String sSQL){

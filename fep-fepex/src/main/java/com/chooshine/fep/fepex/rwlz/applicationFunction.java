@@ -17,7 +17,7 @@ import com.chooshine.fep.fas.realtimecom.DataContentStruct;
 public class applicationFunction {
     public static IFE_FrameDataAreaExplain FrameDataAreaExplain; //数据区解释
     public static Glu_DataAccess dataAccess = null;
-    public static List gTaskTerminalList; //任务数据信息列表
+    public static List<TerminalTaskInfo> gTaskTerminalList; //任务数据信息列表
     public static List<TerminalTaskInfo> gTerminalList; //终端信息列表
 
     static {
@@ -46,9 +46,9 @@ public class applicationFunction {
         TerminalInfoStruct tis = new TerminalInfoStruct();
         String sZDLJDZ = new String(ti.TerminalAddress) ;
         tis.TerminalAddress = sZDLJDZ.toCharArray();
-        tis.TerminalProtocol = ti.TerminalProtocol;
-        tis.TerminalCommType = ti.TerminalCommType;
-        tis.ArithmeticNo = ti.Sfbh;
+        tis.TerminalProtocol = 100;
+        tis.TerminalCommType = 50;
+        tis.ArithmeticNo = 0;
         return tis;
     }
 
@@ -76,11 +76,44 @@ public class applicationFunction {
     public static boolean ReadCurrentData(RealTimeCommunication rtc,int TerminalCount,
             List<TerminalInfo> TerminalInfoList)
     {
+    	boolean bResult = false; //调用结果
     	String sGnm = "0C";
+    	int GYH = 100; //规约号
+    	char[] DataArea = null; //数据区
+    	SFE_ParamItem[] DataItem = new SFE_ParamItem[1];
+    	DataItem[0] = new SFE_ParamItem();
+    	DataItem[0].SetParamCaption("C01900");
+    	SFE_QGSer_TimeLabel TimeLabel = null;
+    	List<DataContentStruct> DataContentInfo = new LinkedList<DataContentStruct>(); //数据区内容列表
     	List<TerminalInfoStruct> terminalInfoStructList = new LinkedList<TerminalInfoStruct>(); //调用前置机接口用的终端信息列表
     	for (int i = 0; i < TerminalCount; i++) {
-    		
+    		TerminalInfo t = TerminalInfoList.get(i);
+    		terminalInfoStructList.add(CopyInfo_TerminalInfo(t));
+    		int[] PnList = new int[t.Cldxh.size()];
+    		for (int j=0;j<t.Cldxh.size();j++)
+    			PnList[j] = t.Cldxh.get(j);
+    		DataArea = FrameDataAreaExplain.IFE_QGSer_CurrentDataQuery(GYH, PnList.length, PnList, 1, DataItem, TimeLabel);
+    		String stemp = new String(DataArea);
+            utils.PrintDebugMessage("数据区：" + stemp + " length:" + stemp.length(),"D");
+            DataContentInfo.add(CopyInfo_DataContentStruct(DataArea));
     	}
+    	try {
+            bResult = rtc.SendBatchToFep(1, TerminalCount,
+                    terminalInfoStructList, DataContentInfo, sGnm.toCharArray(),
+                    1, 0, 0, 3);
+            int iRealTime = 0;
+            while (!bResult && iRealTime < 3) {
+                RealTimeReconnection(rtc);
+                bResult = rtc.SendBatchToFep(1,
+                        TerminalCount, terminalInfoStructList, DataContentInfo,
+                        sGnm.toCharArray(), 1, 0, 0, 3);
+                iRealTime = iRealTime + 1;
+                Thread.sleep(CommonClass.FRAME_INTERVAL *1000);
+            }
+            Thread.sleep(CommonClass.FRAME_INTERVAL *1000);
+        } catch (Exception ex) {
+            System.out.println("数据发送异常！" + ex.toString());
+        }
     	return true;
     }
 

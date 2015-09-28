@@ -93,10 +93,10 @@ public class CustomTaskAutomaticDemand extends Thread {
     }
     public static void main(String[] args) {
 	    try {
-	      String sDebug="";
-	      if (args.length >0) {  
-	    	  sDebug = args[0];
-	      }
+//	      String sDebug="";
+//	      if (args.length >0) {  
+//	    	  sDebug = args[0];
+//	      }
 	      CustomTaskAutomaticDemand td = new CustomTaskAutomaticDemand("startnow");
 	   //   TaskDataRedoZJ td = new TaskDataRedoZJ(sDebug);
 	      td.start();

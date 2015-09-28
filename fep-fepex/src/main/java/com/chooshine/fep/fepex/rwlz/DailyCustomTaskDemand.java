@@ -3,11 +3,11 @@ package com.chooshine.fep.fepex.rwlz;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Enumeration;
+//import java.util.Enumeration;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.Hashtable;
-import java.sql.ResultSet;
+//import java.util.Hashtable;
+//import java.sql.ResultSet;
 
 import com.chooshine.fep.FrameDataAreaExplain.SFE_ParamItem;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_QGSer_TimeLabel;
@@ -40,10 +40,10 @@ public class DailyCustomTaskDemand extends Thread {
     private void TaskDemand() {
         //根据执行顺序，决定从开头执行还是结束执行
         StartTime = Calendar.getInstance(); //程序启动时间
-        int AppID = 0;
+//        int AppID = 0;
         int ZDCount = 0; //存在漏点的终端列表数量
        // TerminalTaskInfo terminalInfo = new TerminalTaskInfo(); //终端信息
-        List zdpz = new ArrayList();
+        List<TerminalTaskInfo> zdpz = new ArrayList<TerminalTaskInfo>();
 
         //调整每个任务的执行时间到程序启动时间以后
         try {
@@ -82,7 +82,7 @@ public class DailyCustomTaskDemand extends Thread {
             }
             while (zdpz.size() > 0){
                 //1、判断终端在线状态
-                List listTerminalInfo = new LinkedList();
+                List<TerminalInfo> listTerminalInfo = new LinkedList<TerminalInfo>();
                 //100一次进行处理
                 //for (int j = 0; j < ZDCount; j++) {
                 TerminalTaskInfo t = (TerminalTaskInfo) zdpz.get(0);
@@ -98,30 +98,32 @@ public class DailyCustomTaskDemand extends Thread {
                 ParamItem[0] = new SFE_ParamItem();
                 ParamItem[0].SetParamCaption(t.DataItemList[0]);
                 listTerminalInfo.add(terminal);
-                if (t.TaskType == 22) {//日冻结任务
-	                if (listTerminalInfo != null) {
-	                    StartTime = Calendar.getInstance();
-	                    StartTime.add(Calendar.DATE, -1);
-	                    String sTime = formatter1.format(StartTime.getTime());
-	                    AppID = 1;
-	                    applicationFunction.ReadHistoryParameter(rtc, AppID,
-	                            listTerminalInfo.size(), listTerminalInfo,
-	                            1, ParamItem, TimeLabel, 1, sTime.toCharArray(),
-	                            1, 1, 10);
-	                }
-                }
-                else if (t.TaskType == 24){//曲线任务
-                	if (listTerminalInfo != null) {
-	                    StartTime = Calendar.getInstance();
-	                    StartTime.add(Calendar.DATE, -1);
-	                    String sTime = formatter2.format(StartTime.getTime())+"000000";
-	                    AppID = 1;
-	                    applicationFunction.ReadHistoryParameter(rtc, AppID,
-	                            listTerminalInfo.size(), listTerminalInfo,
-	                            1, ParamItem, TimeLabel, 3, sTime.toCharArray(),
-	                            3, 24, 10);
-	                }
-                }
+                applicationFunction.ReadCurrentData(rtc, 1, listTerminalInfo);
+                //只需要根据终端，逐个终端进行发送命令即可，数据项目前固定
+//                if (t.TaskType == 22) {//日冻结任务
+//	                if (listTerminalInfo != null) {
+//	                    StartTime = Calendar.getInstance();
+//	                    StartTime.add(Calendar.DATE, -1);
+//	                    String sTime = formatter1.format(StartTime.getTime());
+//	                    AppID = 1;
+//	                    applicationFunction.ReadHistoryParameter(rtc, AppID,
+//	                            listTerminalInfo.size(), listTerminalInfo,
+//	                            1, ParamItem, TimeLabel, 1, sTime.toCharArray(),
+//	                            1, 1, 10);
+//	                }
+//                }
+//                else if (t.TaskType == 24){//曲线任务
+//                	if (listTerminalInfo != null) {
+//	                    StartTime = Calendar.getInstance();
+//	                    StartTime.add(Calendar.DATE, -1);
+//	                    String sTime = formatter2.format(StartTime.getTime())+"000000";
+//	                    AppID = 1;
+//	                    applicationFunction.ReadHistoryParameter(rtc, AppID,
+//	                            listTerminalInfo.size(), listTerminalInfo,
+//	                            1, ParamItem, TimeLabel, 3, sTime.toCharArray(),
+//	                            3, 24, 10);
+//	                }
+//                }
                 
                 zdpz.remove(0);                    
             }
@@ -146,10 +148,9 @@ public class DailyCustomTaskDemand extends Thread {
         TaskDemand();
         for (int i = 1; i < CommonClass.REDOTIMES; i++) {
             try {
-                Thread.sleep(CommonClass.REDO_INTERVAL * 3600000); //轮召后等待配置小时后重新召
+                Thread.sleep(CommonClass.REDO_INTERVAL * 60000); //轮召后等待配置分钟后重新召
             } catch (InterruptedException ex) {
             }
-            //ReadBalance();
             dataAccess.LogIn(0);
             try {
                 GetTaskInfo gti = new GetTaskInfo(dataAccess);
@@ -166,18 +167,18 @@ public class DailyCustomTaskDemand extends Thread {
     }
 
 //获取应用ID
-    private int GetYYID() {
-        int id = 0;
-        dataAccess.LogIn(0);
-        try {
-            id = Integer.parseInt(dataAccess.GetAutoID("YYID"));
-        } catch (Exception ex) {
-        } finally {
-            dataAccess.close();
-            dataAccess.LogOut(0);
-        }
-        return id;
-    }
+//    private int GetYYID() {
+//        int id = 0;
+//        dataAccess.LogIn(0);
+//        try {
+//            id = Integer.parseInt(dataAccess.GetAutoID("YYID"));
+//        } catch (Exception ex) {
+//        } finally {
+//            dataAccess.close();
+//            dataAccess.LogOut(0);
+//        }
+//        return id;
+//    }
 
     class CustonTaskMiss {
         public String TerminalAddr = "";
