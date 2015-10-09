@@ -118,7 +118,7 @@ public class DebugInfoInputThread
         }
       }
       else if (s.toLowerCase().equals("version")) {
-    	  utils.PrintDebugMessage("Program Version is 4.0.0.24", "D");
+    	  utils.PrintDebugMessage("Program Version is 1.0.0.1", "D");
       }
 //      else if (s.toLowerCase().equals("sleepdownonlineterminal")) {
 //    	  fCs.SleepDownOnLineTerminal();

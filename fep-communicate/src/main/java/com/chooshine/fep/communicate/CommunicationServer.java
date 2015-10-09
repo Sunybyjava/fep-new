@@ -45,8 +45,8 @@ public class CommunicationServer {
         , Debug);
     cs.start();
 
-    UpdateFramePushThread fpt = new UpdateFramePushThread();
-    fpt.start();
+//    UpdateFramePushThread fpt = new UpdateFramePushThread();
+//    fpt.start();
     DebugInfoInputThread dt = new DebugInfoInputThread(mx, cs);
     dt.start();
   }

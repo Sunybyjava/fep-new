@@ -93,6 +93,7 @@ public class DataAccess {
         	try {
         		Class.forName("com.mysql.jdbc.Driver");
         	} catch (ClassNotFoundException ex) {
+        		return false;
             }
             try {
                 conn = DriverManager.getConnection(FConnectURL, FUserName,

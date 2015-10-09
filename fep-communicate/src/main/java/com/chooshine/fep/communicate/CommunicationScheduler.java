@@ -68,11 +68,9 @@ public class CommunicationScheduler extends Thread {
 
 	private List<TerminalInfo> NewTerminalList = null; //新增加的终端队列
 
-	public List<Struct_CommRecordItem> GlobalDownRecordSaveList = Collections
-			.synchronizedList(new LinkedList<Struct_CommRecordItem>());
+	public List<Struct_CommRecordItem> GlobalDownRecordSaveList = Collections.synchronizedList(new LinkedList<Struct_CommRecordItem>());
 
-	public List<Struct_CommRecordItem> GlobalUPRecordSaveList = Collections
-			.synchronizedList(new LinkedList<Struct_CommRecordItem>());
+	public List<Struct_CommRecordItem> GlobalUPRecordSaveList = Collections.synchronizedList(new LinkedList<Struct_CommRecordItem>());
 
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
@@ -101,10 +99,8 @@ public class CommunicationScheduler extends Thread {
 			int ConnTimeOut, int WaitTimeOut230M, boolean BatchSave,
 			String Debug_Flag) {
 		try {
-			GlobalDownRecordSaveList = Collections
-					.synchronizedList(new LinkedList<Struct_CommRecordItem>());
-			GlobalUPRecordSaveList = Collections
-					.synchronizedList(new LinkedList<Struct_CommRecordItem>());
+			GlobalDownRecordSaveList = Collections.synchronizedList(new LinkedList<Struct_CommRecordItem>());
+			GlobalUPRecordSaveList = Collections.synchronizedList(new LinkedList<Struct_CommRecordItem>());
 			NewTerminalList = new LinkedList<TerminalInfo>();
 			Port = ListenPort;
 			MaxCount = MaxConnCount;
@@ -119,16 +115,14 @@ public class CommunicationScheduler extends Thread {
 				da_SaveRecord = new Glu_DataAccess("");
 				da_SaveRecord.LogIn(30);
 			} catch (Exception ex3) {
-				CommunicationServerConstants.Log1
-						.WriteLog("Establish Database connection failed(Save the raw data)!");
+				CommunicationServerConstants.Log1.WriteLog("Establish Database connection failed(Save the raw data)!");
 			}
 
 			try {
 				da = new Glu_DataAccess("");
 				da.LogIn(30);
 			} catch (Exception ex3) {
-				CommunicationServerConstants.Log1
-						.WriteLog("Establish Database connection failed！");
+				CommunicationServerConstants.Log1.WriteLog("Establish Database connection failed！");
 			}
 			FepCommList = new ArrayList<FepLinkList>(); //初始化前置机通道连接队列
 			PreCommList = new ArrayList<PreLinkList>(); //初始化预付费链路连接队列
@@ -143,9 +137,7 @@ public class CommunicationScheduler extends Thread {
 			try {
 				sc.init(Port); //Socket服务端初始化
 			} catch (Exception ex) {
-				CommunicationServerConstants.Log1
-						.WriteLog("CommunicationScheduler:Init Socket Server Port error,error is "
-								+ ex.toString());
+				CommunicationServerConstants.Log1.WriteLog("CommunicationScheduler:Init Socket Server Port error,error is "	+ ex.toString());
 				//服务初始化失败，说明端口被占用，关闭应用
 				CommunicationServerConstants.Trc1.TraceLog("Init Port Failed,Application Exit!");
 				System.exit(1);
@@ -155,22 +147,17 @@ public class CommunicationScheduler extends Thread {
 	}
 
 	public void ShowFlowRecordListCount() {
-		System.out.println("The length of up frames queue："
-				+ GlobalUPRecordSaveList.size());
-		System.out.println("The length of down frames queue："
-				+ GlobalDownRecordSaveList.size());
+		System.out.println("The length of up frames queue："	+ GlobalUPRecordSaveList.size());
+		System.out.println("The length of down frames queue：" + GlobalDownRecordSaveList.size());
 	}
 
 	public void ShowFepInfo() {
 		for (int i = 0; i < FepCommList.size(); i++) {
 			FepLinkList FepLink = (FepLinkList) FepCommList.get(i);
 			try {
-				if ((FepLink.GetSocketDownChannel() != null)
-						&& (FepLink.GetSocketUpChannel() != null)) {
+				if ((FepLink.GetSocketDownChannel() != null)&& (FepLink.GetSocketUpChannel() != null)) {
 					System.out.println("Channel Type: " + FepLink.GetFepType());
-					System.out.println("Channel Ip  : "
-							+ FepLink.GetSocketDownChannel().socket()
-									.getInetAddress().getHostAddress());
+					System.out.println("Channel Ip  : "	+ FepLink.GetSocketDownChannel().socket().getInetAddress().getHostAddress());
 				}
 			} catch (Exception ex) {
 			}
@@ -191,8 +178,7 @@ public class CommunicationScheduler extends Thread {
 		for (int i = 0; i < NewTerminalList.size(); i++) {
 			TerminalInfo ti = (TerminalInfo) NewTerminalList.get(i);
 			try {
-				fl
-						.TraceLog("=========================================================");
+				fl.TraceLog("=========================================================");
 				fl.TraceLog("TerminalAddress is " + ti.TerminalAddress);
 				fl.TraceLog("TerminalProtocol is " + ti.TerminalProtocol);
 				fl.TraceLog("TerminalCurrent is " + ti.TerminalCurrent);
@@ -207,8 +193,7 @@ public class CommunicationScheduler extends Thread {
 				fl.TraceLog("TCPCommunicationIp is " + ti.TCPCommunicationIp);
 				fl.TraceLog("TCPLocalAddress is " + ti.TCPLocalAddress);
 				fl.TraceLog("OnLineStatus is " + ti.OnLineStatus);
-				fl
-						.TraceLog("=========================================================");
+				fl.TraceLog("=========================================================");
 			} catch (Exception ex) {
 			}
 		}
@@ -2326,22 +2311,13 @@ public class CommunicationScheduler extends Thread {
 				
 				try{
 					if ((sFunctionCode.equals("8F"))||(sFunctionCode.equals("0F"))){
-						CommunicationServerConstants.GlobalReceiveUpdateFrameList.add(MessageContent.trim());
+						return;
+//						CommunicationServerConstants.GlobalReceiveUpdateFrameList.add(MessageContent.trim());
 					}
 				}catch (Exception e){
 					
 				}
 				
-				//这里根据功能码将预售电的返回数据，提交到预售电返回数据队列中，由单独的线程处理返回结果
-				try{
-					if (sFunctionCode.equalsIgnoreCase("10"))
-					{
-						
-					}
-				}catch(Exception e)
-				{
-					
-				}
 				
 				if ((iGYH == Glu_ConstDefine.GY_ZD_QUANGUO)
 						|| (iGYH == Glu_ConstDefine.GY_ZD_ZHEJIANG)
@@ -2352,17 +2328,22 @@ public class CommunicationScheduler extends Thread {
 					if (ti != null) {
 						iGYH = ti.TerminalProtocol;
 					}
-				} else if (iGYH == Glu_ConstDefine.GY_ZD_DLMS) {
-					if ((iDataType == Glu_ConstDefine.SJLX_ZDDL || iDataType == Glu_ConstDefine.SJLX_ZXXT)
-							&& (SourceChannel > 10)) {//心跳帧带表地址，其他帧没有
-						//0001000100010012DD1000000000303030303039313230303937 最后8个字节为表地址
-						sZDLJDZ = MessageContent.substring(36, 52);
-						sZDLJDZ = Encode.HexASCIIToString(sZDLJDZ);
-					} else {
-						sZDLJDZ = SearchTerminalAddress(SourceChannel, channel,
-								MsgSrc, LocalAddr);
-					}
+				} else{
+					//规约号错误，记录后返回
 				}
+					
+					
+//					if (iGYH == Glu_ConstDefine.GY_ZD_DLMS) {
+//					if ((iDataType == Glu_ConstDefine.SJLX_ZDDL || iDataType == Glu_ConstDefine.SJLX_ZXXT)
+//							&& (SourceChannel > 10)) {//心跳帧带表地址，其他帧没有
+//						//0001000100010012DD1000000000303030303039313230303937 最后8个字节为表地址
+//						sZDLJDZ = MessageContent.substring(36, 52);
+//						sZDLJDZ = Encode.HexASCIIToString(sZDLJDZ);
+//					} else {
+//						sZDLJDZ = SearchTerminalAddress(SourceChannel, channel,
+//								MsgSrc, LocalAddr);
+//					}
+//				}
 				int iMLXH = sf.CommandSeq;
 				rd.StationNo = sf.StationNo;
 				rd.TerminalProtocal = iGYH;
@@ -2378,80 +2359,81 @@ public class CommunicationScheduler extends Thread {
 				try{
 					if (iGYH == Glu_ConstDefine.GY_ZD_DLMS) {//处理DLMS的升级返回帧
 						//由于无法从帧格式区分升级返回帧，这里目前只能将DLMS所有的上行帧全部推送处理
-						DLMSUpFrame uf = new DLMSUpFrame();
-						uf.DeviceAddr = sZDLJDZ.trim().toUpperCase();
-						uf.Frame = MessageContent.trim().toUpperCase();
-						CommunicationServerConstants.GlobalReceiveDLMSUpdateFrameList.add(uf);
+						return;
+//						DLMSUpFrame uf = new DLMSUpFrame();
+//						uf.DeviceAddr = sZDLJDZ.trim().toUpperCase();
+//						uf.Frame = MessageContent.trim().toUpperCase();
+//						CommunicationServerConstants.GlobalReceiveDLMSUpdateFrameList.add(uf);
 					}
 				}catch (Exception e){
 					
 				}
 				
-				if (iGYH == Glu_ConstDefine.GY_ZD_DLMS) {
-					for (int i = 0; i < CommunicationServerConstants.GlobalDLMSSendList
-							.size(); i++) {
-						StructDLMSSendData sa = new StructDLMSSendData();
-						sa = CommunicationServerConstants.GlobalDLMSSendList
-								.get(i);
-						if (sa.TerminalAddress.equals(sZDLJDZ)) {
-							if (rd.DataType == Glu_ConstDefine.SJLX_DLMSAARE) {
-								int iIndex = MessageContent
-										.indexOf("A109060760857405080101A2");
-								if (iIndex > 0) {
-									if (MessageContent.substring(iIndex + 30,
-											iIndex + 32).equals("00")) {//accepted (0),rejected-permanent (1),rejected-transient (2)
-										if (sa.SecurityLevel == 2
-												&& sa.DealStep == 11) {
-											sa.DealStep = 12;//StoC
-											iIndex = MessageContent
-													.indexOf("890760857405080202AA");
-											if (iIndex > 0) {
-												String sRandom = MessageContent
-														.substring(iIndex + 26,
-																iIndex + 58);
-												sa.Random = sRandom;
-											}
-										} else {
-											sa.DealStep = 20;
-											sa.DataBlock = 0;
-										}
-									} else {
-										if (sa.SecurityLevel < 2) {
-											sa.SecurityLevel += 1;
-											sa.DealStep = 10;//AARE
-										} else {
-											sa.DealStep = 30;//finish
-										}
-									}
-								}
-							} else if (rd.DataType == Glu_ConstDefine.SJLX_PTSJHJ) {
-								sa.DataBlock = Integer.parseInt(MessageContent
-										.substring(24, 32), 16);
-								if (MessageContent.substring(22, 24).equals(
-										"00")) {
-									sa.DealStep = 22;//have next
-								} else if (MessageContent.substring(22, 24)
-										.equals("FF")) {
-									sa.DealStep = 30;//finish
-									bCallBack = true;
-								}
-							} else if ((rd.DataType == Glu_ConstDefine.SJLX_PTSJ || rd.DataType == Glu_ConstDefine.SJLX_SZFH)
-									&& sa.DealStep == 21) {
-								sa.DealStep = 30;//finish
-								bCallBack = true;
-							} else if (rd.DataType == Glu_ConstDefine.SJLX_SZFH
-									&& sa.DealStep == 13
-									&& sa.SecurityLevel == 2) {
-								if (MessageContent.substring(22, 24).equals(
-										"00")) {
-									sa.DealStep = 20;
-									sa.DataBlock = 0;
-								}
-							}
-							break;
-						}
-					}
-				}
+//				if (iGYH == Glu_ConstDefine.GY_ZD_DLMS) {
+//					for (int i = 0; i < CommunicationServerConstants.GlobalDLMSSendList
+//							.size(); i++) {
+//						StructDLMSSendData sa = new StructDLMSSendData();
+//						sa = CommunicationServerConstants.GlobalDLMSSendList
+//								.get(i);
+//						if (sa.TerminalAddress.equals(sZDLJDZ)) {
+//							if (rd.DataType == Glu_ConstDefine.SJLX_DLMSAARE) {
+//								int iIndex = MessageContent
+//										.indexOf("A109060760857405080101A2");
+//								if (iIndex > 0) {
+//									if (MessageContent.substring(iIndex + 30,
+//											iIndex + 32).equals("00")) {//accepted (0),rejected-permanent (1),rejected-transient (2)
+//										if (sa.SecurityLevel == 2
+//												&& sa.DealStep == 11) {
+//											sa.DealStep = 12;//StoC
+//											iIndex = MessageContent
+//													.indexOf("890760857405080202AA");
+//											if (iIndex > 0) {
+//												String sRandom = MessageContent
+//														.substring(iIndex + 26,
+//																iIndex + 58);
+//												sa.Random = sRandom;
+//											}
+//										} else {
+//											sa.DealStep = 20;
+//											sa.DataBlock = 0;
+//										}
+//									} else {
+//										if (sa.SecurityLevel < 2) {
+//											sa.SecurityLevel += 1;
+//											sa.DealStep = 10;//AARE
+//										} else {
+//											sa.DealStep = 30;//finish
+//										}
+//									}
+//								}
+//							} else if (rd.DataType == Glu_ConstDefine.SJLX_PTSJHJ) {
+//								sa.DataBlock = Integer.parseInt(MessageContent
+//										.substring(24, 32), 16);
+//								if (MessageContent.substring(22, 24).equals(
+//										"00")) {
+//									sa.DealStep = 22;//have next
+//								} else if (MessageContent.substring(22, 24)
+//										.equals("FF")) {
+//									sa.DealStep = 30;//finish
+//									bCallBack = true;
+//								}
+//							} else if ((rd.DataType == Glu_ConstDefine.SJLX_PTSJ || rd.DataType == Glu_ConstDefine.SJLX_SZFH)
+//									&& sa.DealStep == 21) {
+//								sa.DealStep = 30;//finish
+//								bCallBack = true;
+//							} else if (rd.DataType == Glu_ConstDefine.SJLX_SZFH
+//									&& sa.DealStep == 13
+//									&& sa.SecurityLevel == 2) {
+//								if (MessageContent.substring(22, 24).equals(
+//										"00")) {
+//									sa.DealStep = 20;
+//									sa.DataBlock = 0;
+//								}
+//							}
+//							break;
+//						}
+//					}
+//				}
 				if ((rd.DataType != Glu_ConstDefine.SJLX_ZDTC)
 						&& (rd.DataType != Glu_ConstDefine.SJLX_ZDDL)
 						&& (rd.DataType != Glu_ConstDefine.SJLX_ZXXT)
@@ -2466,32 +2448,32 @@ public class CommunicationScheduler extends Thread {
 							rd.DataType == Glu_ConstDefine.SJLX_LSSJZD || //自动上送历史数据
 							rd.DataType == Glu_ConstDefine.SJLX_YCSJZC || //召测返回异常数据
 							rd.DataType == Glu_ConstDefine.SJLX_LSSJZC) { //召测返回历史数据
-						if (CommunicationServerConstants.GlobalReceiveJMSList
-								.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
-							CommunicationServerConstants.GlobalReceiveJMSList
-									.add(rd);
-							CommunicationServerConstants.Trc1
-									.TraceLog("14、AddDataToGlobalReceiveJMSList");
+						if (CommunicationServerConstants.GlobalReceiveJMSList.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
+							CommunicationServerConstants.GlobalReceiveJMSList.add(rd);
+							CommunicationServerConstants.Trc1.TraceLog("14、AddDataToGlobalReceiveJMSList");
+						}else {
+							//队列长度过长，记录日志
+							CommunicationServerConstants.Log1.WriteLog("GlobalReceiveJMSList full.");
 						}
 					}
 					if (rd.DataType != Glu_ConstDefine.SJLX_YCSJZD && //非主动上送数据
 							rd.DataType != Glu_ConstDefine.SJLX_LSSJZD) {
 						if (rd.TerminalProtocal == Glu_ConstDefine.GY_ZD_DLMS
 								&& (bCallBack || rd.DataType == Glu_ConstDefine.SJLX_PTSJHJ)) {
-							if (CommunicationServerConstants.GlobalReceiveCallBackList
-									.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
-								CommunicationServerConstants.GlobalReceiveCallBackList
-										.add(rd);
-								CommunicationServerConstants.Trc1
-										.TraceLog("14、AddDataToGlobalReceiveCallBackList");
+							if (CommunicationServerConstants.GlobalReceiveCallBackList.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
+								CommunicationServerConstants.GlobalReceiveCallBackList.add(rd);
+								CommunicationServerConstants.Trc1.TraceLog("14、AddDataToGlobalReceiveCallBackList");
+							}else {
+								//队列长度过长，记录日志
+								CommunicationServerConstants.Log1.WriteLog("GlobalReceiveCallBackList full.");
 							}
 						} else if (rd.TerminalProtocal != Glu_ConstDefine.GY_ZD_DLMS) {
-							if (CommunicationServerConstants.GlobalReceiveCallBackList
-									.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
-								CommunicationServerConstants.GlobalReceiveCallBackList
-										.add(rd);
-								CommunicationServerConstants.Trc1
-										.TraceLog("14、AddDataToGlobalReceiveCallBackList");
+							if (CommunicationServerConstants.GlobalReceiveCallBackList.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
+								CommunicationServerConstants.GlobalReceiveCallBackList.add(rd);
+								CommunicationServerConstants.Trc1.TraceLog("14、AddDataToGlobalReceiveCallBackList");
+							}else {
+								//队列长度过长，记录日志
+								CommunicationServerConstants.Log1.WriteLog("GlobalReceiveCallBackList full.");
 							}
 						}
 
@@ -2501,14 +2483,12 @@ public class CommunicationScheduler extends Thread {
 					switch (rd.TerminalProtocal) { //根据规约类型不同返回对应的异常确认
 					case Glu_ConstDefine.GY_ZD_ZHEJIANG:
 					case Glu_ConstDefine.GY_ZD_ZJZB0404: {
-						ResponseToZhejiangAlarm(SourceChannel, MessageLength,
-								MessageContent);
+						ResponseToZhejiangAlarm(SourceChannel, MessageLength,MessageContent);
 						break;
 					}
 					case Glu_ConstDefine.GY_ZD_QUANGUO:
 					case Glu_ConstDefine.GY_ZD_698: {
-						ResponseToQuanGuoAlarm(SourceChannel, MessageLength,
-								MessageContent);
+						ResponseToQuanGuoAlarm(SourceChannel, MessageLength,MessageContent);
 						break;
 					}
 					default: {
@@ -2516,11 +2496,9 @@ public class CommunicationScheduler extends Thread {
 					}
 					}
 				}
-				UpdateTerminalLocalList(sZDLJDZ, iGYH, channel, SourceChannel,
-						MessageContent, MsgSrc, LocalAddr);
+				UpdateTerminalLocalList(sZDLJDZ, iGYH, channel, SourceChannel,MessageContent, MsgSrc, LocalAddr);
 			} else {
-				CommunicationServerConstants.Trc1.TraceLog("13、Frame:"
-						+ MessageContent + " Can not be Explained!");
+				CommunicationServerConstants.Trc1.TraceLog("13、Frame:"+ MessageContent + " Can not be Explained!");
 			}
 			if ( //(rd.DataType != Glu_ConstDefine.SJLX_ZDTC) &&
 			//(rd.DataType != Glu_ConstDefine.SJLX_ZDDL) &&
@@ -2535,24 +2513,20 @@ public class CommunicationScheduler extends Thread {
 					CommRecordItem.SetTargetAddress(MsgSrc);
 					GlobalUPRecordSaveList.add(CommRecordItem);
 					//  CommunicationServerConstants.Log1.WriteLog("GlobalUPRecordSaveList.add");
-					CommunicationServerConstants.Trc1
-							.TraceLog("16、SaveUpFlowRecord");
+					CommunicationServerConstants.Trc1.TraceLog("16、SaveUpFlowRecord");
+				} else {
+					//队列长度过长，记录日志
+					CommunicationServerConstants.Log1.WriteLog("GlobalUPRecordSaveList full.");
 				}
 			}
 		} catch (Exception ex) {
-			CommunicationServerConstants.Log1
-					.WriteLog("CommunicationScheduler:DealWithUpFrame() Error,error is "
-							+ ex.toString()
-							+ " UpFrame is "
-							+ MessageContent
-							+ " MsgSrc is " + MsgSrc);
+			CommunicationServerConstants.Log1.WriteLog("CommunicationScheduler:DealWithUpFrame() Error,error is "
+							+ ex.toString()	+ " UpFrame is "+ MessageContent + " MsgSrc is " + MsgSrc);
 		}
 	}
 
-	private void DealWithPreUpFrame(int SourceChannel, int MessageLength,
-			String MessageContent, String MsgSrc, String LocalAddr,
-			String sUserNo, int CommandSeq, SocketChannel channel,
-			int CommandType) {
+	private void DealWithPreUpFrame(int SourceChannel, int MessageLength,String MessageContent, String MsgSrc, String LocalAddr,
+			String sUserNo, int CommandSeq, SocketChannel channel,int CommandType) {
 		try {
 			//String sMLXH = MessageContent.substring(0,8);
 			StructReceiveData rd = new StructReceiveData();
@@ -2568,8 +2542,7 @@ public class CommunicationScheduler extends Thread {
 			rd.FrameData = MessageContent;
 			if (CommunicationServerConstants.GlobalReceiveCallBackList.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
 				CommunicationServerConstants.GlobalReceiveCallBackList.add(rd);
-				CommunicationServerConstants.Trc1
-						.TraceLog("14、AddDataToGlobalReceiveCallBackList");
+				CommunicationServerConstants.Trc1.TraceLog("14、AddDataToGlobalReceiveCallBackList");
 			}
 			if (GlobalUPRecordSaveList.size() < CommunicationServerConstants.JMS_MAXCOUNT) {
 				Struct_CommRecordItem CommRecordItem = new Struct_CommRecordItem();
@@ -2579,16 +2552,11 @@ public class CommunicationScheduler extends Thread {
 				CommRecordItem.SetMessageContent(MessageContent);
 				CommRecordItem.SetTargetAddress(MsgSrc);
 				GlobalUPRecordSaveList.add(CommRecordItem);
-				CommunicationServerConstants.Trc1
-						.TraceLog("16、SaveUpFlowRecord");
+				CommunicationServerConstants.Trc1.TraceLog("16、SaveUpFlowRecord");
 			}
 		} catch (Exception ex) {
-			CommunicationServerConstants.Log1
-					.WriteLog("CommunicationScheduler:DealWithUpFrame() Error,error is "
-							+ ex.toString()
-							+ " UpFrame is "
-							+ MessageContent
-							+ " MsgSrc is " + MsgSrc);
+			CommunicationServerConstants.Log1.WriteLog("CommunicationScheduler:DealWithUpFrame() Error,error is "
+							+ ex.toString()	+ " UpFrame is "+ MessageContent+ " MsgSrc is " + MsgSrc);
 		}
 	}
 

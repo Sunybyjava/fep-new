@@ -136,7 +136,7 @@ public class MessageExchange
     	CommunicationServerConstants.Log1.WriteLog("Failed to create FrameDataAreaExplain object:" + ex2.toString());
     }
     //初始化任务对照队列
-	InitDeviceAndTaskList();
+//	InitDeviceAndTaskList();
     
   }
 
@@ -2524,62 +2524,68 @@ public class MessageExchange
               //DataProcessLog.WriteLog("调用规约数据区解析出错:" + ex2.toString());
             }
             
-            //<三>、保存数据库        	
-            try {
-            	CommunicationServerConstants.Trc1.TraceLog("22-2、SaveData ExplainResult="+DataInfo.ExplainResult);
-                if ( (DataInfo.ExplainResult == 0) && (DataInfo.DataType == 20 || DataInfo.DataType == 10)) {
-                  int iCount = DataInfo.DataList.size();
-                  HistoryList = new SFE_HistoryData[iCount];
-                  CommunicationServerConstants.Trc1.TraceLog("22-0、iCount="+iCount);	
-                  Calendar cTime = Calendar.getInstance();
- 				  SimpleDateFormat formatter=new SimpleDateFormat("yyyyMMddHHmmss");
- 				  String SJSJ="";
- 				  SJSJ=formatter.format(cTime.getTime());
-                  for (int i = 0; i < iCount; i++) {
-                    HistoryList[i] = new SFE_HistoryData(); //历史数据结构
-                	if (DataInfo.DataType == 10) {
-                		SFE_NormalData NormalData = new SFE_NormalData();
-                		NormalData = (SFE_NormalData) DataInfo.DataList.get(i);
-                		for(int j = 0; j < NormalData.GetDataItemCount(); j++){
-                			SFE_DataItem DataItem = new SFE_DataItem();
-                			DataItem = (SFE_DataItem)NormalData.DataItemList.get(j);
-                			HistoryList[i].DataItemAdd(new String(DataItem.GetDataCaption()), new String(DataItem.GetDataContent()));	
-                		}
-                		HistoryList[i].SetMeasuredPointNo(NormalData.GetMeasuredPointNo());
-                		HistoryList[i].SetMeasuredPointType(NormalData.GetMeasuredPointType());
-                		HistoryList[i].SetTaskNo(0);
-                		HistoryList[i].SetTaskDateTime(SJSJ);
-                	}
-                  }
-                  if (ti != null) {
-                    if (ti.TerminalProperty == 2 || ti.TerminalProperty == 01) { //只对于终端设备的任务号需要进行重新的匹配
-                    	List adjustList = null;
-                    	if (DataInfo.DataType == 20){
-                        	adjustList = AdjustTaskNo(DataInfo.DataList);
-                        	iCount = adjustList.size();
-                            HistoryList = new SFE_HistoryData[iCount];
-                            for (int i = 0; i < iCount; i++) {
-                            	HistoryList[i] = new SFE_HistoryData(); //历史数据结构
-                            	HistoryList[i] = (SFE_HistoryData) adjustList.get(i);
-                            }
-                        }                        
-                    }
-                  }
-                  
-                  //保存数据库
-                  //DataProcessLog.WriteLog("3==保存数据");
-                  String sZDLJDZ = GetMAddress(HistoryList[0].GetMeasuredPointNo(),new String(acd.TerminalLogicAdd));
-                  DataAccess_His.SaveHistoryData(sZDLJDZ.toCharArray(), acd.TerminalProtocal,HistoryList,
-                                             iCount);
-                  CommunicationServerConstants.Trc1.TraceLog("22-3、SaveDataSuccess  ZDLJDZ:"+sZDLJDZ +" CLDXH:"+HistoryList[0].GetMeasuredPointNo());
-                  //将对应的漏点进行更新
-                  DataAccess_His.DeleteMissingPoint(acd.TerminalLogicAdd, HistoryList, iCount);
-                  //DeleteTaskMissingInfo(s, HistoryList, iCount);
-                }
-              }
-              catch (Exception ex1) {
-            	  CommunicationServerConstants.Log1.WriteLog("Save data error:" + ex1.toString());
-              }
+            //<三>、保存数据库  
+            //对于两种任务分别进行固定存库处理。
+            //任务1（曲线数据）根据F219命令项判断，解析识别后分别将正向电量示值存入ENT_D_EQ_READING表，其他功率电流电压相关数据项存入ENT_D_POWER表。
+            //任务2（日冻结）根据F1命令项判断，解析识别后直接将相关数据项存入ENT_D_EQ_READING表。
+            //数据上来后，首先将数据插入【最近电量示度数据ENT_D_EQ_READING_LATELY】，需量具体值是对应写到最大需量及发生升级字段。
+            //同时在通讯服务中判断帧的数据项是否为F35，进入需量处理流程，判断是否超过阀值，触发报警流程。
+            
+//            try {
+//            	CommunicationServerConstants.Trc1.TraceLog("22-2、SaveData ExplainResult="+DataInfo.ExplainResult);
+//                if ( (DataInfo.ExplainResult == 0) && (DataInfo.DataType == 20 || DataInfo.DataType == 10)) {
+//                  int iCount = DataInfo.DataList.size();
+//                  HistoryList = new SFE_HistoryData[iCount];
+//                  CommunicationServerConstants.Trc1.TraceLog("22-0、iCount="+iCount);	
+//                  Calendar cTime = Calendar.getInstance();
+// 				  SimpleDateFormat formatter=new SimpleDateFormat("yyyyMMddHHmmss");
+// 				  String SJSJ="";
+// 				  SJSJ=formatter.format(cTime.getTime());
+//                  for (int i = 0; i < iCount; i++) {
+//                    HistoryList[i] = new SFE_HistoryData(); //历史数据结构
+//                	if (DataInfo.DataType == 10) {
+//                		SFE_NormalData NormalData = new SFE_NormalData();
+//                		NormalData = (SFE_NormalData) DataInfo.DataList.get(i);
+//                		for(int j = 0; j < NormalData.GetDataItemCount(); j++){
+//                			SFE_DataItem DataItem = new SFE_DataItem();
+//                			DataItem = (SFE_DataItem)NormalData.DataItemList.get(j);
+//                			HistoryList[i].DataItemAdd(new String(DataItem.GetDataCaption()), new String(DataItem.GetDataContent()));	
+//                		}
+//                		HistoryList[i].SetMeasuredPointNo(NormalData.GetMeasuredPointNo());
+//                		HistoryList[i].SetMeasuredPointType(NormalData.GetMeasuredPointType());
+//                		HistoryList[i].SetTaskNo(0);
+//                		HistoryList[i].SetTaskDateTime(SJSJ);
+//                	}
+//                  }
+//                  if (ti != null) {
+//                    if (ti.TerminalProperty == 2 || ti.TerminalProperty == 01) { //只对于终端设备的任务号需要进行重新的匹配
+//                    	List adjustList = null;
+//                    	if (DataInfo.DataType == 20){
+//                        	adjustList = AdjustTaskNo(DataInfo.DataList);
+//                        	iCount = adjustList.size();
+//                            HistoryList = new SFE_HistoryData[iCount];
+//                            for (int i = 0; i < iCount; i++) {
+//                            	HistoryList[i] = new SFE_HistoryData(); //历史数据结构
+//                            	HistoryList[i] = (SFE_HistoryData) adjustList.get(i);
+//                            }
+//                        }                        
+//                    }
+//                  }
+//                  
+//                  //保存数据库
+//                  //DataProcessLog.WriteLog("3==保存数据");
+//                  String sZDLJDZ = GetMAddress(HistoryList[0].GetMeasuredPointNo(),new String(acd.TerminalLogicAdd));
+//                  DataAccess_His.SaveHistoryData(sZDLJDZ.toCharArray(), acd.TerminalProtocal,HistoryList,
+//                                             iCount);
+//                  CommunicationServerConstants.Trc1.TraceLog("22-3、SaveDataSuccess  ZDLJDZ:"+sZDLJDZ +" CLDXH:"+HistoryList[0].GetMeasuredPointNo());
+//                  //将对应的漏点进行更新
+//                  DataAccess_His.DeleteMissingPoint(acd.TerminalLogicAdd, HistoryList, iCount);
+//                  //DeleteTaskMissingInfo(s, HistoryList, iCount);
+//                }
+//              }
+//              catch (Exception ex1) {
+//            	  CommunicationServerConstants.Log1.WriteLog("Save data error:" + ex1.toString());
+//              }
         }
         catch (Exception ex2) {
         	CommunicationServerConstants.Trc1.TraceLog("91、JMS Object Recreated!");

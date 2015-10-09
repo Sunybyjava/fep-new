@@ -38,31 +38,9 @@ import com.chooshine.fep.FrameDataAreaExplain.SPE_TaskInfoList;
  * @author not attributable
  * @version 1.0
  */
-/*
- public class GLU_sAlarmDataItem{
- public char YCSJBH[];
- public char SJXBS[];
- public char SJZ[];
- public GLU_sAlarmDataItem() {
-
- }
- }
-
- public class GLU_sAlarmData{
- public char ZDLJDZ[];
- public int CLDXH;
- public int CLDXZ;
- public char YCBM[];
- public char YCFSSJ[];
- public GLU_sAlarmData() {
-
- }
-
- }*/
 
 public class Glu_DataAccess {
-	//��ݿ����
-	private int FDataBaseType = 10; //Ĭ��ΪOracle��ݿ�
+	private int FDataBaseType = 10; //10--Oracle,20--Sybase,30--mysql
 
 	private String FConnectURL = "";
 
@@ -70,32 +48,29 @@ public class Glu_DataAccess {
 
 	private String FPassWord = "";
 
-	private String FFileName = "./CommService.config";//"C:/hexing/CommService.config";
+	private String FFileName = "./CommService.config";
 
 	private String FTableName = "RW_RWSJB";
 
-	private int gFunctionType = 0; //Ӧ������
+	private int gFunctionType = 0;
 
-	//Oracle��ݿ����
 	private Connection conn;
 
 	private Statement stmt = null;
 
 	private ResultSet rs = null;
 
-	private PreparedStatement PpstmtOfHistory, PpstmtOfDeleteMissPoint,PHistoryTemp; //��ʷ��� FunctionType=10
+	private PreparedStatement PpstmtOfHistory, PpstmtOfDeleteMissPoint,PHistoryTemp;
 
-	private PreparedStatement PpstmtOfAlarmData, PpstmtOfAlarmDataList; //�쳣��� FunctionType=20
+	private PreparedStatement PpstmtOfAlarmData, PpstmtOfAlarmDataList;
 
-	private PreparedStatement PpstmtOfCommunicationUp,
-			PpstmtOfCommunicationDown; //ͨѶ��¼ FunctionType=30
+	private PreparedStatement PpstmtOfCommunicationUp,PpstmtOfCommunicationDown;
 
 	Log4Fep DataAccessLog = new Log4Fep("Glu_DataAccess");
 
 	Trc4Fep DataAccessTrc = new Trc4Fep("Glu_DataAccess");
 
 	public Glu_DataAccess(String path) {
-		//ȡ��ݿ�������Ϣ
 		Properties prop = new Properties();
 		InputStream filecon = null;
 		if (path!=null && !path.equals("") && path.substring(0,4).equals("smb:")){
@@ -107,11 +82,10 @@ public class Glu_DataAccess {
 						FFileName = "C:/hexing/CommService.config";
 						file = new SmbFile(FFileName);
 						if (!file.exists()) {
-							DataAccessLog.WriteLog("��ȡ��ݿ�������Ϣ����!"); // �Ǵ�����־�˳�
+							DataAccessLog.WriteLog("获取数据库配置信息出错!");
 						}
 					}
 				} catch (SmbException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
     		} catch (MalformedURLException e) {    
@@ -133,32 +107,28 @@ public class Glu_DataAccess {
 				FFileName = "C:/hexing/CommService.config";
 				file = new File(FFileName);
 				if (!file.exists()) {
-					DataAccessLog.WriteLog("��ȡ��ݿ�������Ϣ����!"); // �Ǵ�����־�˳�
+					DataAccessLog.WriteLog("获取数据库配置信息出错!");
 				}
 			}
 
 			try {
-				filecon = new FileInputStream(FFileName); //��ȡ�����ļ��е�����
+				filecon = new FileInputStream(FFileName);
 			} catch (FileNotFoundException ex) {
-				DataAccessLog.WriteLog("��ȡ��ݿ�������Ϣ����FileInputStream,��������:"
-						+ ex.toString()); //�Ǵ�����־�˳�
+				DataAccessLog.WriteLog("获取数据库配置信息出错FileInputStream,错误类型:"+ ex.toString());
 			}
 		}
 		
 		try {
 			prop.load(filecon);
 		} catch (IOException ex1) {
-			DataAccessLog.WriteLog("��ȡ��ݿ�������Ϣ����prop.load,��������:"
-					+ ex1.toString()); //�Ǵ�����־�˳�
+			DataAccessLog.WriteLog("获取数据库配置信息出错prop.load,错误类型:"+ ex1.toString());
 		}
 
-		FDataBaseType = Integer.parseInt((String) prop
-				.get("JDBC_CONNECTION_DBTYPE"));
+		FDataBaseType = Integer.parseInt((String) prop.get("JDBC_CONNECTION_DBTYPE"));
 		FConnectURL = (String) prop.get("JDBC_CONNECTION_URL");
 		FUserName = (String) prop.get("JDBC_CONNECTION_USERNAME");
 		FPassWord = (String) prop.get("JDBC_CONNECTION_PASSWORD");
-		FTableName = (String) prop
-				.getProperty("JDBC_TASKTABLENAME", "RW_RWSJB");
+		FTableName = (String) prop.getProperty("JDBC_TASKTABLENAME", "RW_RWSJB");
 		DataAccessTrc.TraceLog("Glu_DataAccess->FConnectURL:" + FConnectURL + " FUserName:"+FUserName+" FPassWord:"+FPassWord);
 		try {
 			jbInit();
@@ -167,111 +137,138 @@ public class Glu_DataAccess {
 		}
 	}
 	public Glu_DataAccess(URI ur) {
-		//ȡ��ݿ�������Ϣ
 		Properties prop = new Properties();
 		File file = new File(ur);
 		if (!file.exists()) {			
 			file = new File(FFileName);
 			if (!file.exists()) {
-				DataAccessLog.WriteLog("��ȡ��ݿ�������Ϣ����!"); // �Ǵ�����־�˳�
+				DataAccessLog.WriteLog("获取数据库配置信息出错!");
 			}
 		}
 
 		InputStream filecon = null;
 		try {
-			filecon = new FileInputStream(file); //��ȡ�����ļ��е�����			
+			filecon = new FileInputStream(file);			
 		} catch (FileNotFoundException ex) {
-			DataAccessLog.WriteLog("��ȡ��ݿ�������Ϣ����FileInputStream,��������:"
-					+ ex.toString()); //�Ǵ�����־�˳�
+			DataAccessLog.WriteLog("获取数据库配置信息出错FileInputStream,错误类型:"+ ex.toString());
 		}
 		try {
 			prop.load(filecon);
 		} catch (IOException ex1) {
-			DataAccessLog.WriteLog("��ȡ��ݿ�������Ϣ����prop.load,��������:"
-					+ ex1.toString()); //�Ǵ�����־�˳�
+			DataAccessLog.WriteLog("获取数据库配置信息出错prop.load,错误类型:"+ ex1.toString());
 		}
 
-		FDataBaseType = Integer.parseInt((String) prop
-				.get("JDBC_CONNECTION_DBTYPE"));
+		FDataBaseType = Integer.parseInt((String) prop.get("JDBC_CONNECTION_DBTYPE"));
 		FConnectURL = (String) prop.get("JDBC_CONNECTION_URL");
 		FUserName = (String) prop.get("JDBC_CONNECTION_USERNAME");
 		FPassWord = (String) prop.get("JDBC_CONNECTION_PASSWORD");
-		FTableName = (String) prop
-				.getProperty("JDBC_TASKTABLENAME", "RW_RWSJB");
-		DataAccessTrc.TraceLog("Glu_DataAccess->FConnectURL:" + FConnectURL + " FUserName:"+FUserName+" FPassWord:"+FPassWord);
+		FTableName = (String) prop.getProperty("JDBC_TASKTABLENAME", "RW_RWSJB");
+		DataAccessTrc.TraceLog("Glu_DataAccess->FConnectURL:" + FConnectURL + " FUserName:"+FUserName);
 		try {
 			jbInit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	//������ݿ�־�����
-	//FunctionType:
-	/*
-	 0:ֻ��������,������������
-	 10:��ʷ��ݱ���
-	 20:�쳣��ݱ���
-	 30:ͨѶ��¼����
-	 */
+	//建立数据库持久连接
+		//FunctionType:
+		/*
+		 0:只建立链接,不与具体操作绑定
+		 10:历史数据保存
+		 20:异常数据保存
+		 30:通讯记录保存
+		 */
 	public boolean LogIn(int FunctionType) {
 		gFunctionType = FunctionType;
-		//oracle ��ݿ�
-		if (FDataBaseType == 10) { //Oracle  ��ݿ�
-			//��ݿ�����
+		//oracle
+		if (FDataBaseType == 10) {
 			try {
 				Class.forName("oracle.jdbc.driver.OracleDriver");
 			} catch (ClassNotFoundException ex) {
-				DataAccessLog.WriteLog("������ݿ�Class.forName����,������Ϣ:"
-						+ ex.toString()); //��¼������Ϣ
-				System.out.println("������ݿ�Class.forName����,������Ϣ:" + ex.toString());
+				DataAccessLog.WriteLog("链接数据库Class.forName出错,错误信息:"	+ ex.toString());
+				System.out.println("链接数据库Class.forName出错,错误信息:" + ex.toString());
 				return false;
 			}
 			try {
 				conn = DriverManager.getConnection(FConnectURL, FUserName,
 						FPassWord);
 			} catch (SQLException ex1) {
-				DataAccessLog.WriteLog("������ݿ�LogIn����,������Ϣ:" + ex1.toString()
+				DataAccessLog.WriteLog("链接数据库LogIn出错,错误信息:" + ex1.toString()
 						+ "FConnectURL:" + FConnectURL + " FUserName:"
 						+ FUserName + " FPassWord:" + FPassWord);
-				System.out.println("������ݿ�LogIn����,������Ϣ:" + ex1.toString()
+				System.out.println("链接数据库LogIn出错,错误信息:" + ex1.toString()
 						+ "FConnectURL:" + FConnectURL + " FUserName:"
 						+ FUserName + " FPassWord:" + FPassWord);
 				return false;
 			}
 
-			//����Ӧ�õ�SQL�󶨲���
-			if (FunctionType == 10) { //��ʷ��ݱ���
+			if (FunctionType == 10) {
 				return LogInOfHistoryDataStor();
-			} else if (FunctionType == 20) { //�쳣��ݱ���
+			} else if (FunctionType == 20) {
 				return LogInOfAlarmDataStor();
-			} else if (FunctionType == 30) { //ͨѶ��¼����
+			} else if (FunctionType == 30) {
 				return LogInOfCommunicationDataStore();
 			} else {
-				return true; //û�а󶨲���ֻ������ݿ�
+				return true;
 			}
 		}
 
-		else if (FDataBaseType == 20) { //Sybase ��ݿ�
+		else if (FDataBaseType == 20) {
 			return false;
+		}
+		else if (FDataBaseType == 30) {//Mysql
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException ex) {
+				DataAccessLog.WriteLog("链接数据库Class.forName出错,错误信息:"	+ ex.toString());
+				System.out.println("链接数据库Class.forName出错,错误信息:" + ex.toString());
+				return false;
+			}
+			try {
+				conn = DriverManager.getConnection(FConnectURL, FUserName,
+						FPassWord);
+			} catch (SQLException ex1) {
+				System.out.println("链接数据库LogIn出错,错误信息:" + ex1.toString()
+				+ "FConnectURL:" + FConnectURL + " FUserName:"
+				+ FUserName + " FPassWord:" + FPassWord);
+				return false;
+			}
+			if (FunctionType == 30) {
+				return LogInOfCommunicationDataStore();
+			} else {
+				return true;
+			}
 		}
 		return false;
 	}
 
 	private boolean LogInOfCommunicationDataStore() {
-		if (FDataBaseType == 10) { //Oracle  ��ݿ�
+		if (FDataBaseType == 10) { //Oracle
 			try {
-				conn.setAutoCommit(false); //���������ύ
+				conn.setAutoCommit(false);
 				String strSQL = "insert into run_sxtxjl(LYDZ,MBDZ,TXFS,TXSJ,TXNR,ZDLJDZ) values(?,?,?,sysdate,?,?)";
 				PpstmtOfCommunicationUp = conn.prepareStatement(strSQL);
 				strSQL = "insert into run_xxtxjl(LYDZ,MBDZ,TXFS,TXSJ,TXNR,ZDLJDZ) values(?,?,?,sysdate,?,?)";
 				PpstmtOfCommunicationDown = conn.prepareStatement(strSQL);
 				return true;
 			} catch (SQLException ex2) {
-				DataAccessLog.WriteLog("ͨѶ��¼�����SQL����,������Ϣ:" + ex2.toString());
+				DataAccessLog.WriteLog("通讯记录保存绑定SQL出错,错误信息:" + ex2.toString());
 				return false;
 			}
-		} else if (FDataBaseType == 20) { //Sybase  ��ݿ�
+		} else if (FDataBaseType == 20) { //Sybase
 			return false;
+		} else if (FDataBaseType == 30) {//Mysql
+			try {
+				conn.setAutoCommit(false);
+				String strSQL = "insert into run_sxtxjl(LYDZ,MBDZ,TXFS,TXSJ,TXNR,ZDLJDZ) values(?,?,?,NOW(),?,?)";
+				PpstmtOfCommunicationUp = conn.prepareStatement(strSQL);
+				strSQL = "insert into run_xxtxjl(LYDZ,MBDZ,TXFS,TXSJ,TXNR,ZDLJDZ) values(?,?,?,NOW(),?,?)";
+				PpstmtOfCommunicationDown = conn.prepareStatement(strSQL);
+				return true;
+			} catch (SQLException ex2) {
+				DataAccessLog.WriteLog("通讯记录保存绑定SQL出错,错误信息:" + ex2.toString());
+				return false;
+			}
 		}
 		return false;
 
@@ -318,15 +315,16 @@ public class Glu_DataAccess {
 			}
 		} else if (FDataBaseType == 20) { //Sybase  ��ݿ�
 			return false;
+		} else if (FDataBaseType == 30) {//Mysql
+			return false;
 		}
 		return false;
 	}
 
-	//�Ͽ���ݿ�����
 	public boolean LogOut(int FunctionType) {
-		//Oracle  ��ݿ�
+		//Oracle
 		if (FDataBaseType == 10) {
-			if (FunctionType == 10) { //��ʷ��ݱ���
+			if (FunctionType == 10) {
 				try {
 					PpstmtOfHistory.close();
 					PHistoryTemp.close();
@@ -352,14 +350,12 @@ public class Glu_DataAccess {
 			}
 		}
 
-		//Sybase ��ݿ�
 		else if (FDataBaseType == 20) {
 			return false;
 		}
 		return false;
 	}
 
-	//�ύ�������ʷ�����
 	private boolean Commit() {
 		try {
 			conn.commit();
@@ -372,10 +368,8 @@ public class Glu_DataAccess {
 
 	}
 
-	//��ݿ�Ͽ�����
 
 	private boolean ReConnect() {
-		//�Ժ�˺������������չ,����ݿ�Ͽ��󲢲�ÿ�ζ�����,���Կ���������Ƶ��,�Լ��ٿ���
 		try {
 			return LogIn(gFunctionType);
 		} catch (Exception ex) {
@@ -385,7 +379,6 @@ public class Glu_DataAccess {
 
 	}
 
-	//ɾ������©����Ϣ
 	public boolean DeleteMissingPoint(char ZDLJDZ[],
 			SFE_HistoryData HistoryList[], int HistoryCount) {
 		try {
@@ -412,7 +405,6 @@ public class Glu_DataAccess {
 		}
 	}
 
-	//��ʷ��ݱ���
 	public boolean SaveHistoryData(char ZDLJDZ[], int GYH,
 			SFE_HistoryData HiltoryList[], int HistoryCount) {
 		try {
@@ -458,18 +450,13 @@ public class Glu_DataAccess {
 				if (!HiltoryList[i].DataItemList.isEmpty()) {
 					SFE_DataItem DataItem; //= new SFE_DataItem();
 					for (int j = 0; j < HiltoryList[i].DataItemList.size(); j++) {
-						DataItem = (SFE_DataItem) HiltoryList[i].DataItemList
-								.get(j);
-						String SJXBS = new String(DataItem.GetDataCaption())
-								.trim(); //��������
-						String SJXNR = new String(DataItem.GetDataContent())
-								.trim(); //���������
+						DataItem = (SFE_DataItem) HiltoryList[i].DataItemList.get(j);
+						String SJXBS = new String(DataItem.GetDataCaption()).trim(); //��������
+						String SJXNR = new String(DataItem.GetDataContent()).trim(); //���������
 						if (FDataBaseType == 10) { //Oracle  ��ݿ�
-							StorHistoryDataByOracle(LSSJH, sZDLJDZ, CLDLX,
-									CLDXH, LSSJSJ, SJXBS, SJXNR);
+							StorHistoryDataByOracle(LSSJH, sZDLJDZ, CLDLX,CLDXH, LSSJSJ, SJXBS, SJXNR);
 						} else if (FDataBaseType == 20) { //Sybase  ��ݿ�
-							StorHistoryDataBySybase(LSSJH, sZDLJDZ, CLDLX,
-									CLDXH, LSSJSJ, SJXBS, SJXNR);
+							StorHistoryDataBySybase(LSSJH, sZDLJDZ, CLDLX,CLDXH, LSSJSJ, SJXBS, SJXNR);
 						}
 					}
 				}
@@ -482,7 +469,6 @@ public class Glu_DataAccess {
 		}
 	}
 
-	//��������ͨѶ��¼
 	public boolean SaveUpFlowRecordToDB(ArrayList CommRecordList) {
 		if (FDataBaseType == 10) { //Oracle  ��ݿ�
 			try {
@@ -757,7 +743,6 @@ public class Glu_DataAccess {
 				try {
 					rset.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -765,7 +750,6 @@ public class Glu_DataAccess {
 				try {
 					stmttemp.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
