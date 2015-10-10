@@ -47,7 +47,7 @@ public class DailyCustomTaskDemand extends Thread {
 
         //调整每个任务的执行时间到程序启动时间以后
         try {
-            ZDCount = applicationFunction.gTaskTerminalList.size();
+            ZDCount = applicationFunction.gTerminalList.size();
         } catch (Exception ex) {
         }
         if (ZDCount == 0) {
@@ -60,7 +60,7 @@ public class DailyCustomTaskDemand extends Thread {
                 dataAccess.LogOut(0);
             }
             try {
-                ZDCount = applicationFunction.gTaskTerminalList.size();
+                ZDCount = applicationFunction.gTerminalList.size();
             } catch (Exception ex) {
             }
         }
@@ -72,7 +72,7 @@ public class DailyCustomTaskDemand extends Thread {
         try {
             for (int j = 0; j < ZDCount; j++) {
                 try {
-                    TerminalTaskInfo tti = (TerminalTaskInfo) applicationFunction.gTaskTerminalList.get(j);
+                    TerminalTaskInfo tti = (TerminalTaskInfo) applicationFunction.gTerminalList.get(j);
                     TerminalTaskInfo terInfo = new TerminalTaskInfo();
                     terInfo = (TerminalTaskInfo) tti;
                     terInfo.ZDLJDZ = terInfo.ZDLJDZ + "10";
@@ -146,23 +146,23 @@ public class DailyCustomTaskDemand extends Thread {
     public void run() {
     	//ReadBalance();
         TaskDemand();
-        for (int i = 1; i < CommonClass.REDOTIMES; i++) {
-            try {
-                Thread.sleep(CommonClass.REDO_INTERVAL * 60000); //轮召后等待配置分钟后重新召
-            } catch (InterruptedException ex) {
-            }
-            dataAccess.LogIn(0);
-            try {
-                GetTaskInfo gti = new GetTaskInfo(dataAccess);
-                gti.GetTaskInforList();
-            } finally {
-                dataAccess.close();
-                dataAccess.LogOut(0);
-            }
-            utils.PrintDebugMessage(
-                    "Start Today NextTime DailyTaskDemand.........", "D");
-            TaskDemand();
-        }
+//        for (int i = 1; i < CommonClass.REDOTIMES; i++) {
+//            try {
+//                Thread.sleep(CommonClass.REDO_INTERVAL * 60000); //轮召后等待配置分钟后重新召
+//            } catch (InterruptedException ex) {
+//            }
+//            dataAccess.LogIn(0);
+//            try {
+//                GetTaskInfo gti = new GetTaskInfo(dataAccess);
+//                gti.GetTaskInforList();
+//            } finally {
+//                dataAccess.close();
+//                dataAccess.LogOut(0);
+//            }
+//            utils.PrintDebugMessage(
+//                    "Start Today NextTime DailyTaskDemand.........", "D");
+//            TaskDemand();
+//        }
         utils.PrintDebugMessage("Finish Today DailyTaskDemand.", "D");
     }
 

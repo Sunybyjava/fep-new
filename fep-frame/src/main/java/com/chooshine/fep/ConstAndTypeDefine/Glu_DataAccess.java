@@ -293,16 +293,16 @@ public class Glu_DataAccess {
 				DataAccessLog.WriteLog("��ʷ��ݱ����SQL����,������Ϣ:" + ex2.toString());
 				return false;
 			}
-		} else if (FDataBaseType == 20) { //Sybase  ��ݿ�
+		} else if (FDataBaseType == 20) { //Sybase
 			return false;
 		}
 		return false;
 	}
 
 	private boolean LogInOfAlarmDataStor() {
-		if (FDataBaseType == 10) { //Oracle  ��ݿ�
+		if (FDataBaseType == 10) { //Oracle
 			try {
-				conn.setAutoCommit(false); //���������ύ
+				conn.setAutoCommit(false);
 				String strSQL = "insert into YCCL_YCSJ (YCSJBH,ZDLJDZ,CLDXH,CLDXZ,YCBM,YCFSSJ,YCJSSJ,ZT,DWDM)"
 						+ " values(?,?,?,?,?,to_date(?,'yyyymmddhh24miss'),to_date(?,'yyyymmddhh24miss'),?,?)";
 				PpstmtOfAlarmData = conn.prepareStatement(strSQL);
@@ -313,7 +313,7 @@ public class Glu_DataAccess {
 				DataAccessLog.WriteLog("�쳣��ݱ����SQL����,������Ϣ:" + ex3.toString());
 				return false;
 			}
-		} else if (FDataBaseType == 20) { //Sybase  ��ݿ�
+		} else if (FDataBaseType == 20) { //Sybase
 			return false;
 		} else if (FDataBaseType == 30) {//Mysql
 			return false;
@@ -361,7 +361,7 @@ public class Glu_DataAccess {
 			conn.commit();
 			return true;
 		} catch (SQLException ex) {
-			DataAccessLog.WriteLog("Commit����:" + ex.toString());
+			DataAccessLog.WriteLog("Commit Failed,E:" + ex.toString());
 			ReConnect();
 			return false;
 		}
@@ -373,7 +373,7 @@ public class Glu_DataAccess {
 		try {
 			return LogIn(gFunctionType);
 		} catch (Exception ex) {
-			DataAccessLog.WriteLog("ReConnect����:" + ex.toString());
+			DataAccessLog.WriteLog("ReConnect Failed,E:" + ex.toString());
 			return false;
 		}
 
@@ -400,7 +400,7 @@ public class Glu_DataAccess {
 			}
 			return Commit();
 		} catch (Exception ex) {
-			DataAccessLog.WriteLog("SaveHistoryData����:" + ex.toString());
+			DataAccessLog.WriteLog("SaveHistoryData Failed,E:" + ex.toString());
 			return false;
 		}
 	}
@@ -451,11 +451,11 @@ public class Glu_DataAccess {
 					SFE_DataItem DataItem; //= new SFE_DataItem();
 					for (int j = 0; j < HiltoryList[i].DataItemList.size(); j++) {
 						DataItem = (SFE_DataItem) HiltoryList[i].DataItemList.get(j);
-						String SJXBS = new String(DataItem.GetDataCaption()).trim(); //��������
-						String SJXNR = new String(DataItem.GetDataContent()).trim(); //���������
-						if (FDataBaseType == 10) { //Oracle  ��ݿ�
+						String SJXBS = new String(DataItem.GetDataCaption()).trim();
+						String SJXNR = new String(DataItem.GetDataContent()).trim();
+						if (FDataBaseType == 10) { //Oracle
 							StorHistoryDataByOracle(LSSJH, sZDLJDZ, CLDLX,CLDXH, LSSJSJ, SJXBS, SJXNR);
-						} else if (FDataBaseType == 20) { //Sybase  ��ݿ�
+						} else if (FDataBaseType == 20) { //Sybase
 							StorHistoryDataBySybase(LSSJH, sZDLJDZ, CLDLX,CLDXH, LSSJSJ, SJXBS, SJXNR);
 						}
 					}
@@ -1137,7 +1137,7 @@ public class Glu_DataAccess {
 			//      PpstmtOfHistory.setString(7, JSSJ);
 			PHistoryTemp.setInt(7, 10);
 			PHistoryTemp.setString(8, ZDLJDZ);
-			PHistoryTemp.executeUpdate(); //�ύ			
+			PHistoryTemp.executeUpdate();
 		} catch (SQLException ex) {
 			DataAccessLog
 					.WriteLog("StorHistoryDataByOracle����:" + ex.toString());

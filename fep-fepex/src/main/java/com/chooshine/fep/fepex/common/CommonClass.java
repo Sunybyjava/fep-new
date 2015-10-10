@@ -52,7 +52,7 @@ public class CommonClass {
             REDOTIMES = Integer.parseInt(prop.getProperty("REDOTIMES", "2")); //轮召次数
             STARTTIME = prop.getProperty("STARTTIME", "00:15:00"); //轮召开始时刻
             REDO_INTERVAL = Integer.parseInt(prop.getProperty("REDO_INTERVAL",
-                    "15")); //轮召间隔小时数
+                    "1")); //轮召间隔分钟
             FRAME_INTERVAL = Integer.parseInt(prop.getProperty("READ_INTERVAL",
                     "15")); //两条命令之间的间隔秒数
         } catch (Exception e) {

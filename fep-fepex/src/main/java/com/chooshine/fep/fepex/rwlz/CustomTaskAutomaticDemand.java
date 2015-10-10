@@ -20,6 +20,7 @@ public class CustomTaskAutomaticDemand extends Thread {
                                         CommonClass.JDBC_CONNECTIONURL,
                                         CommonClass.JDBC_USERNAME,
                                         CommonClass.JDBC_PASSWORD);
+            dataAccess.LogIn(0);
         } catch (Exception ex) {
         }
     }
@@ -31,6 +32,7 @@ public class CustomTaskAutomaticDemand extends Thread {
                                         CommonClass.JDBC_CONNECTIONURL,
                                         CommonClass.JDBC_USERNAME,
                                         CommonClass.JDBC_PASSWORD);
+            dataAccess.LogIn(0);
             //applicationFunction.gAmmeterInfoList = GetAmmeterInfoList();
         } catch (Exception ex) {
         }
@@ -49,16 +51,14 @@ public class CustomTaskAutomaticDemand extends Thread {
             formatter = new SimpleDateFormat("yyyy-MM-dd");
             StartNow = "startnow";
             if (!StartNow.toLowerCase().equals("startnow")) {
-                RedoTime.add(Calendar.DATE, 1);
+                RedoTime.add(Calendar.MINUTE, CommonClass.REDO_INTERVAL);
             }
-            String sDate = formatter.format(RedoTime.getTime()) + " " +
-            				CommonClass.STARTTIME;
+            String sDate = formatter.format(RedoTime.getTime()) + " " +CommonClass.STARTTIME;
             formatter1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             try {
                 java.util.Date d = formatter1.parse(sDate);
                 RedoTime.setTime(d);
-                utils.PrintDebugMessage("轮召开始时间为：" + sDate,
-                "D");
+                utils.PrintDebugMessage("轮召开始时间为：" + sDate,"D");
             } catch (Exception ex) {
             }
         } catch (Exception ex2) {
@@ -72,18 +72,17 @@ public class CustomTaskAutomaticDemand extends Thread {
                 gti.GetTaskInforList();
                 DailyCustomTaskDemand dt = new DailyCustomTaskDemand();
                 dt.start();
-                utils.PrintDebugMessage("Start Today DailyTaskDemand.........",
-                                        "D");
+                utils.PrintDebugMessage("Start Today DailyTaskDemand.........","D");
                 formatter = new SimpleDateFormat("yyyy-MM-dd");
-                RedoTime.add(Calendar.DATE, 1);
-                String sDate = formatter.format(RedoTime.getTime()) + " " +
-                               CommonClass.STARTTIME;
-                formatter1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                try {
-                    java.util.Date d = formatter1.parse(sDate);
-                    RedoTime.setTime(d);
-                } catch (Exception ex) {
-                }
+                RedoTime = Calendar.getInstance();
+                RedoTime.add(Calendar.MINUTE, CommonClass.REDO_INTERVAL);
+//                String sDate = formatter.format(RedoTime.getTime()) + " " +CommonClass.STARTTIME;
+//                formatter1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//                try {
+//                    java.util.Date d = formatter1.parse(sDate);
+//                    RedoTime.setTime(d);
+//                } catch (Exception ex) {
+//                }
             }
             try {
                 Thread.sleep(1);

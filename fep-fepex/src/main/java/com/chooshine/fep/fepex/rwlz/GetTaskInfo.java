@@ -54,8 +54,8 @@ public class GetTaskInfo {
                 		TaskInfoList.CLDXH = new LinkedList<Integer>();
                 		sOld = rset.getString("ZDLJDZ").trim();
                 		TaskInfoList.CLDXH.add(rset.getInt("CLDXH"));
-                	}
-                	TaskInfoList.CLDXH.add(rset.getInt("CLDXH"));
+                	}else
+                		TaskInfoList.CLDXH.add(rset.getInt("CLDXH"));
                 }catch (Exception ex2) {
                 }
             }

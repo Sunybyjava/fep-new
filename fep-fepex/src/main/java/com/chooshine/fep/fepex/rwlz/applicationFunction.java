@@ -82,7 +82,7 @@ public class applicationFunction {
     	char[] DataArea = null; //数据区
     	SFE_ParamItem[] DataItem = new SFE_ParamItem[1];
     	DataItem[0] = new SFE_ParamItem();
-    	DataItem[0].SetParamCaption("C01900");
+    	DataItem[0].SetParamCaption("C03500");
     	SFE_QGSer_TimeLabel TimeLabel = null;
     	List<DataContentStruct> DataContentInfo = new LinkedList<DataContentStruct>(); //数据区内容列表
     	List<TerminalInfoStruct> terminalInfoStructList = new LinkedList<TerminalInfoStruct>(); //调用前置机接口用的终端信息列表
