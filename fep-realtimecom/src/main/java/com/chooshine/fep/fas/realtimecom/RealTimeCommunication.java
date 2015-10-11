@@ -11,9 +11,9 @@ import com.chooshine.fep.ConstAndTypeDefine.FileLogger;
 import com.chooshine.fep.communicate.utils;
 
 /**
- * <p>Title: ÊµÊ±Í¨Ñ¶Ä£¿é</p>
+ * <p>Title: å®æ—¶é€šè®¯æ¨¡å—</p>
  *
- * <p>Description: Ìá¹©½Ó¿ÚÓÉÊı¾İ²É¼¯Ä£¿éµ÷ÓÃ£¬¸ºÔğºÍÍ¨Ñ¶·şÎñµÄÍ¨Ñ¶£¬½øĞĞÊı¾İµÄÊÕ·¢¹¤×÷</p>
+ * <p>Description: æä¾›æ¥å£ç”±æ•°æ®é‡‡é›†æ¨¡å—è°ƒç”¨ï¼Œè´Ÿè´£å’Œé€šè®¯æœåŠ¡çš„é€šè®¯ï¼Œè¿›è¡Œæ•°æ®çš„æ”¶å‘å·¥ä½œ</p>
  *
  * <p>Copyright: </p>
  *
@@ -25,17 +25,17 @@ import com.chooshine.fep.communicate.utils;
 public class RealTimeCommunication {
   private Selector selector;
   private SocketChannel client;
-  private List <RealTimeCommunicationInfo>RealTimeList; //ÏÂ·¢ºÍÉÏËÍÊı¾İµÄ¶ÔÓ¦¹ØÏµ
-  private List <SendInfo>SendInfoList; //±£´æÏÂ·¢ÄÚÈİµÄ¶ÓÁĞ
+  private List <RealTimeCommunicationInfo>RealTimeList; //ä¸‹å‘å’Œä¸Šé€æ•°æ®çš„å¯¹åº”å…³ç³»
+  private List <SendInfo>SendInfoList; //ä¿å­˜ä¸‹å‘å†…å®¹çš„é˜Ÿåˆ—
 
-  private String HostName = ""; //Á¬½ÓµÄÍ¨Ñ¶·şÎñµÄIP
-  private int Port = 0; //Á¬½ÓÍ¨Ñ¶·şÎñµÄ¶Ë¿Ú
-  private byte[] data = null; //·¢ËÍÄÚÈİµÄbyteÊı×é
-  private int ReConnectTimes = 0; //ÖØÁ¬´ÎÊı
-  private int Sequence = 1; //Á÷Ë®ºÅ
-  private boolean FormData = false; //Òª·¢ËÍµÄÄÚÈİÊÇ·ñ×é³ÉÍê³ÉµÄ±êÖ¾
-  private boolean AckBack = true; //È·ÈÏĞÅºÅÊÇ·ñ·µ»ØµÄ±êÖ¾
-  public boolean ConnectFlag = false; //Á¬½ÓÇ°ÖÃ»úÊÇ·ñ³É¹¦µÄ±êÖ¾£¬¾ö¶¨ÊÇ·ñĞèÒªÉÏ²ãÖØĞÂ´´½¨ĞÂ¶ÔÏó
+  private String HostName = ""; //è¿æ¥çš„é€šè®¯æœåŠ¡çš„IP
+  private int Port = 0; //è¿æ¥é€šè®¯æœåŠ¡çš„ç«¯å£
+  private byte[] data = null; //å‘é€å†…å®¹çš„byteæ•°ç»„
+  private int ReConnectTimes = 0; //é‡è¿æ¬¡æ•°
+  private int Sequence = 1; //æµæ°´å·
+  private boolean FormData = false; //è¦å‘é€çš„å†…å®¹æ˜¯å¦ç»„æˆå®Œæˆçš„æ ‡å¿—
+  private boolean AckBack = true; //ç¡®è®¤ä¿¡å·æ˜¯å¦è¿”å›çš„æ ‡å¿—
+  public boolean ConnectFlag = false; //è¿æ¥å‰ç½®æœºæ˜¯å¦æˆåŠŸçš„æ ‡å¿—ï¼Œå†³å®šæ˜¯å¦éœ€è¦ä¸Šå±‚é‡æ–°åˆ›å»ºæ–°å¯¹è±¡
   private boolean FStop = false;
   private FileLogger fl = null;
   private MonitorThread mh = null;
@@ -56,7 +56,7 @@ public class RealTimeCommunication {
     }
   }
 
-  public RealTimeCommunication(String hostName, int port) { //ÖØ¹¹¹¹Ôìº¯Êı£¬´«ÈëIpºÍ¶Ë¿Ú
+  public RealTimeCommunication(String hostName, int port) { //é‡æ„æ„é€ å‡½æ•°ï¼Œä¼ å…¥Ipå’Œç«¯å£
     fl = new FileLogger("RealTimeCommunication");
     ReConnectTimes = 1;
     HostName = hostName;
@@ -65,7 +65,7 @@ public class RealTimeCommunication {
   }
 
   public void Connect() {
-    if (ConnectFlag) { //Èç¹ûµ±Ç°Á¬½Ó»¹´æÔÚĞèÒªÏÈ¶Ï¿ªºó£¬ÔÙÖØĞÂÁ¬½ÓµÇÂ¼
+    if (ConnectFlag) { //å¦‚æœå½“å‰è¿æ¥è¿˜å­˜åœ¨éœ€è¦å…ˆæ–­å¼€åï¼Œå†é‡æ–°è¿æ¥ç™»å½•
       try {
         DisConnect();
       }
@@ -74,13 +74,13 @@ public class RealTimeCommunication {
     }
     FStop = false;
     ConnectFlag = true;
-    InitSocket(); //³õÊ¼»¯socketÁ¬½Ó
-    RealTimeList = Collections.synchronizedList(new LinkedList<RealTimeCommunicationInfo>()); //´´½¨¶ÔÓ¦¶ÓÁĞ
-    SendInfoList = Collections.synchronizedList(new LinkedList<SendInfo>()); //´´½¨¶ÔÓ¦¶ÓÁĞ
-    mh = new MonitorThread(); //´´½¨¼àÌıÏß³Ì
-    mh.start(); //Æô¶¯Ïß³Ì
-    rh = new RealTimeCommunicationInfoListThread(); //´´½¨ÊµÊ±Êı¾İ¶ÓÁĞµÄÎ¬»¤Ïß³Ì
-    rh.start(); //Æô¶¯Ïß³Ì
+    InitSocket(); //åˆå§‹åŒ–socketè¿æ¥
+    RealTimeList = Collections.synchronizedList(new LinkedList<RealTimeCommunicationInfo>()); //åˆ›å»ºå¯¹åº”é˜Ÿåˆ—
+    SendInfoList = Collections.synchronizedList(new LinkedList<SendInfo>()); //åˆ›å»ºå¯¹åº”é˜Ÿåˆ—
+    mh = new MonitorThread(); //åˆ›å»ºç›‘å¬çº¿ç¨‹
+    mh.start(); //å¯åŠ¨çº¿ç¨‹
+    rh = new RealTimeCommunicationInfoListThread(); //åˆ›å»ºå®æ—¶æ•°æ®é˜Ÿåˆ—çš„ç»´æŠ¤çº¿ç¨‹
+    rh.start(); //å¯åŠ¨çº¿ç¨‹
     while (!ConnectFlag) {
       try {
         Thread.sleep(1);
@@ -101,8 +101,8 @@ public class RealTimeCommunication {
     catch (Exception ex1) {
     }
     BuildDisConnectAndSend();
-    RealTimeList = Collections.synchronizedList(new LinkedList<RealTimeCommunicationInfo>()); //´´½¨¶ÔÓ¦¶ÓÁĞ
-    SendInfoList = Collections.synchronizedList(new LinkedList<SendInfo>()); //´´½¨¶ÔÓ¦¶ÓÁĞ
+    RealTimeList = Collections.synchronizedList(new LinkedList<RealTimeCommunicationInfo>()); //åˆ›å»ºå¯¹åº”é˜Ÿåˆ—
+    SendInfoList = Collections.synchronizedList(new LinkedList<SendInfo>()); //åˆ›å»ºå¯¹åº”é˜Ÿåˆ—
     FStop = true;
     ConnectFlag = false;
     try {
@@ -116,10 +116,10 @@ public class RealTimeCommunication {
     try {
       selector = Selector.open();
       client = SocketChannel.open();
-      InetSocketAddress isa = new InetSocketAddress(HostName, Port); //socketÁ¬½ÓµÄ²ÎÊı³õÊ¼»¯
-      client.configureBlocking(false); //ÅäÖÃsocketÊÇ·ñ²ÉÓÃ×èÈûÍ¨Ñ¶
-      client.connect(isa); //·¢³öÇëÇóÁ¬½Ó
-      client.register(selector, SelectionKey.OP_CONNECT); //±íÃ÷ÏÖÔÚ´¦ÓÚÁ¬½ÓÇëÇóÊ±¼ä
+      InetSocketAddress isa = new InetSocketAddress(HostName, Port); //socketè¿æ¥çš„å‚æ•°åˆå§‹åŒ–
+      client.configureBlocking(false); //é…ç½®socketæ˜¯å¦é‡‡ç”¨é˜»å¡é€šè®¯
+      client.connect(isa); //å‘å‡ºè¯·æ±‚è¿æ¥
+      client.register(selector, SelectionKey.OP_CONNECT); //è¡¨æ˜ç°åœ¨å¤„äºè¿æ¥è¯·æ±‚æ—¶é—´
     }
     catch (Exception ex) {
     }
@@ -136,7 +136,7 @@ public class RealTimeCommunication {
         rtci.BackFlag = false;
         rtci.GYH = GYH;
         rtci.AddInTime = Calendar.getInstance();
-        RealTimeList.add(rtci); //ĞÂÔöÄÚÈİÖ»ĞèÒª±£´æÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·À´±È¶Ô
+        RealTimeList.add(rtci); //æ–°å¢å†…å®¹åªéœ€è¦ä¿å­˜åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€æ¥æ¯”å¯¹
         break;
       }
       case 20: {
@@ -147,7 +147,7 @@ public class RealTimeCommunication {
           rtci.BackFlag = false;
           rtci.GYH = GYH;
           rtci.AddInTime = Calendar.getInstance();
-          RealTimeList.add(rtci); //ĞÂÔöÄÚÈİÖ»ĞèÒª±£´æÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·À´±È¶Ô
+          RealTimeList.add(rtci); //æ–°å¢å†…å®¹åªéœ€è¦ä¿å­˜åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€æ¥æ¯”å¯¹
         }
         break;
       }
@@ -159,7 +159,7 @@ public class RealTimeCommunication {
           rtci.BackFlag = false;
           rtci.GYH = GYH;
           rtci.AddInTime = Calendar.getInstance();
-          RealTimeList.add(rtci); //ĞÂÔöÄÚÈİÖ»ĞèÒª±£´æÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·À´±È¶Ô
+          RealTimeList.add(rtci); //æ–°å¢å†…å®¹åªéœ€è¦ä¿å­˜åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€æ¥æ¯”å¯¹
         }
         break;
       }
@@ -168,22 +168,22 @@ public class RealTimeCommunication {
 
   private void BuildConnectAndSend(SelectionKey key) {
     ByteBuffer bBuffer = ByteBuffer.allocate(5000);
-    FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
     data = null;
     byte[] MsgLength = new byte[4];
     data = new byte[12];
     MsgLength = utils.int2byte(12);
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢×Ü³¤¶È
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯æ€»é•¿åº¦
     data[0] = MsgLength[0];
     data[1] = MsgLength[1];
     data[2] = MsgLength[2];
     data[3] = MsgLength[3];
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ÀàĞÍ´úÂë
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯ç±»å‹ä»£ç 
     data[4] = 0;
     data[5] = 0;
     data[6] = 0;
     data[7] = 13;
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ĞòºÅ
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯åºå·
     byte[] MsgSequence = new byte[4];
     MsgSequence = utils.int2byte(Sequence);
     data[8] = MsgSequence[0];
@@ -192,40 +192,40 @@ public class RealTimeCommunication {
     data[11] = MsgSequence[3];
     FormData = true;
     Sequence = Sequence + 1;
-    if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-      SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+    if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+      SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
       bBuffer.clear();
       bBuffer.put(data);
       bBuffer.flip();
       try {
-        keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
       }
       catch (IOException ex) {
       }
       bBuffer.clear();
-      //data = null; //Çå¿ÕÒª·¢ËÍµÄÊı¾İ£¬±£Ö¤ÕæÕıÒª·¢ËÍµÄÊı¾İ²»»á¶ªÊ§
+      //data = null; //æ¸…ç©ºè¦å‘é€çš„æ•°æ®ï¼Œä¿è¯çœŸæ­£è¦å‘é€çš„æ•°æ®ä¸ä¼šä¸¢å¤±
     }
     return;
   }
 
   private void BuildDisConnectAndSend() {
-    FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
     ByteBuffer bBuffer = ByteBuffer.allocate(5000);
     data = null;
     byte[] MsgLength = new byte[4];
     data = new byte[12];
     MsgLength = utils.int2byte(12);
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢×Ü³¤¶È
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯æ€»é•¿åº¦
     data[0] = MsgLength[0];
     data[1] = MsgLength[1];
     data[2] = MsgLength[2];
     data[3] = MsgLength[3];
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ÀàĞÍ´úÂë
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯ç±»å‹ä»£ç 
     data[4] = 0;
     data[5] = 0;
     data[6] = 0;
     data[7] = 14;
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ĞòºÅ
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯åºå·
     byte[] MsgSequence = new byte[4];
     MsgSequence = utils.int2byte(Sequence);
     data[8] = MsgSequence[0];
@@ -234,12 +234,12 @@ public class RealTimeCommunication {
     data[11] = MsgSequence[3];
     FormData = true;
     Sequence = Sequence + 1;
-    if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
+    if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
       bBuffer.clear();
       bBuffer.put(data);
       bBuffer.flip();
       try {
-        client.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        client.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
       }
       catch (Exception ex) {
       }
@@ -249,17 +249,17 @@ public class RealTimeCommunication {
         selector.close();
         FStop = true;
         ConnectFlag = false;
-        //utils.PrintDebugMessage("ÊµÊ±Í¨Ñ¶Ö÷¶¯¶Ï¿ªºÍÍ¨Ñ¶·şÎñµÄÁ¬½Ó", "D");
+        //utils.PrintDebugMessage("å®æ—¶é€šè®¯ä¸»åŠ¨æ–­å¼€å’Œé€šè®¯æœåŠ¡çš„è¿æ¥", "D");
       }
       catch (Exception ex1) {
       }
       bBuffer.clear();
-      //data = null; //Çå¿ÕÒª·¢ËÍµÄÊı¾İ£¬±£Ö¤ÕæÕıÒª·¢ËÍµÄÊı¾İ²»»á¶ªÊ§
+      //data = null; //æ¸…ç©ºè¦å‘é€çš„æ•°æ®ï¼Œä¿è¯çœŸæ­£è¦å‘é€çš„æ•°æ®ä¸ä¼šä¸¢å¤±
     }
     return;
   }
 
-//¸ù¾İ´«ÈëµÄÄÚÈİ×é³ÉÒª·¢ËÍµÄÄÚÈİ·¢ËÍµ½Í¨Ñ¶·şÎñ
+//æ ¹æ®ä¼ å…¥çš„å†…å®¹ç»„æˆè¦å‘é€çš„å†…å®¹å‘é€åˆ°é€šè®¯æœåŠ¡
   private void BuildSendFrameAndSend(int AppID, char[] TerminalAddr, int GYH,
                                      int TXFS, int RWH, int RWDS, int YCDS,
                                      char[] GNM, int SJQCD, char[] SJQNR,
@@ -267,8 +267,8 @@ public class RealTimeCommunication {
                                      boolean SelfDefined, int Priority,
                                      int ArithmeticNo) throws Exception {
     ByteBuffer bBuffer = ByteBuffer.allocate(5000);
-    if (SMS) { //·¢ËÍ¶ÌĞÅ´¦Àí
-      FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    if (SMS) { //å‘é€çŸ­ä¿¡å¤„ç†
+      FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
       data = null;
       byte[] MsgLength = new byte[4];
       if (GYH == 10) {
@@ -280,24 +280,24 @@ public class RealTimeCommunication {
         data = new byte[12 + 21 + SJQNR.length];
         MsgLength = utils.int2byte(12 + 21 + SJQNR.length);
       }
-      //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢×Ü³¤¶È
+      //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯æ€»é•¿åº¦
       data[0] = MsgLength[0];
       data[1] = MsgLength[1];
       data[2] = MsgLength[2];
       data[3] = MsgLength[3];
-      //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ÀàĞÍ´úÂë
+      //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯ç±»å‹ä»£ç 
       data[4] = 0;
       data[5] = 0;
       data[6] = 0;
       data[7] = 10;
-      //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ĞòºÅ
+      //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯åºå·
       byte[] MsgSequence = new byte[4];
       MsgSequence = utils.int2byte(Sequence);
       data[8] = MsgSequence[0];
       data[9] = MsgSequence[1];
       data[10] = MsgSequence[2];
       data[11] = MsgSequence[3];
-      //ÏûÏ¢Ìå²¿·ÖµÄÄ¿±êÊÖ»úºÅÂë
+      //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„ç›®æ ‡æ‰‹æœºå·ç 
       byte[] bTemp = new byte[20];
       byte[] bMBHM = new String(TerminalAddr).getBytes();
       for (int i = 0; i < bMBHM.length; i++) {
@@ -306,10 +306,10 @@ public class RealTimeCommunication {
       for (int i = 0; i < 15; i++) {
         data[12 + i] = bTemp[i];
       }
-      //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢ÀàĞÍ
+      //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯ç±»å‹
       bTemp = new byte[2];
       byte[] bTXLX = new byte[2];
-      if (GYH < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (GYH < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bTXLX[1] = 0;
         bTXLX[0] = (byte) GYH;
       }
@@ -319,12 +319,12 @@ public class RealTimeCommunication {
       for (int i = 0; i < bTXLX.length; i++) {
         bTemp[i] = bTXLX[i];
       }
-      data[27] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+      data[27] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
       data[28] = bTemp[0];
-      //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢³¤¶È
+      //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯é•¿åº¦
       bTemp = new byte[2];
       byte[] bSJQCD = new byte[2];
-      if (SJQCD < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (SJQCD < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bSJQCD[1] = 0;
         bSJQCD[0] = (byte) SJQCD;
       }
@@ -335,14 +335,14 @@ public class RealTimeCommunication {
         bTemp[i] = bSJQCD[i];
       }
       if (SJQCD < 256) {
-        data[29] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+        data[29] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
         data[30] = bTemp[0];
       }
       else {
         data[29] = bTemp[0];
         data[30] = bTemp[1];
       }
-      //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢ÄÚÈİ
+      //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯å†…å®¹
       byte[] bSJQNR = new byte[SJQCD];
       bSJQNR = new String(SJQNR).getBytes();
       if (bSJQNR.length > SJQCD) {
@@ -355,25 +355,25 @@ public class RealTimeCommunication {
           data[31 + i] = bSJQNR[i];
         }
       }
-      //ÏûÏ¢Ìå²¿·ÖµÄ¶ÌĞÅÍ¨µÀ
+      //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„çŸ­ä¿¡é€šé“
       data[31 + SJQCD] = (byte) TXFS;
-      //ÏûÏ¢Ìå²¿·ÖµÄÖÇÄÜÑ¡Ôñ
+      //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ™ºèƒ½é€‰æ‹©
       data[32 + SJQCD] = 1;
       FormData = true;
       Sequence = Sequence + 1;
-      if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-        SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+      if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+        SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
         bBuffer.clear();
         bBuffer.put(data);
         bBuffer.flip();
-        keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
         bBuffer.clear();
         AckBack = false;
       }
       return;
     }
-    else if (SelfDefined) { //·¢ËÍ×Ô¶¨ÒåÃüÁîµÄ´¦Àí
-      FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    else if (SelfDefined) { //å‘é€è‡ªå®šä¹‰å‘½ä»¤çš„å¤„ç†
+      FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
       data = null;
       data = new byte[12 + 30 + SJQNR.length + 1];
       byte[] MsgLength = new byte[4];
@@ -402,7 +402,7 @@ public class RealTimeCommunication {
       data[14] = bAppID[2];
       data[15] = bAppID[3];
 
-      //Ó¦ÓÃID
+      //åº”ç”¨ID
       byte[] bTemp = new byte[20];
       byte[] bZDLJDZ = new String(TerminalAddr).getBytes();
       for (int i = 0; i < bZDLJDZ.length; i++) {
@@ -411,9 +411,9 @@ public class RealTimeCommunication {
       for (int i = 0; i < 20; i++) {
         data[16 + i] = bTemp[i];
       }
-      //ÖÕ¶ËÂß¼­µØÖ·£¬ĞèÒª²¹È«20Î»
+      //ç»ˆç«¯é€»è¾‘åœ°å€ï¼Œéœ€è¦è¡¥å…¨20ä½
       byte[] bTXCS = new byte[1];
-      if (TXFS < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (TXFS < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bTXCS[0] = (byte) TXFS;
       }
       else {
@@ -421,31 +421,31 @@ public class RealTimeCommunication {
       }
 
       data[36] = bTXCS[0];
-      //Í¨Ñ¶·½Ê½£¬¼´ÖÕ¶Ëµ±Ç°Í¨Ñ¶ÀàĞÍ
+      //é€šè®¯æ–¹å¼ï¼Œå³ç»ˆç«¯å½“å‰é€šè®¯ç±»å‹
       data[37] = 1;
 
-      //·¢ËÍ×Ô¶¨ÒåÃüÁîµÄÃüÁîĞòºÅ
+      //å‘é€è‡ªå®šä¹‰å‘½ä»¤çš„å‘½ä»¤åºå·
       byte[] bMLXH = new byte[1];
-      if (RWH < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (RWH < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bMLXH[0] = (byte) RWH;
       }
       else {
         bMLXH = utils.str2bytes(Integer.toHexString(RWH));
       }
       data[38] = bMLXH[0];
-      //¹æÔ¼ºÅ
+      //è§„çº¦å·
       byte[] bGYH = new byte[1];
-      if (GYH < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (GYH < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bGYH[0] = (byte) GYH;
       }
       else {
         bGYH = utils.str2bytes(Integer.toHexString(GYH));
       }
       data[39] = bGYH[0];
-      //Êı¾İÇø³¤¶È
+      //æ•°æ®åŒºé•¿åº¦
       bTemp = new byte[2];
       byte[] bSJQCD = new byte[2];
-      if (SJQCD < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (SJQCD < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bSJQCD[1] = 0;
         bSJQCD[0] = (byte) SJQCD;
       }
@@ -456,14 +456,14 @@ public class RealTimeCommunication {
         bTemp[i] = bSJQCD[i];
       }
       if (SJQCD < 256) {
-        data[40] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+        data[40] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
         data[41] = bTemp[0];
       }
       else {
         data[40] = bTemp[0];
         data[41] = bTemp[1];
       }
-      //Êı¾İÇøÄÚÈİ
+      //æ•°æ®åŒºå†…å®¹
       byte[] bSJQNR = new byte[SJQCD];
       bSJQNR = new String(SJQNR).getBytes();
       for (int i = 0; i < SJQCD; i++) {
@@ -477,29 +477,29 @@ public class RealTimeCommunication {
       else {
         bYXJ = utils.str2bytes(Integer.toHexString(Priority));
       }
-      data[42 + SJQCD] = bYXJ[0]; //ÓÅÏÈ¼¶
+      data[42 + SJQCD] = bYXJ[0]; //ä¼˜å…ˆçº§
 
-      //µ½´ËÄÚÈİ×é³ÉÍê³É
-      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 10, 0); //±£´æÖÕ¶ËĞÅÏ¢ºÍAppIDµ½¶ÓÁĞÖĞ
+      //åˆ°æ­¤å†…å®¹ç»„æˆå®Œæˆ
+      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 10, 0); //ä¿å­˜ç»ˆç«¯ä¿¡æ¯å’ŒAppIDåˆ°é˜Ÿåˆ—ä¸­
       FormData = true;
       Sequence = Sequence + 1;
-      if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-        SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+      if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+        SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
         bBuffer.clear();
         bBuffer.put(data);
         bBuffer.flip();
-        keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
         bBuffer.clear();
         AckBack = false;
       }
       return;
     }
     else if (( GYH == 1000 )||( GYH == 1001 )||( GYH == 1100)){
-    	FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    	FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
         data = null;
         data = new byte[12 + 28 + SJQNR.length];
         
-        //ÏûÏ¢³¤¶È
+        //æ¶ˆæ¯é•¿åº¦
         byte[] MsgLength = new byte[4];
         MsgLength = utils.int2byte(12 + 28 + SJQNR.length );
         data[0] = MsgLength[0];
@@ -507,14 +507,14 @@ public class RealTimeCommunication {
         data[2] = MsgLength[2];
         data[3] = MsgLength[3];
         
-        //ÏûÏ¢ÀàĞÍ
-        if (( GYH == 1000 )||( GYH == 1100)){ //µ÷ÓÃ¼ÓÃÜ»ú
+        //æ¶ˆæ¯ç±»å‹
+        if (( GYH == 1000 )||( GYH == 1100)){ //è°ƒç”¨åŠ å¯†æœº
         	data[4] = 0;
             data[5] = 0;
             data[6] = 1;
             data[7] = 1;
         }
-        else { //µ÷ÓÃ¶Á¿¨Æ÷
+        else { //è°ƒç”¨è¯»å¡å™¨
         	data[4] = 0;
             data[5] = 0;
             data[6] = 1;
@@ -527,7 +527,7 @@ public class RealTimeCommunication {
         data[9] = MsgSequence[1];
         data[10] = MsgSequence[2];
         data[11] = MsgSequence[3];
-        //Ó¦ÓÃID
+        //åº”ç”¨ID
         byte[] bAppID = new byte[4];
         bAppID = utils.int2byte(AppID);
         data[12] = bAppID[0];
@@ -535,7 +535,7 @@ public class RealTimeCommunication {
         data[14] = bAppID[2];
         data[15] = bAppID[3];
         
-        //ÓÃ»§»§ºÅ
+        //ç”¨æˆ·æˆ·å·
         byte[] bTemp = new byte[20];
         byte[] bZDLJDZ = new String(TerminalAddr).getBytes();
         for (int i = 0; i < bZDLJDZ.length; i++) {
@@ -544,7 +544,7 @@ public class RealTimeCommunication {
         for (int i = 0; i < 20; i++) {
           data[16 + i] = bTemp[i];
         }
-        //µ÷¼ÓÃÜ»úÀàĞÍ,0x10:¹úÍø;0x20:º£ĞË
+        //è°ƒåŠ å¯†æœºç±»å‹,0x10:å›½ç½‘;0x20:æµ·å…´
         if ((GYH == 1000) || (GYH == 1001)){
         	data[36] = 0;
             data[37] = 10;
@@ -553,10 +553,10 @@ public class RealTimeCommunication {
         	data[36] = 0;
             data[37] = 20;
         }
-        //Êı¾İÇø³¤¶È
+        //æ•°æ®åŒºé•¿åº¦
         bTemp = new byte[2];
         byte[] bSJQCD = new byte[2];
-        if (SJQCD < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+        if (SJQCD < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
           bSJQCD[1] = 0;
           bSJQCD[0] = (byte) SJQCD;
         }
@@ -567,7 +567,7 @@ public class RealTimeCommunication {
           bTemp[i] = bSJQCD[i];
         }
         if (SJQCD < 256) {
-          data[38] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+          data[38] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
           data[39] = bTemp[0];
         }
         else {
@@ -575,36 +575,36 @@ public class RealTimeCommunication {
           data[39] = bTemp[1];
         }
 
-        //Êı¾İÄÚÈİ
+        //æ•°æ®å†…å®¹
         byte[] bSJQNR = new byte[SJQCD];
         bSJQNR = new String(SJQNR).getBytes();
         for (int i = 0; i < SJQCD; i++) {
           data[40 + i] = bSJQNR[i];
         }
 
-        //µ½´ËÄÚÈİ×é³ÉÍê³É
-        AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 10, RWDS); //±£´æÖÕ¶ËĞÅÏ¢ºÍAppIDµ½¶ÓÁĞÖĞ
+        //åˆ°æ­¤å†…å®¹ç»„æˆå®Œæˆ
+        AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 10, RWDS); //ä¿å­˜ç»ˆç«¯ä¿¡æ¯å’ŒAppIDåˆ°é˜Ÿåˆ—ä¸­
         FormData = true;
         Sequence = Sequence + 1;
-        if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-          SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+        if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+          SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
           try {
             bBuffer.clear();
             bBuffer.put(data);
             bBuffer.flip();
-            keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+            keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
             bBuffer.clear();
             AckBack = false;
-            //System.out.println("ÊµÊ±Í¨Ñ¶·¢ËÍÃüÁî£¬Ó¦ÓÃID£º" + AppID + "£¬ÖÕ¶ËÂß¼­µØÖ·£º" +
-            //     new String(TerminalAddr) + "¹æÔ¼ºÅ£º" + GYH + "£¬Êı¾İÇøÄÚÈİ" + new String(SJQNR));
+            //System.out.println("å®æ—¶é€šè®¯å‘é€å‘½ä»¤ï¼Œåº”ç”¨IDï¼š" + AppID + "ï¼Œç»ˆç«¯é€»è¾‘åœ°å€ï¼š" +
+            //     new String(TerminalAddr) + "è§„çº¦å·ï¼š" + GYH + "ï¼Œæ•°æ®åŒºå†…å®¹" + new String(SJQNR));
           }
           catch (IOException ex) {
           }
         }
         return;
     }
-    else if ( (RWH == 0) && (RWDS == 0) && (YCDS == 0)) { //Ö»ÓĞÈÎÎñºÅ¡¢ÈÎÎñµãÊı¡¢Òì³£µãÊı¶¼Îª0£¬²ÅÈÏÎªÊÇÕÙ²âÊı¾İÏÂ·¢
-      FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    else if ( (RWH == 0) && (RWDS == 0) && (YCDS == 0)) { //åªæœ‰ä»»åŠ¡å·ã€ä»»åŠ¡ç‚¹æ•°ã€å¼‚å¸¸ç‚¹æ•°éƒ½ä¸º0ï¼Œæ‰è®¤ä¸ºæ˜¯å¬æµ‹æ•°æ®ä¸‹å‘
+      FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
       data = null;
       data = new byte[12 + 33 + SJQNR.length + 2];
       byte[] MsgLength = new byte[4];
@@ -633,7 +633,7 @@ public class RealTimeCommunication {
       data[14] = bAppID[2];
       data[15] = bAppID[3];
 
-      //Ó¦ÓÃID
+      //åº”ç”¨ID
       byte[] bTemp = new byte[20];
       byte[] bZDLJDZ = new String(TerminalAddr).getBytes();
       for (int i = 0; i < bZDLJDZ.length; i++) {
@@ -642,9 +642,9 @@ public class RealTimeCommunication {
       for (int i = 0; i < 20; i++) {
         data[16 + i] = bTemp[i];
       }
-      //ÖÕ¶ËÂß¼­µØÖ·£¬ĞèÒª²¹È«20Î»
+      //ç»ˆç«¯é€»è¾‘åœ°å€ï¼Œéœ€è¦è¡¥å…¨20ä½
       byte[] bTXCS = new byte[1];
-      if (TXFS < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (TXFS < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bTXCS[0] = (byte) TXFS;
       }
       else {
@@ -652,17 +652,17 @@ public class RealTimeCommunication {
       }
 
       data[36] = bTXCS[0];
-      //Í¨Ñ¶·½Ê½£¬¼´ÖÕ¶Ëµ±Ç°Í¨Ñ¶ÀàĞÍ
+      //é€šè®¯æ–¹å¼ï¼Œå³ç»ˆç«¯å½“å‰é€šè®¯ç±»å‹
       data[37] = 1;
-      //ÖÇÄÜÑ¡Ôñ£¬Ä¬ÈÏÓĞĞ§
+      //æ™ºèƒ½é€‰æ‹©ï¼Œé»˜è®¤æœ‰æ•ˆ
       data[38] = 0;
-      //²âÁ¿µãĞòºÅ
+      //æµ‹é‡ç‚¹åºå·
       data[39] = 10;
-      //²âÁ¿µãÀàĞÍ
+      //æµ‹é‡ç‚¹ç±»å‹
       byte[] bGYH = new byte[1];
       bGYH = utils.str2bytes(Integer.toHexString(GYH));
       data[40] = bGYH[0];
-      //¹æÔ¼ºÅ
+      //è§„çº¦å·
       bTemp = new byte[2];
       byte[] bGNM = new String(GNM).getBytes();
       for (int i = 0; i < bGNM.length; i++) {
@@ -671,10 +671,10 @@ public class RealTimeCommunication {
       for (int i = 0; i < 2; i++) {
         data[41 + i] = bTemp[i];
       }
-      //¹¦ÄÜÂë
+      //åŠŸèƒ½ç 
       bTemp = new byte[2];
       byte[] bSJQCD = new byte[2];
-      if (SJQCD < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (SJQCD < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bSJQCD[1] = 0;
         bSJQCD[0] = (byte) SJQCD;
       }
@@ -685,14 +685,14 @@ public class RealTimeCommunication {
         bTemp[i] = bSJQCD[i];
       }
       if (SJQCD < 256) {
-        data[43] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+        data[43] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
         data[44] = bTemp[0];
       }
       else {
         data[43] = bTemp[0];
         data[44] = bTemp[1];
       }
-      //Êı¾İÇø³¤¶È
+      //æ•°æ®åŒºé•¿åº¦
       byte[] bSJQNR = new byte[SJQCD];
       bSJQNR = new String(SJQNR).getBytes();
       for (int i = 0; i < SJQCD; i++) {
@@ -706,7 +706,7 @@ public class RealTimeCommunication {
       else {
         bYXJ = utils.str2bytes(Integer.toHexString(Priority));
       }
-      data[45 + SJQCD] = bYXJ[0]; //ÓÅÏÈ¼¶
+      data[45 + SJQCD] = bYXJ[0]; //ä¼˜å…ˆçº§
 
       byte[] bSFBH = new byte[1];
       if (ArithmeticNo < 15) {
@@ -715,31 +715,31 @@ public class RealTimeCommunication {
       else {
         bSFBH = utils.str2bytes(Integer.toHexString(ArithmeticNo));
       }
-      data[46 + SJQCD] = bSFBH[0]; //Ëã·¨±àºÅ
+      data[46 + SJQCD] = bSFBH[0]; //ç®—æ³•ç¼–å·
 
-      //Êı¾İÇøÄÚÈİ£¬µ½´ËÄÚÈİ×é³ÉÍê³É
-      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 10, 0); //±£´æÖÕ¶ËĞÅÏ¢ºÍAppIDµ½¶ÓÁĞÖĞ
+      //æ•°æ®åŒºå†…å®¹ï¼Œåˆ°æ­¤å†…å®¹ç»„æˆå®Œæˆ
+      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 10, 0); //ä¿å­˜ç»ˆç«¯ä¿¡æ¯å’ŒAppIDåˆ°é˜Ÿåˆ—ä¸­
       FormData = true;
       Sequence = Sequence + 1;
-      fl.WriteLog("ÊµÊ±Í¨Ñ¶×é³ÉÃüÁî£¬Ó¦ÓÃID£º" + AppID + "£¬ÖÕ¶ËÂß¼­µØÖ·£º" +
-                  new String(TerminalAddr) + "£¬Êı¾İÇøÄÚÈİ" + new String(SJQNR));
-      if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-        fl.WriteLog("ÊµÊ±Í¨Ñ¶×¼±¸·¢ËÍÃüÁî£¬Ó¦ÓÃID£º" + AppID + "£¬ÖÕ¶ËÂß¼­µØÖ·£º" +
-                    new String(TerminalAddr) + "£¬Êı¾İÇøÄÚÈİ" + new String(SJQNR));
-        SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+      fl.WriteLog("å®æ—¶é€šè®¯ç»„æˆå‘½ä»¤ï¼Œåº”ç”¨IDï¼š" + AppID + "ï¼Œç»ˆç«¯é€»è¾‘åœ°å€ï¼š" +
+                  new String(TerminalAddr) + "ï¼Œæ•°æ®åŒºå†…å®¹" + new String(SJQNR));
+      if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+        fl.WriteLog("å®æ—¶é€šè®¯å‡†å¤‡å‘é€å‘½ä»¤ï¼Œåº”ç”¨IDï¼š" + AppID + "ï¼Œç»ˆç«¯é€»è¾‘åœ°å€ï¼š" +
+                    new String(TerminalAddr) + "ï¼Œæ•°æ®åŒºå†…å®¹" + new String(SJQNR));
+        SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
         bBuffer.clear();
         bBuffer.put(data);
         bBuffer.flip();
-        keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
         bBuffer.clear();
         AckBack = false;
-        fl.WriteLog("ÊµÊ±Í¨Ñ¶·¢ËÍÃüÁî£¬Ó¦ÓÃID£º" + AppID + "£¬ÖÕ¶ËÂß¼­µØÖ·£º" +
-                    new String(TerminalAddr) + "£¬Êı¾İÇøÄÚÈİ" + new String(SJQNR));
+        fl.WriteLog("å®æ—¶é€šè®¯å‘é€å‘½ä»¤ï¼Œåº”ç”¨IDï¼š" + AppID + "ï¼Œç»ˆç«¯é€»è¾‘åœ°å€ï¼š" +
+                    new String(TerminalAddr) + "ï¼Œæ•°æ®åŒºå†…å®¹" + new String(SJQNR));
       }
       return;
     }
-    else if ( (RWH != 0) && (RWDS != 0)) { //ÀúÊ·Êı¾İ¶ÁÈ¡×é³ÉÃüÁîÄÚÈİ
-      FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    else if ( (RWH != 0) && (RWDS != 0)) { //å†å²æ•°æ®è¯»å–ç»„æˆå‘½ä»¤å†…å®¹
+      FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
       data = null;
       data = new byte[12 + 33 + SJQNR.length + 3];
       byte[] MsgLength = new byte[4];
@@ -768,7 +768,7 @@ public class RealTimeCommunication {
       data[14] = bAppID[2];
       data[15] = bAppID[3];
 
-      //Ó¦ÓÃID
+      //åº”ç”¨ID
       byte[] bTemp = new byte[20];
       byte[] bZDLJDZ = new String(TerminalAddr).getBytes();
       for (int i = 0; i < bZDLJDZ.length; i++) {
@@ -777,9 +777,9 @@ public class RealTimeCommunication {
       for (int i = 0; i < 20; i++) {
         data[16 + i] = bTemp[i];
       }
-      //ÖÕ¶ËÂß¼­µØÖ·£¬ĞèÒª²¹È«20Î»
+      //ç»ˆç«¯é€»è¾‘åœ°å€ï¼Œéœ€è¦è¡¥å…¨20ä½
       byte[] bTXCS = new byte[1];
-      if (TXFS < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (TXFS < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bTXCS[0] = (byte) TXFS;
       }
       else {
@@ -787,17 +787,17 @@ public class RealTimeCommunication {
       }
 
       data[36] = bTXCS[0];
-      //Í¨Ñ¶·½Ê½£¬¼´ÖÕ¶Ëµ±Ç°Í¨Ñ¶ÀàĞÍ
+      //é€šè®¯æ–¹å¼ï¼Œå³ç»ˆç«¯å½“å‰é€šè®¯ç±»å‹
       data[37] = 1;
-      //ÖÇÄÜÑ¡Ôñ£¬Ä¬ÈÏÓĞĞ§
+      //æ™ºèƒ½é€‰æ‹©ï¼Œé»˜è®¤æœ‰æ•ˆ
       data[38] = 0;
-      //²âÁ¿µãĞòºÅ
+      //æµ‹é‡ç‚¹åºå·
       data[39] = 10;
-      //²âÁ¿µãÀàĞÍ
+      //æµ‹é‡ç‚¹ç±»å‹
       byte[] bGYH = new byte[1];
       bGYH = utils.str2bytes(Integer.toHexString(GYH));
       data[40] = bGYH[0];
-      //¹æÔ¼ºÅ
+      //è§„çº¦å·
       bTemp = new byte[2];
       byte[] bGNM = new String(GNM).getBytes();
       for (int i = 0; i < bGNM.length; i++) {
@@ -806,10 +806,10 @@ public class RealTimeCommunication {
       for (int i = 0; i < 2; i++) {
         data[41 + i] = bTemp[i];
       }
-      //¹¦ÄÜÂë
+      //åŠŸèƒ½ç 
       bTemp = new byte[2];
       byte[] bSJQCD = new byte[2];
-      if (SJQCD < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (SJQCD < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bSJQCD[1] = 0;
         bSJQCD[0] = (byte) SJQCD;
       }
@@ -820,20 +820,20 @@ public class RealTimeCommunication {
         bTemp[i] = bSJQCD[i];
       }
       if (SJQCD < 256) {
-        data[43] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+        data[43] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
         data[44] = bTemp[0];
       }
       else {
         data[43] = bTemp[0];
         data[44] = bTemp[1];
       }
-      //Êı¾İÇø³¤¶È
+      //æ•°æ®åŒºé•¿åº¦
       byte[] bSJQNR = new byte[SJQCD];
       bSJQNR = new String(SJQNR).getBytes();
       for (int i = 0; i < SJQCD; i++) {
         data[45 + i] = bSJQNR[i];
       }
-      //Êı¾İÇøÄÚÈİ
+      //æ•°æ®åŒºå†…å®¹
       byte[] bRWH = new byte[1];
       String sTemp = Integer.toHexString(RWH);
       if (sTemp.length() % 2 != 0) {
@@ -841,7 +841,7 @@ public class RealTimeCommunication {
       }
       bRWH = utils.str2bytes(sTemp);
       data[45 + SJQCD] = bRWH[0];
-      //ÈÎÎñºÅ
+      //ä»»åŠ¡å·
       byte[] bRWDS = new byte[1];
       sTemp = Integer.toHexString(RWDS);
       if (sTemp.length() % 2 != 0) {
@@ -849,7 +849,7 @@ public class RealTimeCommunication {
       }
       bRWDS = utils.str2bytes(sTemp);
       data[46 + SJQCD] = bRWDS[0];
-      //ÈÎÎñµãÊı
+      //ä»»åŠ¡ç‚¹æ•°
 
       byte[] bYXJ = new byte[1];
       if (Priority < 15) {
@@ -858,31 +858,31 @@ public class RealTimeCommunication {
       else {
         bYXJ = utils.str2bytes(Integer.toHexString(Priority));
       }
-      data[47 + SJQCD] = bYXJ[0]; //ÓÅÏÈ¼¶
+      data[47 + SJQCD] = bYXJ[0]; //ä¼˜å…ˆçº§
 
-      //µ½´ËÄÚÈİ×é³ÉÍê³É
-      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 20, RWDS); //±£´æÖÕ¶ËĞÅÏ¢ºÍAppIDµ½¶ÓÁĞÖĞ
+      //åˆ°æ­¤å†…å®¹ç»„æˆå®Œæˆ
+      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 20, RWDS); //ä¿å­˜ç»ˆç«¯ä¿¡æ¯å’ŒAppIDåˆ°é˜Ÿåˆ—ä¸­
       FormData = true;
       Sequence = Sequence + 1;
-      if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-        SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+      if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+        SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
         try {
           bBuffer.clear();
           bBuffer.put(data);
           bBuffer.flip();
-          keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+          keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
           bBuffer.clear();
           AckBack = false;
-          fl.WriteLog("ÊµÊ±Í¨Ñ¶·¢ËÍÃüÁî£¬Ó¦ÓÃID£º" + AppID + "£¬ÖÕ¶ËÂß¼­µØÖ·£º" +
-                      new String(TerminalAddr) + "£¬Êı¾İÇøÄÚÈİ" + new String(SJQNR));
+          fl.WriteLog("å®æ—¶é€šè®¯å‘é€å‘½ä»¤ï¼Œåº”ç”¨IDï¼š" + AppID + "ï¼Œç»ˆç«¯é€»è¾‘åœ°å€ï¼š" +
+                      new String(TerminalAddr) + "ï¼Œæ•°æ®åŒºå†…å®¹" + new String(SJQNR));
         }
         catch (IOException ex) {
         }
       }
       return;
     }
-    else if ( (YCDS != 0) && (RWH == 0) && (RWDS == 0)) { //Òì³£Êı¾İ¶ÁÈ¡×é³ÉÃüÁîÄÚÈİ
-      FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    else if ( (YCDS != 0) && (RWH == 0) && (RWDS == 0)) { //å¼‚å¸¸æ•°æ®è¯»å–ç»„æˆå‘½ä»¤å†…å®¹
+      FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
       data = null;
       data = new byte[12 + 33 + SJQNR.length + 2];
       byte[] MsgLength = new byte[4];
@@ -911,7 +911,7 @@ public class RealTimeCommunication {
       data[14] = bAppID[2];
       data[15] = bAppID[3];
 
-      //Ó¦ÓÃID
+      //åº”ç”¨ID
       byte[] bTemp = new byte[20];
       byte[] bZDLJDZ = new String(TerminalAddr).getBytes();
       for (int i = 0; i < bZDLJDZ.length; i++) {
@@ -920,9 +920,9 @@ public class RealTimeCommunication {
       for (int i = 0; i < 20; i++) {
         data[16 + i] = bTemp[i];
       }
-      //ÖÕ¶ËÂß¼­µØÖ·£¬ĞèÒª²¹È«20Î»
+      //ç»ˆç«¯é€»è¾‘åœ°å€ï¼Œéœ€è¦è¡¥å…¨20ä½
       byte[] bTXCS = new byte[1];
-      if (TXFS < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (TXFS < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bTXCS[0] = (byte) TXFS;
       }
       else {
@@ -930,17 +930,17 @@ public class RealTimeCommunication {
       }
 
       data[36] = bTXCS[0];
-      //Í¨Ñ¶·½Ê½£¬¼´ÖÕ¶Ëµ±Ç°Í¨Ñ¶ÀàĞÍ
+      //é€šè®¯æ–¹å¼ï¼Œå³ç»ˆç«¯å½“å‰é€šè®¯ç±»å‹
       data[37] = 1;
-      //ÖÇÄÜÑ¡Ôñ£¬Ä¬ÈÏÓĞĞ§
+      //æ™ºèƒ½é€‰æ‹©ï¼Œé»˜è®¤æœ‰æ•ˆ
       data[38] = 0;
-      //²âÁ¿µãĞòºÅ
+      //æµ‹é‡ç‚¹åºå·
       data[39] = 10;
-      //²âÁ¿µãÀàĞÍ
+      //æµ‹é‡ç‚¹ç±»å‹
       byte[] bGYH = new byte[1];
       bGYH = utils.str2bytes(Integer.toHexString(GYH));
       data[40] = bGYH[0];
-      //¹æÔ¼ºÅ
+      //è§„çº¦å·
       bTemp = new byte[2];
       byte[] bGNM = new String(GNM).getBytes();
       for (int i = 0; i < bGNM.length; i++) {
@@ -949,10 +949,10 @@ public class RealTimeCommunication {
       for (int i = 0; i < 2; i++) {
         data[41 + i] = bTemp[i];
       }
-      //¹¦ÄÜÂë
+      //åŠŸèƒ½ç 
       bTemp = new byte[2];
       byte[] bSJQCD = new byte[2];
-      if (SJQCD < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+      if (SJQCD < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
         bSJQCD[1] = 0;
         bSJQCD[0] = (byte) SJQCD;
       }
@@ -963,20 +963,20 @@ public class RealTimeCommunication {
         bTemp[i] = bSJQCD[i];
       }
       if (SJQCD < 256) {
-        data[43] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+        data[43] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
         data[44] = bTemp[0];
       }
       else {
         data[43] = bTemp[0];
         data[44] = bTemp[1];
       }
-      //Êı¾İÇø³¤¶È
+      //æ•°æ®åŒºé•¿åº¦
       byte[] bSJQNR = new byte[SJQCD];
       bSJQNR = new String(SJQNR).getBytes();
       for (int i = 0; i < SJQCD; i++) {
         data[45 + i] = bSJQNR[i];
       }
-      //Êı¾İÇøÄÚÈİ
+      //æ•°æ®åŒºå†…å®¹
       byte[] bYCDS = new byte[1];
       String sTemp = Integer.toHexString(YCDS);
       if (sTemp.length() % 2 != 0) {
@@ -984,7 +984,7 @@ public class RealTimeCommunication {
       }
       bYCDS = utils.str2bytes(sTemp);
       data[45 + SJQCD] = bYCDS[0];
-      //Òì³£µãÊı£¬µ½´ËÄÚÈİ×é³ÉÍê³É
+      //å¼‚å¸¸ç‚¹æ•°ï¼Œåˆ°æ­¤å†…å®¹ç»„æˆå®Œæˆ
 
       byte[] bYXJ = new byte[1];
       if (Priority < 15) {
@@ -993,18 +993,18 @@ public class RealTimeCommunication {
       else {
         bYXJ = utils.str2bytes(Integer.toHexString(Priority));
       }
-      data[46 + SJQCD] = bYXJ[0]; //ÓÅÏÈ¼¶
+      data[46 + SJQCD] = bYXJ[0]; //ä¼˜å…ˆçº§
 
-      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 30, YCDS); //±£´æÖÕ¶ËĞÅÏ¢ºÍAppIDµ½¶ÓÁĞÖĞ
+      AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 30, YCDS); //ä¿å­˜ç»ˆç«¯ä¿¡æ¯å’ŒAppIDåˆ°é˜Ÿåˆ—ä¸­
       FormData = true;
       Sequence = Sequence + 1;
-      if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-        SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+      if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+        SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
         try {
           bBuffer.clear();
           bBuffer.put(data);
           bBuffer.flip();
-          keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+          keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
           bBuffer.clear();
           AckBack = false;
         }
@@ -1017,7 +1017,7 @@ public class RealTimeCommunication {
 
   public boolean SendShortMsg(char[] MsgContent, int MsgLength, char[] MBHM,
                               int SendType, int SMSChannel) {
-    //Ê×ÏÈ¸ù¾İ·¢ËÍÀàĞÍÅĞ¶ÏÏûÏ¢³¤¶ÈÊÇ·ñ³¬¹ıÒªÇó
+    //é¦–å…ˆæ ¹æ®å‘é€ç±»å‹åˆ¤æ–­æ¶ˆæ¯é•¿åº¦æ˜¯å¦è¶…è¿‡è¦æ±‚
     switch (SendType) {
       case 10: {
         int iLen = new String(MsgContent).trim().length();
@@ -1053,15 +1053,15 @@ public class RealTimeCommunication {
     try {
       SendInfo si = new SendInfo();
       si.AppID = 0;
-      si.TerminalAddress = new String(MBHM); //Ä¿±êÊÖ»úºÅÂë
-      si.TerminalProtocol = SendType; //ÏûÏ¢ÀàĞÍ
-      si.TerminalCommType = SMSChannel; //ÖÆ¶¨µÄ¶ÌĞÅÍ¨µÀ
+      si.TerminalAddress = new String(MBHM); //ç›®æ ‡æ‰‹æœºå·ç 
+      si.TerminalProtocol = SendType; //æ¶ˆæ¯ç±»å‹
+      si.TerminalCommType = SMSChannel; //åˆ¶å®šçš„çŸ­ä¿¡é€šé“
       si.TaskID = 0;
       si.TaskCount = 0;
       si.AlarmCount = 0;
       si.FunctionCode = new String("");
       si.ContentLength = MsgLength;
-      si.DataContent = new String(MsgContent).trim(); //¼ÓÈë·¢ËÍ¶ÓÁĞ¼´¿É£¬µ÷ÓÃ¾ÍËãÍê³É
+      si.DataContent = new String(MsgContent).trim(); //åŠ å…¥å‘é€é˜Ÿåˆ—å³å¯ï¼Œè°ƒç”¨å°±ç®—å®Œæˆ
       si.SendShortMsg = true;
       SendInfoList.add(si);
       LastTime = Calendar.getInstance();
@@ -1072,35 +1072,35 @@ public class RealTimeCommunication {
     }
   }
 
-  private void BuildOffLineTerminalInfoListAndSend(SelectionKey key,
-      List terminallist) {
+  @SuppressWarnings("rawtypes")
+private void BuildOffLineTerminalInfoListAndSend(SelectionKey key,List terminallist) {
     ByteBuffer bBuffer = ByteBuffer.allocate(5000);
-    FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
     data = null;
     data = new byte[12 + 2 + 20 * terminallist.size()];
     byte[] MsgLength = new byte[4];
     MsgLength = utils.int2byte(12 + 2 + 20 * terminallist.size());
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢×Ü³¤¶È
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯æ€»é•¿åº¦
     data[0] = MsgLength[0];
     data[1] = MsgLength[1];
     data[2] = MsgLength[2];
     data[3] = MsgLength[3];
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ÀàĞÍ´úÂë
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯ç±»å‹ä»£ç 
     data[4] = 0;
     data[5] = 0;
     data[6] = 0;
     data[7] = 30;
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ĞòºÅ
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯åºå·
     byte[] MsgSequence = new byte[4];
     MsgSequence = utils.int2byte(Sequence);
     data[8] = MsgSequence[0];
     data[9] = MsgSequence[1];
     data[10] = MsgSequence[2];
     data[11] = MsgSequence[3];
-    //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢³¤¶È
+    //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯é•¿åº¦
     byte[] bTemp = new byte[2];
     byte[] bSJQCD = new byte[2];
-    if (terminallist.size() < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+    if (terminallist.size() < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
       bSJQCD[1] = 0;
       bSJQCD[0] = (byte) terminallist.size();
     }
@@ -1111,14 +1111,14 @@ public class RealTimeCommunication {
       bTemp[i] = bSJQCD[i];
     }
     if (terminallist.size() < 256) {
-      data[12] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+      data[12] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
       data[13] = bTemp[0];
     }
     else {
       data[12] = bTemp[0];
       data[13] = bTemp[1];
     }
-    //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢ÄÚÈİ
+    //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯å†…å®¹
     for (int i = 0; i < terminallist.size(); i++) {
       bTemp = new byte[20];
       TerminalOnLineStatus to = (TerminalOnLineStatus) terminallist.get(i);
@@ -1129,17 +1129,17 @@ public class RealTimeCommunication {
       for (int j = 0; j < 20; j++) {
         data[14 + i * 20 + j] = bTemp[j];
       }
-      //ÖÕ¶ËÂß¼­µØÖ·£¬ĞèÒª²¹È«20Î»
+      //ç»ˆç«¯é€»è¾‘åœ°å€ï¼Œéœ€è¦è¡¥å…¨20ä½
     }
     FormData = true;
     Sequence = Sequence + 1;
-    if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-      SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+    if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+      SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
       bBuffer.clear();
       bBuffer.put(data);
       bBuffer.flip();
       try {
-        keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
       }
       catch (IOException ex) {
       }
@@ -1149,34 +1149,35 @@ public class RealTimeCommunication {
     return;
   }
 
-  private void BuildTerminalInfoListAndSend(SelectionKey key, List terminallist) {
+  @SuppressWarnings("rawtypes")
+private void BuildTerminalInfoListAndSend(SelectionKey key, List terminallist) {
     ByteBuffer bBuffer = ByteBuffer.allocate(5000);
-    FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
     data = null;
     data = new byte[12 + 2 + 20 * terminallist.size()];
     byte[] MsgLength = new byte[4];
     MsgLength = utils.int2byte(12 + 2 + 20 * terminallist.size());
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢×Ü³¤¶È
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯æ€»é•¿åº¦
     data[0] = MsgLength[0];
     data[1] = MsgLength[1];
     data[2] = MsgLength[2];
     data[3] = MsgLength[3];
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ÀàĞÍ´úÂë
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯ç±»å‹ä»£ç 
     data[4] = 0;
     data[5] = 0;
     data[6] = 0;
     data[7] = 21;
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ĞòºÅ
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯åºå·
     byte[] MsgSequence = new byte[4];
     MsgSequence = utils.int2byte(Sequence);
     data[8] = MsgSequence[0];
     data[9] = MsgSequence[1];
     data[10] = MsgSequence[2];
     data[11] = MsgSequence[3];
-    //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢³¤¶È
+    //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯é•¿åº¦
     byte[] bTemp = new byte[2];
     byte[] bSJQCD = new byte[2];
-    if (terminallist.size() < 15) { //Ö»ÓĞĞ¡ÓÚ15µÄÊı¾İĞèÒªÌØÊâ´¦Àí£¬ÆäËû¶¼¿ÉÒÔÓÉÍ³Ò»º¯ÊıÊµÏÖ
+    if (terminallist.size() < 15) { //åªæœ‰å°äº15çš„æ•°æ®éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œå…¶ä»–éƒ½å¯ä»¥ç”±ç»Ÿä¸€å‡½æ•°å®ç°
       bSJQCD[1] = 0;
       bSJQCD[0] = (byte) terminallist.size();
     }
@@ -1187,14 +1188,14 @@ public class RealTimeCommunication {
       bTemp[i] = bSJQCD[i];
     }
     if (terminallist.size() < 256) {
-      data[12] = bTemp[1]; //Êı¾İÇø³¤¶ÈµÄ×Ö¶ÎĞèÒª×öµßµ¹¹¤×÷
+      data[12] = bTemp[1]; //æ•°æ®åŒºé•¿åº¦çš„å­—æ®µéœ€è¦åšé¢ å€’å·¥ä½œ
       data[13] = bTemp[0];
     }
     else {
       data[12] = bTemp[0];
       data[13] = bTemp[1];
     }
-    //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢ÄÚÈİ
+    //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯å†…å®¹
     for (int i = 0; i < terminallist.size(); i++) {
       bTemp = new byte[20];
       TerminalOnLineStatus to = (TerminalOnLineStatus) terminallist.get(i);
@@ -1205,17 +1206,17 @@ public class RealTimeCommunication {
       for (int j = 0; j < 20; j++) {
         data[14 + i * 20 + j] = bTemp[j];
       }
-      //ÖÕ¶ËÂß¼­µØÖ·£¬ĞèÒª²¹È«20Î»
+      //ç»ˆç«¯é€»è¾‘åœ°å€ï¼Œéœ€è¦è¡¥å…¨20ä½
     }
     FormData = true;
     Sequence = Sequence + 1;
-    if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-      SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+    if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+      SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
       bBuffer.clear();
       bBuffer.put(data);
       bBuffer.flip();
       try {
-        keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
       }
       catch (IOException ex) {
       }
@@ -1228,29 +1229,29 @@ public class RealTimeCommunication {
   private void BuildCertainTerminalInfoAndSend(SelectionKey key,
                                                String terminaladdr) {
     ByteBuffer bBuffer = ByteBuffer.allocate(5000);
-    FormData = false; //×é³ÉÍ¨Ñ¶ÄÚÈİ¿ªÊ¼£¬ÉèÖÃ±êÖ¾ÎªÎŞĞ§
+    FormData = false; //ç»„æˆé€šè®¯å†…å®¹å¼€å§‹ï¼Œè®¾ç½®æ ‡å¿—ä¸ºæ— æ•ˆ
     data = null;
     data = new byte[12 + 20];
     byte[] MsgLength = new byte[4];
     MsgLength = utils.int2byte(12 + 20);
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢×Ü³¤¶È
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯æ€»é•¿åº¦
     data[0] = MsgLength[0];
     data[1] = MsgLength[1];
     data[2] = MsgLength[2];
     data[3] = MsgLength[3];
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ÀàĞÍ´úÂë
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯ç±»å‹ä»£ç 
     data[4] = 0;
     data[5] = 0;
     data[6] = 0;
     data[7] = 31;
-    //ÏûÏ¢Í·²¿·ÖµÄÏûÏ¢ĞòºÅ
+    //æ¶ˆæ¯å¤´éƒ¨åˆ†çš„æ¶ˆæ¯åºå·
     byte[] MsgSequence = new byte[4];
     MsgSequence = utils.int2byte(Sequence);
     data[8] = MsgSequence[0];
     data[9] = MsgSequence[1];
     data[10] = MsgSequence[2];
     data[11] = MsgSequence[3];
-    //ÏûÏ¢Ìå²¿·ÖµÄÏûÏ¢ÄÚÈİ
+    //æ¶ˆæ¯ä½“éƒ¨åˆ†çš„æ¶ˆæ¯å†…å®¹
     byte[] bTemp = new byte[20];
     byte[] bZDLJDZ = terminaladdr.getBytes();
     for (int i = 0; i < bZDLJDZ.length; i++) {
@@ -1261,13 +1262,13 @@ public class RealTimeCommunication {
     }
     FormData = true;
     Sequence = Sequence + 1;
-    if ( (data != null) && (FormData)) { //·¢ËÍÊı¾İµÄÌõ¼ş£º»º´æÖĞÓĞÊı¾İ²¢ÇÒÏûÏ¢×é³ÉÍê³É
-      SocketChannel keyChannel = (SocketChannel) key.channel(); //Í¨¹ı¶ÔÓ¦µÄÍ¨µÀÀ´Ğ´ÈëÊı¾İ
+    if ( (data != null) && (FormData)) { //å‘é€æ•°æ®çš„æ¡ä»¶ï¼šç¼“å­˜ä¸­æœ‰æ•°æ®å¹¶ä¸”æ¶ˆæ¯ç»„æˆå®Œæˆ
+      SocketChannel keyChannel = (SocketChannel) key.channel(); //é€šè¿‡å¯¹åº”çš„é€šé“æ¥å†™å…¥æ•°æ®
       bBuffer.clear();
       bBuffer.put(data);
       bBuffer.flip();
       try {
-        keyChannel.write(bBuffer); //Èç¹ûÔÚÕâÀï³öÏÖÒì³££¬ÔòËµÃ÷ÎŞ·¨Á¬½Ó³É¹¦
+        keyChannel.write(bBuffer); //å¦‚æœåœ¨è¿™é‡Œå‡ºç°å¼‚å¸¸ï¼Œåˆ™è¯´æ˜æ— æ³•è¿æ¥æˆåŠŸ
       }
       catch (IOException ex) {
       }
@@ -1301,17 +1302,18 @@ public class RealTimeCommunication {
     return false;
   }
 
-  public List GetTerminalOnLineStatus(List <TerminalOnLineStatus>terminalList) {
+  @SuppressWarnings("rawtypes")
+public List GetTerminalOnLineStatus(List <TerminalOnLineStatus>terminalList) {
     List OnLineList = null;
     try {
       OnLineList = new LinkedList();
-      //×é³ÉÖÕ¶ËÂß¼­µØÖ·¶ÓÁĞ£¬Í¨¹ısocketÏÂ·¢µ½Í¨Ñ¶·şÎñ£¬²¢µÈ´ıÍ¨Ñ¶·şÎñµÄ·µ»Ø
+      //ç»„æˆç»ˆç«¯é€»è¾‘åœ°å€é˜Ÿåˆ—ï¼Œé€šè¿‡socketä¸‹å‘åˆ°é€šè®¯æœåŠ¡ï¼Œå¹¶ç­‰å¾…é€šè®¯æœåŠ¡çš„è¿”å›
       GetTerminalOnLineStatusBack = false;
       GetTerminalOnLineStatus = true;
       TerminalStatusList = terminalList;
       Calendar SendTime = Calendar.getInstance();
       SendTime.add(Calendar.SECOND, 2);
-      //µÈ´ıÃüÁîÏÂ·¢µÄ·µ»Ø£¬ÔÙ´¦ÀíÄÚÈİºó×é³ÉÖÕ¶ËÔÚÏß×´Ì¬¶ÓÁĞ£¬·µ»Ø
+      //ç­‰å¾…å‘½ä»¤ä¸‹å‘çš„è¿”å›ï¼Œå†å¤„ç†å†…å®¹åç»„æˆç»ˆç«¯åœ¨çº¿çŠ¶æ€é˜Ÿåˆ—ï¼Œè¿”å›
       while (!GetTerminalOnLineStatusBack &&
              SendTime.after(Calendar.getInstance())) {
         Thread.sleep(1);
@@ -1323,7 +1325,8 @@ public class RealTimeCommunication {
     return OnLineList;
   }
 
-  public boolean SendBatchToFep(int AppID, int TerminalCount, List TerminalInfo,
+  @SuppressWarnings("rawtypes")
+public boolean SendBatchToFep(int AppID, int TerminalCount, List TerminalInfo,
                                 List DataContentInfo, char[] FunctionCode,
                                 int TaskID, int TaskCount, int AlarmCount,
                                 int Priority) {
@@ -1346,8 +1349,8 @@ public class RealTimeCommunication {
           si.Priority = Priority;
           si.ArithmeticNo = tis.ArithmeticNo;
           SendInfoList.add(si);
-          fl.WriteLog("·¢ËÍÊı¾İ¼ÓÈë¶ÓÁĞ£¬Ó¦ÓÃID£º" + AppID + "£¬ÖÕ¶ËÂß¼­µØÖ·£º" +
-                      si.TerminalAddress + "£¬Êı¾İÇøÄÚÈİ£º" + si.DataContent);
+          fl.WriteLog("å‘é€æ•°æ®åŠ å…¥é˜Ÿåˆ—ï¼Œåº”ç”¨IDï¼š" + AppID + "ï¼Œç»ˆç«¯é€»è¾‘åœ°å€ï¼š" +
+                      si.TerminalAddress + "ï¼Œæ•°æ®åŒºå†…å®¹ï¼š" + si.DataContent);
           LastTime = Calendar.getInstance();
         }
         return true;
@@ -1460,13 +1463,14 @@ public class RealTimeCommunication {
 	    }
   }
   
-  public List GetNewListMessage(int AppID) {
+  @SuppressWarnings("rawtypes")
+public List GetNewListMessage(int AppID) {
     List <StructReturnMessage>nl = new LinkedList<StructReturnMessage>(); 
     for (int i = RealTimeList.size() - 1; i >= 0; i--) {
       RealTimeCommunicationInfo ci = (RealTimeCommunicationInfo) RealTimeList.
           get(i); 
       //System.out.println("ci.AppID/ci.BackFlag:"+ci.AppID+"/"+ci.BackFlag);
-      if ( (ci.AppID == AppID) && (ci.BackFlag)) { //ÅĞ¶ÏÌõ¼ş£ºAppIDÏàÍ¬£¬²¢ÇÒ·µ»Ø±êÖ¾ÓĞĞ§
+      if ( (ci.AppID == AppID) && (ci.BackFlag)) { //åˆ¤æ–­æ¡ä»¶ï¼šAppIDç›¸åŒï¼Œå¹¶ä¸”è¿”å›æ ‡å¿—æœ‰æ•ˆ
         StructReturnMessage srm = new StructReturnMessage();
         srm.AppID = ci.AppID;
         srm.DataType = ci.DataType;
@@ -1476,11 +1480,11 @@ public class RealTimeCommunication {
         srm.FunctionCode = ci.GNM.toCharArray();
         srm.TerminalAddr = ci.TerminalAddr.toCharArray();
         srm.SJQNR = ci.SJQNR.toCharArray();
-        RealTimeList.remove(ci); //´Ó¶ÓÁĞÖĞÉ¾³ıÊı¾İ
-        nl.add(srm); //½«ĞèÒª·µ»ØµÄÄÚÈİ×÷Îª¶ÔÏó·ÅÈëµ½¶ÓÁĞÖĞ
+        RealTimeList.remove(ci); //ä»é˜Ÿåˆ—ä¸­åˆ é™¤æ•°æ®
+        nl.add(srm); //å°†éœ€è¦è¿”å›çš„å†…å®¹ä½œä¸ºå¯¹è±¡æ”¾å…¥åˆ°é˜Ÿåˆ—ä¸­
       }
     }
-    if (nl.size() > 0) { //¸ù¾İList³¤¶È¾ö¶¨·µ»ØÖµ
+    if (nl.size() > 0) { //æ ¹æ®Listé•¿åº¦å†³å®šè¿”å›å€¼
       return nl;
     }
     else {
@@ -1488,12 +1492,12 @@ public class RealTimeCommunication {
     }
   }
 
-  public StructReturnMessage GetNewMessage(int AppID) { //¸ù¾İÓ¦ÓÃIDÕÒÊÇ·ñÓĞÏûÏ¢·µ»Ø
+  public StructReturnMessage GetNewMessage(int AppID) { //æ ¹æ®åº”ç”¨IDæ‰¾æ˜¯å¦æœ‰æ¶ˆæ¯è¿”å›
     for (int i = 0; i < RealTimeList.size(); i++) {
       RealTimeCommunicationInfo ci = (RealTimeCommunicationInfo) RealTimeList.
           get(i);
       
-      if ( (ci.AppID == AppID) && (ci.BackFlag)) { //ÅĞ¶ÏÌõ¼ş£ºAppIDÏàÍ¬£¬²¢ÇÒ·µ»Ø±êÖ¾ÓĞĞ§
+      if ( (ci.AppID == AppID) && (ci.BackFlag)) { //åˆ¤æ–­æ¡ä»¶ï¼šAppIDç›¸åŒï¼Œå¹¶ä¸”è¿”å›æ ‡å¿—æœ‰æ•ˆ
         StructReturnMessage srm = new StructReturnMessage();
         srm.AppID = ci.AppID;
         srm.DataType = ci.DataType;
@@ -1503,7 +1507,7 @@ public class RealTimeCommunication {
         srm.FunctionCode = ci.GNM.toCharArray();
         srm.TerminalAddr = ci.TerminalAddr.toCharArray();
         srm.SJQNR = ci.SJQNR.toCharArray();
-        RealTimeList.remove(ci); //´Ó¶ÓÁĞÖĞÉ¾³ıÊı¾İ
+        RealTimeList.remove(ci); //ä»é˜Ÿåˆ—ä¸­åˆ é™¤æ•°æ®
         return srm;
       }
     }
@@ -1511,10 +1515,10 @@ public class RealTimeCommunication {
   }
 /*
   private void WaitAckBack(SocketChannel socketChannel) {
-    //Ê×ÏÈ¶ÁÈ¡12¸ö×Ö·ûµÄ±¨ÎÄÍ·ÄÚÈİ£¬·ÖÎö±¨ÎÄÍ·µÄÓĞĞ§ĞÔ
+    //é¦–å…ˆè¯»å–12ä¸ªå­—ç¬¦çš„æŠ¥æ–‡å¤´å†…å®¹ï¼Œåˆ†ææŠ¥æ–‡å¤´çš„æœ‰æ•ˆæ€§
     try {
       ByteBuffer[] buffer = new ByteBuffer[10];
-      buffer[0] = ByteBuffer.allocate(12); //ÓÃÓÚ½ÓÊÕµÄ»º³å
+      buffer[0] = ByteBuffer.allocate(12); //ç”¨äºæ¥æ”¶çš„ç¼“å†²
       buffer[0].clear();
       long count = 0;
       try {
@@ -1525,7 +1529,7 @@ public class RealTimeCommunication {
                                 "D");
         count = -1;
       }
-      if (count == -1) { //Ç°ÖÃ»úµÄsocketÍ¨µÀ³öÏÖÒì³£Ê±£¬Ò²ĞèÒª´¦ÀíÁ´Â·¶ÓÁĞ£¬±£Ö¤¶ÓÁĞÖĞµÄÊı¾İÕıÈ·
+      if (count == -1) { //å‰ç½®æœºçš„socketé€šé“å‡ºç°å¼‚å¸¸æ—¶ï¼Œä¹Ÿéœ€è¦å¤„ç†é“¾è·¯é˜Ÿåˆ—ï¼Œä¿è¯é˜Ÿåˆ—ä¸­çš„æ•°æ®æ­£ç¡®
         try {
           FStop = true;
           ConnectFlag = false;
@@ -1546,9 +1550,9 @@ public class RealTimeCommunication {
         mb.TotalLength = strMesshead.substring(1, 8);
         mb.CommandID = strMesshead.substring(14, 16);
         mb.SeqID = strMesshead.substring(16, 24);
-        //Èç¹û±¨ÎÄÍ·ÓĞĞ§£¬Ôò¼ÌĞø¶ÁÈ¡ºóÃæµÄ±¨ÎÄÌåÄÚÈİ£¬½øĞĞ´¦Àí£¬·ñÔò¶ªÊ§µ±Ç°±¨ÎÄÍ·£¬¼ÌĞø¶ÁÈ¡12¸ö×Ö·û
+        //å¦‚æœæŠ¥æ–‡å¤´æœ‰æ•ˆï¼Œåˆ™ç»§ç»­è¯»å–åé¢çš„æŠ¥æ–‡ä½“å†…å®¹ï¼Œè¿›è¡Œå¤„ç†ï¼Œå¦åˆ™ä¸¢å¤±å½“å‰æŠ¥æ–‡å¤´ï¼Œç»§ç»­è¯»å–12ä¸ªå­—ç¬¦
         buffer[1] = ByteBuffer.allocate(Integer.parseInt(mb.TotalLength,
-            16) - 12); //ÓÃÓÚ½ÓÊÕµÄ»º³å
+            16) - 12); //ç”¨äºæ¥æ”¶çš„ç¼“å†²
         count = socketChannel.read(buffer, 1, 1);
         if (count > 0) {
           buffer[1].flip();
@@ -1558,7 +1562,7 @@ public class RealTimeCommunication {
               16));
           processData(Integer.parseInt(mb.CommandID, 16), socketChannel,
                       strMessbody, data);
-          //¶ÔÓÚÓĞĞ§µÄ±¨ÎÄ´¦Àíºó£¬ÍË³ö±¾´ÎÊı¾İµÄ¶ÁÈ¡´¦Àí¹ı³Ì£¬Èç¹û»¹ÓĞÊı¾İĞèÒª´¦Àí»áÔÙ´Î½øÈë±¾º¯Êı´¦Àí
+          //å¯¹äºæœ‰æ•ˆçš„æŠ¥æ–‡å¤„ç†åï¼Œé€€å‡ºæœ¬æ¬¡æ•°æ®çš„è¯»å–å¤„ç†è¿‡ç¨‹ï¼Œå¦‚æœè¿˜æœ‰æ•°æ®éœ€è¦å¤„ç†ä¼šå†æ¬¡è¿›å…¥æœ¬å‡½æ•°å¤„ç†
         }
       }
     }
@@ -1567,9 +1571,9 @@ public class RealTimeCommunication {
   }
 */
   protected void receiveData(SelectionKey key) throws Exception {
-    //Ê×ÏÈ¶ÁÈ¡12¸ö×Ö·ûµÄ±¨ÎÄÍ·ÄÚÈİ£¬·ÖÎö±¨ÎÄÍ·µÄÓĞĞ§ĞÔ
+    //é¦–å…ˆè¯»å–12ä¸ªå­—ç¬¦çš„æŠ¥æ–‡å¤´å†…å®¹ï¼Œåˆ†ææŠ¥æ–‡å¤´çš„æœ‰æ•ˆæ€§
     ByteBuffer[] buffer = new ByteBuffer[10];
-    buffer[0] = ByteBuffer.allocate(12); //ÓÃÓÚ½ÓÊÕµÄ»º³å
+    buffer[0] = ByteBuffer.allocate(12); //ç”¨äºæ¥æ”¶çš„ç¼“å†²
     SocketChannel socketChannel = (SocketChannel) key.channel();
     buffer[0].clear();
     long count = 0;
@@ -1581,7 +1585,7 @@ public class RealTimeCommunication {
       //                        "D");
       count = -1;
     }
-    if (count == -1) { //Ç°ÖÃ»úµÄsocketÍ¨µÀ³öÏÖÒì³£Ê±£¬Ò²ĞèÒª´¦ÀíÁ´Â·¶ÓÁĞ£¬±£Ö¤¶ÓÁĞÖĞµÄÊı¾İÕıÈ·
+    if (count == -1) { //å‰ç½®æœºçš„socketé€šé“å‡ºç°å¼‚å¸¸æ—¶ï¼Œä¹Ÿéœ€è¦å¤„ç†é“¾è·¯é˜Ÿåˆ—ï¼Œä¿è¯é˜Ÿåˆ—ä¸­çš„æ•°æ®æ­£ç¡®
       try {
         FStop = true;
         ConnectFlag = false;
@@ -1602,9 +1606,9 @@ public class RealTimeCommunication {
       mb.TotalLength = strMesshead.substring(1, 8);
       mb.CommandID = strMesshead.substring(8, 16);
       mb.SeqID = strMesshead.substring(16, 24);
-      //Èç¹û±¨ÎÄÍ·ÓĞĞ§£¬Ôò¼ÌĞø¶ÁÈ¡ºóÃæµÄ±¨ÎÄÌåÄÚÈİ£¬½øĞĞ´¦Àí£¬·ñÔò¶ªÊ§µ±Ç°±¨ÎÄÍ·£¬¼ÌĞø¶ÁÈ¡12¸ö×Ö·û
+      //å¦‚æœæŠ¥æ–‡å¤´æœ‰æ•ˆï¼Œåˆ™ç»§ç»­è¯»å–åé¢çš„æŠ¥æ–‡ä½“å†…å®¹ï¼Œè¿›è¡Œå¤„ç†ï¼Œå¦åˆ™ä¸¢å¤±å½“å‰æŠ¥æ–‡å¤´ï¼Œç»§ç»­è¯»å–12ä¸ªå­—ç¬¦
       buffer[1] = ByteBuffer.allocate(Integer.parseInt(mb.TotalLength,
-          16) - 12); //ÓÃÓÚ½ÓÊÕµÄ»º³å
+          16) - 12); //ç”¨äºæ¥æ”¶çš„ç¼“å†²
       count = socketChannel.read(buffer, 1, 1);
       if (count > 0) {
         buffer[1].flip();
@@ -1615,13 +1619,13 @@ public class RealTimeCommunication {
         LastTime = Calendar.getInstance();
         processData(Integer.parseInt(mb.CommandID, 16), socketChannel,
                     strMessbody, data);
-        //¶ÔÓÚÓĞĞ§µÄ±¨ÎÄ´¦Àíºó£¬ÍË³ö±¾´ÎÊı¾İµÄ¶ÁÈ¡´¦Àí¹ı³Ì£¬Èç¹û»¹ÓĞÊı¾İĞèÒª´¦Àí»áÔÙ´Î½øÈë±¾º¯Êı´¦Àí
+        //å¯¹äºæœ‰æ•ˆçš„æŠ¥æ–‡å¤„ç†åï¼Œé€€å‡ºæœ¬æ¬¡æ•°æ®çš„è¯»å–å¤„ç†è¿‡ç¨‹ï¼Œå¦‚æœè¿˜æœ‰æ•°æ®éœ€è¦å¤„ç†ä¼šå†æ¬¡è¿›å…¥æœ¬å‡½æ•°å¤„ç†
       }
     }
   }
 
   protected String AnalyzeCommandType(String Data) throws Exception {
-    //·ÖÎöµÃµ½ÃüÁîÀàĞÍ£¬Èç¹ûÏûÏ¢³¤¶ÈºÍÊÕµ½±¨ÎÄÄÚÈİ³¤¶È²»Í¬£¬Ôò¶ªÆú¸ÃÊı¾İ
+    //åˆ†æå¾—åˆ°å‘½ä»¤ç±»å‹ï¼Œå¦‚æœæ¶ˆæ¯é•¿åº¦å’Œæ”¶åˆ°æŠ¥æ–‡å†…å®¹é•¿åº¦ä¸åŒï¼Œåˆ™ä¸¢å¼ƒè¯¥æ•°æ®
     String sMessageLen = Data.substring(1, 8);
     if (Data.length() != utils.HexStrToInt(sMessageLen) * 2) {
       return "0";
@@ -1634,7 +1638,7 @@ public class RealTimeCommunication {
 
   protected void AckMessage(String CommandID, String sData,
                             SocketChannel channel) {
-    //·µ»ØÈ·ÈÏÏûÏ¢
+    //è¿”å›ç¡®è®¤æ¶ˆæ¯
     String ss = "0000000D08000" + CommandID + sData.substring(16, 24) + "0A";
     ByteBuffer bBuffer = ByteBuffer.allocate(5000);
     bBuffer.clear();
@@ -1653,10 +1657,10 @@ public class RealTimeCommunication {
     for (int i = 0; i < RealTimeList.size(); i++) {
       RealTimeCommunicationInfo ci = (RealTimeCommunicationInfo) RealTimeList.
           get(i);
-      //¸ù¾İÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·ÅĞ¶Ï¸ÃÉÏËÍµÄÕÙ²âÊı¾İÊÇ·ñÊÇ¶ÔÓ¦Êı¾İµÄ·µ»Ø
+      //æ ¹æ®åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€åˆ¤æ–­è¯¥ä¸Šé€çš„å¬æµ‹æ•°æ®æ˜¯å¦æ˜¯å¯¹åº”æ•°æ®çš„è¿”å›
       if ( (ci.AppID == AppID) && (ci.TerminalAddr.trim().equals(ZDLJDZ)) &&
           (!ci.BackFlag)) {
-        //ºóĞøÃüÁî¶¼¼ÓÈç¶ÓÁĞ
+        //åç»­å‘½ä»¤éƒ½åŠ å¦‚é˜Ÿåˆ—
         RealTimeCommunicationInfo rtcInfo = new RealTimeCommunicationInfo();
         rtcInfo.AppID = ci.AppID;
         rtcInfo.TerminalAddr = ci.TerminalAddr;
@@ -1666,7 +1670,7 @@ public class RealTimeCommunication {
         rtcInfo.SJQNR = SJNR;
         rtcInfo.GNM = GNM;
         rtcInfo.KZM = KZM;
-        rtcInfo.BackFlag = true; //ÃüÁî·µ»Ø±êÖ¾
+        rtcInfo.BackFlag = true; //å‘½ä»¤è¿”å›æ ‡å¿—
         rtcInfo.AddInTime = Calendar.getInstance();
         RealTimeList.set(i, rtcInfo);
         //utils.PrintDebugMessage("UpdateCallInfoList,APPID is "+AppID+",ZDLJDZ is " + ZDLJDZ +
@@ -1684,115 +1688,115 @@ public class RealTimeCommunication {
     }
     else {
       switch (CommandType) {
-        case 0x00000007: { //ÕÙ²âÊı¾İµÄ·µ»Ø£¬¶ÔÓÚ·µ»ØÄÚÈİµÄ·ÖÎö
-          int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //Ó¦ÓÃID
-          int iGYH = utils.HexStrToInt(sData.substring(72, 74)); //¹æÔ¼ºÅ
+        case 0x00000007: { //å¬æµ‹æ•°æ®çš„è¿”å›ï¼Œå¯¹äºè¿”å›å†…å®¹çš„åˆ†æ
+          int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //åº”ç”¨ID
+          int iGYH = utils.HexStrToInt(sData.substring(72, 74)); //è§„çº¦å·
           String sZDLJDZ = "";
 
           byte[] Content = new byte[20];
           for (int i = 0; i < 20; i++) {
             Content[i] = indata[i + 16];
           }
-          sZDLJDZ = new String(Content).trim(); //ÖÕ¶ËÂß¼­µØÖ·
+          sZDLJDZ = new String(Content).trim(); //ç»ˆç«¯é€»è¾‘åœ°å€
 
-          int iSJLX = utils.HexStrToInt(sData.substring(78, 80)); //Êı¾İÀàĞÍ
-          int iSJQCD = utils.HexStrToInt(sData.substring(80, 84)); //Êı¾İÇø³¤¶È
+          int iSJLX = utils.HexStrToInt(sData.substring(78, 80)); //æ•°æ®ç±»å‹
+          int iSJQCD = utils.HexStrToInt(sData.substring(80, 84)); //æ•°æ®åŒºé•¿åº¦
 
           Content = new byte[iSJQCD];
           for (int i = 0; i < iSJQCD; i++) {
             Content[i] = indata[i + 42];
           }
-          String sSJQNR = new String(Content).trim(); //Êı¾İÇøÄÚÈİ
+          String sSJQNR = new String(Content).trim(); //æ•°æ®åŒºå†…å®¹
 
           Content = new byte[2];
           for (int i = 0; i < 2; i++) {
             Content[i] = indata[i + 42 + iSJQCD];
           }
-          String sGNM = new String(Content).trim(); //¹¦ÄÜÂë
+          String sGNM = new String(Content).trim(); //åŠŸèƒ½ç 
 
           Content = new byte[2];
           for (int i = 0; i < 2; i++) {
             Content[i] = indata[i + 44 + iSJQCD];
           }
-          String sKZM = new String(Content).trim(); //¿ØÖÆÂë
+          String sKZM = new String(Content).trim(); //æ§åˆ¶ç 
           //utils.PrintDebugMessage("Receive Data Result,APPID is "+iAppID+",ZDLJDZ is " + sZDLJDZ +
           //                        ",SJQNR is " + sSJQNR, "D");
           UpdateCallInfoList(iAppID, sZDLJDZ, iGYH, iSJLX, iSJQCD, sSJQNR, sGNM,
-                             sKZM); //¸ù¾İÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·¶ÔÓ¦ÉÏ²ãµÄµ÷ÓÃ
+                             sKZM); //æ ¹æ®åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€å¯¹åº”ä¸Šå±‚çš„è°ƒç”¨
           break;
         }
-        case 0x00000008: { //ÀúÊ·Êı¾İÕÙ²âµÄ·µ»Ø
-          int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //Ó¦ÓÃID
-          int iGYH = utils.HexStrToInt(sData.substring(72, 74)); //¹æÔ¼ºÅ
+        case 0x00000008: { //å†å²æ•°æ®å¬æµ‹çš„è¿”å›
+          int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //åº”ç”¨ID
+          int iGYH = utils.HexStrToInt(sData.substring(72, 74)); //è§„çº¦å·
           String sZDLJDZ = "";
 
           byte[] Content = new byte[20];
           for (int i = 0; i < 20; i++) {
             Content[i] = indata[i + 16];
           }
-          sZDLJDZ = new String(Content).trim(); //ÖÕ¶ËÂß¼­µØÖ·
+          sZDLJDZ = new String(Content).trim(); //ç»ˆç«¯é€»è¾‘åœ°å€
 
-          int iSJQCD = utils.HexStrToInt(sData.substring(112, 116)); //Êı¾İÇø³¤¶È
+          int iSJQCD = utils.HexStrToInt(sData.substring(112, 116)); //æ•°æ®åŒºé•¿åº¦
 
           Content = new byte[iSJQCD];
           for (int i = 0; i < iSJQCD; i++) {
             Content[i] = indata[i + 58];
           }
-          String sSJQNR = new String(Content).trim(); //Êı¾İÇøÄÚÈİ
+          String sSJQNR = new String(Content).trim(); //æ•°æ®åŒºå†…å®¹
 
           Content = new byte[2];
           for (int i = 0; i < 2; i++) {
             Content[i] = indata[i + 58 + iSJQCD];
           }
-          String sGNM = new String(Content).trim(); //¹¦ÄÜÂë
+          String sGNM = new String(Content).trim(); //åŠŸèƒ½ç 
 
           Content = new byte[2];
           for (int i = 0; i < 2; i++) {
             Content[i] = indata[i + 60 + iSJQCD];
           }
-          String sKZM = new String(Content).trim(); //¿ØÖÆÂë
+          String sKZM = new String(Content).trim(); //æ§åˆ¶ç 
           //utils.PrintDebugMessage("Receive Data Result,APPID is "+iAppID+",ZDLJDZ is " + sZDLJDZ +
           //                        ",SJQNR is " + sSJQNR, "D");
           UpdateCallInfoList(iAppID, sZDLJDZ, iGYH, 220, iSJQCD, sSJQNR, sGNM,
-                             sKZM); //¸ù¾İÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·¶ÔÓ¦ÉÏ²ãµÄµ÷ÓÃ
+                             sKZM); //æ ¹æ®åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€å¯¹åº”ä¸Šå±‚çš„è°ƒç”¨
           break;
         }
-        case 0x00000009: { //Òì³£ÕÙ²âÊı¾İµÄ·µ»Ø
-          int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //Ó¦ÓÃID
-          int iGYH = utils.HexStrToInt(sData.substring(72, 74)); //¹æÔ¼ºÅ
+        case 0x00000009: { //å¼‚å¸¸å¬æµ‹æ•°æ®çš„è¿”å›
+          int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //åº”ç”¨ID
+          int iGYH = utils.HexStrToInt(sData.substring(72, 74)); //è§„çº¦å·
           String sZDLJDZ = "";
 
           byte[] Content = new byte[20];
           for (int i = 0; i < 20; i++) {
             Content[i] = indata[i + 16];
           }
-          sZDLJDZ = new String(Content).trim(); //ÖÕ¶ËÂß¼­µØÖ·
+          sZDLJDZ = new String(Content).trim(); //ç»ˆç«¯é€»è¾‘åœ°å€
 
-          int iSJQCD = utils.HexStrToInt(sData.substring(128, 132)); //Êı¾İÇø³¤¶È
+          int iSJQCD = utils.HexStrToInt(sData.substring(128, 132)); //æ•°æ®åŒºé•¿åº¦
 
           Content = new byte[iSJQCD];
           for (int i = 0; i < iSJQCD; i++) {
             Content[i] = indata[i + 66];
           }
-          String sSJQNR = new String(Content).trim(); //Êı¾İÇøÄÚÈİ
+          String sSJQNR = new String(Content).trim(); //æ•°æ®åŒºå†…å®¹
 
           Content = new byte[2];
           for (int i = 0; i < 2; i++) {
             Content[i] = indata[i + 66 + iSJQCD];
           }
-          String sGNM = new String(Content).trim(); //¹¦ÄÜÂë
+          String sGNM = new String(Content).trim(); //åŠŸèƒ½ç 
 
           Content = new byte[2];
           for (int i = 0; i < 2; i++) {
             Content[i] = indata[i + 68 + iSJQCD];
           }
-          String sKZM = new String(Content).trim(); //¿ØÖÆÂë
+          String sKZM = new String(Content).trim(); //æ§åˆ¶ç 
           UpdateCallInfoList(iAppID, sZDLJDZ, iGYH, 230, iSJQCD, sSJQNR, sGNM,
-                             sKZM); //¸ù¾İÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·¶ÔÓ¦ÉÏ²ãµÄµ÷ÓÃ
+                             sKZM); //æ ¹æ®åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€å¯¹åº”ä¸Šå±‚çš„è°ƒç”¨
           break;
         }
         case 0x00000016: {
-          int iCount = utils.HexStrToInt(sData.substring(24, 28)); //·µ»ØµÄÖÕ¶ËÊıÁ¿
+          int iCount = utils.HexStrToInt(sData.substring(24, 28)); //è¿”å›çš„ç»ˆç«¯æ•°é‡
           String sZDLJDZ = "";
           TerminalStatusList.clear();
           int iPos = 28;
@@ -1801,10 +1805,10 @@ public class RealTimeCommunication {
             for (int j = 0; j < 20; j++) {
               Content[j] = indata[j + iPos / 2];
             }
-            sZDLJDZ = new String(Content).trim(); //ÖÕ¶ËÂß¼­µØÖ·
+            sZDLJDZ = new String(Content).trim(); //ç»ˆç«¯é€»è¾‘åœ°å€
             iPos = iPos + 40;
             int iOnLineStatus = utils.HexStrToInt(sData.substring(iPos,
-                iPos + 2)); //ÔÚÏß×´Ì¬
+                iPos + 2)); //åœ¨çº¿çŠ¶æ€
             iPos = iPos + 2;
             TerminalOnLineStatus to = new TerminalOnLineStatus();
             to.TerminalAddress = sZDLJDZ;
@@ -1814,9 +1818,9 @@ public class RealTimeCommunication {
           GetTerminalOnLineStatusBack = true;
           break;
         }
-        case 0x00000108:case 0x00000109: { //ÕÙ²âÊı¾İµÄ·µ»Ø£¬¶ÔÓÚ·µ»ØÄÚÈİµÄ·ÖÎö
-            int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //Ó¦ÓÃID
-            int iGYH; //¹æÔ¼ºÅ
+        case 0x00000108:case 0x00000109: { //å¬æµ‹æ•°æ®çš„è¿”å›ï¼Œå¯¹äºè¿”å›å†…å®¹çš„åˆ†æ
+            int iAppID = utils.HexStrToInt(sData.substring(24, 32)); //åº”ç”¨ID
+            int iGYH; //è§„çº¦å·
             if (CommandType==264){
             	iGYH = 1000;
             }
@@ -1829,21 +1833,21 @@ public class RealTimeCommunication {
             for (int i = 0; i < 20; i++) {
               Content[i] = indata[i + 16];
             }
-            sZDLJDZ = new String(Content).trim(); //ÖÕ¶ËÂß¼­µØÖ·
+            sZDLJDZ = new String(Content).trim(); //ç»ˆç«¯é€»è¾‘åœ°å€
 
-            int iSJQCD = utils.HexStrToInt(sData.substring(72, 76)); //Êı¾İÇø³¤¶È
+            int iSJQCD = utils.HexStrToInt(sData.substring(72, 76)); //æ•°æ®åŒºé•¿åº¦
 
             Content = new byte[iSJQCD];
             for (int i = 0; i < iSJQCD; i++) {
               Content[i] = indata[i + 38];
             }
-            String sSJQNR = new String(Content).trim(); //Êı¾İÇøÄÚÈİ
+            String sSJQNR = new String(Content).trim(); //æ•°æ®åŒºå†…å®¹
 
             
             //utils.PrintDebugMessage("Receive Data Result,ZDLJDZ is " + sZDLJDZ +
             //                        ",SJQNR is " + sSJQNR, "D");
             UpdateCallInfoList(iAppID, sZDLJDZ, iGYH, 0, iSJQCD, sSJQNR, "",
-                               ""); //¸ù¾İÓ¦ÓÃIDºÍÖÕ¶ËÂß¼­µØÖ·¶ÔÓ¦ÉÏ²ãµÄµ÷ÓÃ
+                               ""); //æ ¹æ®åº”ç”¨IDå’Œç»ˆç«¯é€»è¾‘åœ°å€å¯¹åº”ä¸Šå±‚çš„è°ƒç”¨
             break;
           }
         default: {
@@ -1855,49 +1859,49 @@ public class RealTimeCommunication {
 
   private void processData(int CommandID, SocketChannel channel,
                            String ReceiveData, byte[] Data) {
-    switch (CommandID) { //¸ù¾İÃüÁîÀàĞÍ·Ö±ğ´¦Àí
-      case 0x08000004: { //ÆÕÍ¨ÕÙ²âÃüÁîµÄÈ·ÈÏ
+    switch (CommandID) { //æ ¹æ®å‘½ä»¤ç±»å‹åˆ†åˆ«å¤„ç†
+      case 0x08000004: { //æ™®é€šå¬æµ‹å‘½ä»¤çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 0x08000005: { //ÀúÊ·Êı¾İ¶ÁÈ¡µÄÈ·ÈÏ
+      case 0x08000005: { //å†å²æ•°æ®è¯»å–çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 0x08000006: { //Òì³£Êı¾İ¶ÁÈ¡µÄÈ·ÈÏ
+      case 0x08000006: { //å¼‚å¸¸æ•°æ®è¯»å–çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 0x00000007: { //´ÓÍ¨Ñ¶·şÎñÌá½»µÄÕÙ²â·µ»ØÊı¾İ´¦Àí
+      case 0x00000007: { //ä»é€šè®¯æœåŠ¡æäº¤çš„å¬æµ‹è¿”å›æ•°æ®å¤„ç†
         AckMessage(ReceiveData.substring(13, 16), ReceiveData, channel);
         AnalyzeCommandContent(ReceiveData, CommandID, Data, channel);
         break;
       }
-      case 0x00000008: { //´ÓÍ¨Ñ¶·şÎñÌá½»µÄÀúÊ·Êı¾İ´¦Àí
+      case 0x00000008: { //ä»é€šè®¯æœåŠ¡æäº¤çš„å†å²æ•°æ®å¤„ç†
         AckMessage(ReceiveData.substring(13, 16), ReceiveData, channel);
         AnalyzeCommandContent(ReceiveData, CommandID, Data, channel);
         break;
       }
-      case 0x00000009: { //´ÓÍ¨Ñ¶·şÎñÌá½»µÄÒì³£Êı¾İ´¦Àí
+      case 0x00000009: { //ä»é€šè®¯æœåŠ¡æäº¤çš„å¼‚å¸¸æ•°æ®å¤„ç†
         AckMessage(ReceiveData.substring(13, 16), ReceiveData, channel);
         AnalyzeCommandContent(ReceiveData, CommandID, Data, channel);
         break;
       }
-      case 0x0800000A: { //ÏÂ·¢×Ô¶¨Òå¶ÌĞÅµÄÈ·ÈÏ
+      case 0x0800000A: { //ä¸‹å‘è‡ªå®šä¹‰çŸ­ä¿¡çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 0x0800000C: { //×Ô¶¨ÒåÃüÁîµÄÈ·ÈÏ
+      case 0x0800000C: { //è‡ªå®šä¹‰å‘½ä»¤çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 0x0800000D: { //È·ÈÏÏûÏ¢£¬²»×ö´¦Àí
+      case 0x0800000D: { //ç¡®è®¤æ¶ˆæ¯ï¼Œä¸åšå¤„ç†
         ConnectFlag = true;
         AckBack = true;
         //utils.PrintDebugMessage("MasterStation Connected", "D");
         break;
       }
-      case 0x0800000E: { //È·ÈÏÏûÏ¢£¬²»×ö´¦Àí
+      case 0x0800000E: { //ç¡®è®¤æ¶ˆæ¯ï¼Œä¸åšå¤„ç†
         try {
           channel.socket().close();
           channel.close();
@@ -1910,16 +1914,16 @@ public class RealTimeCommunication {
         AckBack = true;
         break;
       }
-      case 0x08000015: { //ÏÂ·¢ÖÕ¶ËÂß¼­µØÖ·µÄÏûÏ¢È·ÈÏ£¬²»´¦Àí
+      case 0x08000015: { //ä¸‹å‘ç»ˆç«¯é€»è¾‘åœ°å€çš„æ¶ˆæ¯ç¡®è®¤ï¼Œä¸å¤„ç†
         AckBack = true;
         break;
       }
-      case 0x00000016: { //ÖÕ¶ËÔÚÏß×´Ì¬ÏûÏ¢µÄ·µ»Ø
+      case 0x00000016: { //ç»ˆç«¯åœ¨çº¿çŠ¶æ€æ¶ˆæ¯çš„è¿”å›
         AckMessage(ReceiveData.substring(13, 16), ReceiveData, channel);
         AnalyzeCommandContent(ReceiveData, CommandID, Data, channel);
         break;
       }
-      case 0x0800001E: { //ÉèÖÃÖÕ¶ËÔÚÏß×´Ì¬µÄÏûÏ¢È·ÈÏ£¬²»´¦Àí
+      case 0x0800001E: { //è®¾ç½®ç»ˆç«¯åœ¨çº¿çŠ¶æ€çš„æ¶ˆæ¯ç¡®è®¤ï¼Œä¸å¤„ç†
         AckBack = true;
         break;
       }
@@ -1952,51 +1956,51 @@ public class RealTimeCommunication {
       return ;
     }
     //System.out.println("CommandID is " + (CommandID));
-    switch (Integer.parseInt(CommandID, 16)) { //¸ù¾İÃüÁîÀàĞÍ·Ö±ğ´¦Àí
-      case 4: { //ÆÕÍ¨ÕÙ²âÃüÁîµÄÈ·ÈÏ
+    switch (Integer.parseInt(CommandID, 16)) { //æ ¹æ®å‘½ä»¤ç±»å‹åˆ†åˆ«å¤„ç†
+      case 4: { //æ™®é€šå¬æµ‹å‘½ä»¤çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 5: { //ÀúÊ·Êı¾İ¶ÁÈ¡µÄÈ·ÈÏ
+      case 5: { //å†å²æ•°æ®è¯»å–çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 6: { //Òì³£Êı¾İ¶ÁÈ¡µÄÈ·ÈÏ
+      case 6: { //å¼‚å¸¸æ•°æ®è¯»å–çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 7: { //´ÓÍ¨Ñ¶·şÎñÌá½»µÄÕÙ²â·µ»ØÊı¾İ´¦Àí
+      case 7: { //ä»é€šè®¯æœåŠ¡æäº¤çš„å¬æµ‹è¿”å›æ•°æ®å¤„ç†
         //AckMessage(CommandID, sData, channel);
         AnalyzeCommandContent(sData, utils.ten2sixteen(CommandID), InData,
                               channel);
         break;
       }
-      case 8: { //´ÓÍ¨Ñ¶·şÎñÌá½»µÄÀúÊ·Êı¾İ´¦Àí
+      case 8: { //ä»é€šè®¯æœåŠ¡æäº¤çš„å†å²æ•°æ®å¤„ç†
         //AckMessage(CommandID, sData, channel);
         AnalyzeCommandContent(sData, utils.ten2sixteen(CommandID), InData,
                               channel);
         break;
       }
-      case 9: { //´ÓÍ¨Ñ¶·şÎñÌá½»µÄÒì³£Êı¾İ´¦Àí
+      case 9: { //ä»é€šè®¯æœåŠ¡æäº¤çš„å¼‚å¸¸æ•°æ®å¤„ç†
         //AckMessage(CommandID, sData, channel);
         AnalyzeCommandContent(sData, utils.ten2sixteen(CommandID), InData,
                               channel);
         break;
       }
-      case 10: { //ÏÂ·¢×Ô¶¨Òå¶ÌĞÅµÄÈ·ÈÏ
+      case 10: { //ä¸‹å‘è‡ªå®šä¹‰çŸ­ä¿¡çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 12: { //×Ô¶¨ÒåÃüÁîµÄÈ·ÈÏ
+      case 12: { //è‡ªå®šä¹‰å‘½ä»¤çš„ç¡®è®¤
         AckBack = true;
         break;
       }
-      case 13: { //È·ÈÏÏûÏ¢£¬²»×ö´¦Àí
+      case 13: { //ç¡®è®¤æ¶ˆæ¯ï¼Œä¸åšå¤„ç†
         ConnectFlag = true;
         AckBack = true;
         break;
       }
-      case 14: { //È·ÈÏÏûÏ¢£¬²»×ö´¦Àí
+      case 14: { //ç¡®è®¤æ¶ˆæ¯ï¼Œä¸åšå¤„ç†
         try {
           channel.socket().close();
           channel.close();
@@ -2009,17 +2013,17 @@ public class RealTimeCommunication {
         AckBack = true;
         break;
       }
-      case 21: { //ÏÂ·¢ÖÕ¶ËÂß¼­µØÖ·µÄÏûÏ¢È·ÈÏ£¬²»´¦Àí
+      case 21: { //ä¸‹å‘ç»ˆç«¯é€»è¾‘åœ°å€çš„æ¶ˆæ¯ç¡®è®¤ï¼Œä¸å¤„ç†
         AckBack = true;
         break;
       }
-      case 22: { //ÖÕ¶ËÔÚÏß×´Ì¬ÏûÏ¢µÄ·µ»Ø
+      case 22: { //ç»ˆç«¯åœ¨çº¿çŠ¶æ€æ¶ˆæ¯çš„è¿”å›
         AckMessage(CommandID, sData, channel);
         AnalyzeCommandContent(sData, utils.ten2sixteen(CommandID), InData,
                               channel);
         break;
       }
-      case 30: { //ÉèÖÃÖÕ¶ËÔÚÏß×´Ì¬µÄÏûÏ¢È·ÈÏ£¬²»´¦Àí
+      case 30: { //è®¾ç½®ç»ˆç«¯åœ¨çº¿çŠ¶æ€çš„æ¶ˆæ¯ç¡®è®¤ï¼Œä¸å¤„ç†
         AckBack = true;
         break;
       }
@@ -2029,17 +2033,17 @@ public class RealTimeCommunication {
     }
   }
 */
-  class RealTimeCommunicationInfo { //ÊµÊ±Í¨Ñ¶µÄ¶ÔÏó½á¹¹
-    public int AppID = 0; //Ó¦ÓÃID
-    public String TerminalAddr = ""; //ÖÕ¶ËÂß¼­µØÖ·
-    public int GYH = 0; //¹æÔ¼ºÅ
-    public int DataType = 0; //Êı¾İÀàĞÍ
-    public int SJQCD = 0; //Êı¾İÇø³¤¶È
-    public String SJQNR = ""; //Êı¾İÇøÄÚÈİ
-    public String GNM = ""; //¹¦ÄÜÂë
-    public String KZM = ""; //¿ØÖÆÂë
-    public boolean BackFlag = false; //ÏûÏ¢ÊÇ·ñ·µ»Ø±êÖ¾
-    public Calendar AddInTime; //¼ÓÈë¶ÓÁĞµÄÊ±¼ä
+  class RealTimeCommunicationInfo { //å®æ—¶é€šè®¯çš„å¯¹è±¡ç»“æ„
+    public int AppID = 0; //åº”ç”¨ID
+    public String TerminalAddr = ""; //ç»ˆç«¯é€»è¾‘åœ°å€
+    public int GYH = 0; //è§„çº¦å·
+    public int DataType = 0; //æ•°æ®ç±»å‹
+    public int SJQCD = 0; //æ•°æ®åŒºé•¿åº¦
+    public String SJQNR = ""; //æ•°æ®åŒºå†…å®¹
+    public String GNM = ""; //åŠŸèƒ½ç 
+    public String KZM = ""; //æ§åˆ¶ç 
+    public boolean BackFlag = false; //æ¶ˆæ¯æ˜¯å¦è¿”å›æ ‡å¿—
+    public Calendar AddInTime; //åŠ å…¥é˜Ÿåˆ—çš„æ—¶é—´
   }
 
   class RealTimeCommunicationInfoListThread
@@ -2047,14 +2051,14 @@ public class RealTimeCommunication {
     public void run() {
       while (true) {
         if (FStop) {
-          fl.WriteLog("ÊµÊ±Í¨Ñ¶¼à¿ØÏß³ÌÍË³ö£¡");
+          fl.WriteLog("å®æ—¶é€šè®¯ç›‘æ§çº¿ç¨‹é€€å‡ºï¼");
           return;
         }
         try {
           for (int i = 0; i < RealTimeList.size(); i++) {
             RealTimeCommunicationInfo ci = (RealTimeCommunicationInfo)
                 RealTimeList.get(i);
-            if (ci.BackFlag) { //ÒÑ¾­·µ»ØµÄ³¬Ê±Ê±¼äÎª60s
+            if (ci.BackFlag) { //å·²ç»è¿”å›çš„è¶…æ—¶æ—¶é—´ä¸º60s
               ci.AddInTime.add(Calendar.MINUTE, 1);
               if (ci.AddInTime.before(Calendar.getInstance())) {
                 RealTimeList.remove(i);
@@ -2064,7 +2068,7 @@ public class RealTimeCommunication {
                 ci.AddInTime.add(Calendar.MINUTE, -1);
               }
             }
-            else { //Ã»ÓĞ·µ»ØµÄ³¬Ê±Ê±¼äÎª2·ÖÖÓ
+            else { //æ²¡æœ‰è¿”å›çš„è¶…æ—¶æ—¶é—´ä¸º2åˆ†é’Ÿ
               ci.AddInTime.add(Calendar.MINUTE, 2);
               if (ci.AddInTime.before(Calendar.getInstance())) {
                 RealTimeList.remove(i);
@@ -2083,7 +2087,7 @@ public class RealTimeCommunication {
               //SimpleDateFormat formatter = new SimpleDateFormat(
               //    "yyyy-MM-dd HH:mm:ss");
               //System.out.println(formatter.format(c.getTime()) +
-              //                   "ÊµÊ±Í¨Ñ¶¶Ï¿ªÓëÍ¨Ñ¶·şÎñµÄ¿ÕÏĞÁ¬½Ó");
+              //                   "å®æ—¶é€šè®¯æ–­å¼€ä¸é€šè®¯æœåŠ¡çš„ç©ºé—²è¿æ¥");
               DisConnect();
             }
             else {
@@ -2105,17 +2109,17 @@ public class RealTimeCommunication {
     public void run() {
       while (true) {
         if (FStop) {
-          fl.WriteLog("¶¨Ê±·¢ËÍÊı¾İÏß³ÌÍË³ö£¡");
+          fl.WriteLog("å®šæ—¶å‘é€æ•°æ®çº¿ç¨‹é€€å‡ºï¼");
           return;
         }
         try {
           int n = 0;
           try {
-            n = selector.selectNow(); //»ñµÃio×¼±¸¾ÍĞ÷µÄchannelÊıÁ¿
+            n = selector.selectNow(); //è·å¾—ioå‡†å¤‡å°±ç»ªçš„channelæ•°é‡
           }
           catch (Exception ex2) {
           }
-          if (n == 0) { //ÅĞ¶Ïµ±Ç°ÊÇ·ñÓĞÁ¬½ÓÊÂ¼şÒª´¦Àí
+          if (n == 0) { //åˆ¤æ–­å½“å‰æ˜¯å¦æœ‰è¿æ¥äº‹ä»¶è¦å¤„ç†
             try {
               Thread.sleep(1);
             }
@@ -2135,33 +2139,34 @@ public class RealTimeCommunication {
       }
     }
 
-    public void SendData() {
-      Calendar SendTime = Calendar.getInstance(); //·¢ËÍÃüÁîÊ±¼ä£¬ÓÃÓÚÅĞ¶ÏÃüÁî³¬Ê±µÄÖØ·¢
-      int ReSendTimes = 0; //ÃüÁîÖØ¸´·¢ËÍ´ÎÊı
+    @SuppressWarnings("rawtypes")
+	public void SendData() {
+      Calendar SendTime = Calendar.getInstance(); //å‘é€å‘½ä»¤æ—¶é—´ï¼Œç”¨äºåˆ¤æ–­å‘½ä»¤è¶…æ—¶çš„é‡å‘
+      int ReSendTimes = 0; //å‘½ä»¤é‡å¤å‘é€æ¬¡æ•°
       try {
         Set readyKeys = selector.selectedKeys();
         Iterator i = readyKeys.iterator();
         while (i.hasNext()) {
-          SelectionKey key = (SelectionKey) i.next(); //È¡µÃÓÃÓÚÅĞ¶Ïµ±Ç°socketÍ¨µÀµÄ×´Ì¬¶ÔÏó
+          SelectionKey key = (SelectionKey) i.next(); //å–å¾—ç”¨äºåˆ¤æ–­å½“å‰socketé€šé“çš„çŠ¶æ€å¯¹è±¡
           i.remove();
-          if (key.isConnectable()) { //ËµÃ÷socket¿ÉÒÔ×¼±¸Á¬½Ó
+          if (key.isConnectable()) { //è¯´æ˜socketå¯ä»¥å‡†å¤‡è¿æ¥
             SocketChannel keyChannel = (SocketChannel) key.channel();
             keyChannel.register(selector,
                                 SelectionKey.OP_READ |
-                                SelectionKey.OP_WRITE); //±íÃ÷ÏÖÔÚ´¦ÓÚ¿ÉÊÕ¿É·¢×´Ì¬£¬Ò»°ã¾ÍÊÇ¼ÌĞø´¦Àí·¢ËÍÊ±¼ä
-            if (keyChannel.isConnectionPending()) { //Èç¹ûÇëÇóÁ¬½ÓÊ±¼ä±»¹Ò£¬ÔòÖ÷¶¯ÇëÇóÖĞÖ¹
+                                SelectionKey.OP_WRITE); //è¡¨æ˜ç°åœ¨å¤„äºå¯æ”¶å¯å‘çŠ¶æ€ï¼Œä¸€èˆ¬å°±æ˜¯ç»§ç»­å¤„ç†å‘é€æ—¶é—´
+            if (keyChannel.isConnectionPending()) { //å¦‚æœè¯·æ±‚è¿æ¥æ—¶é—´è¢«æŒ‚ï¼Œåˆ™ä¸»åŠ¨è¯·æ±‚ä¸­æ­¢
               keyChannel.finishConnect();
             }
-            //·¢ËÍµÇÂ¼ÃüÁî
+            //å‘é€ç™»å½•å‘½ä»¤
             try {
               BuildConnectAndSend(key);
             }
             catch (Exception ex6) {
             }
           }
-          if (key.isReadable()) { //¸ÃÊÂ¼şÊÇ±»¶¯´¥·¢µÄ
+          if (key.isReadable()) { //è¯¥äº‹ä»¶æ˜¯è¢«åŠ¨è§¦å‘çš„
             try {
-              receiveData(key); //´¦Àí½ÓÊÕµ½µÄÊı¾İ
+              receiveData(key); //å¤„ç†æ¥æ”¶åˆ°çš„æ•°æ®
             }
             catch (Exception ex3) {
             }
@@ -2210,19 +2215,19 @@ public class RealTimeCommunication {
                                           si.ArithmeticNo);
                   }
                   catch (Exception ex1) {
-                    fl.WriteLog("·¢ËÍÊµÊ±Í¨Ñ¶Êı¾İÒì³££¬Òì³£ÄÚÈİ:" + ex1.toString());
+                    fl.WriteLog("å‘é€å®æ—¶é€šè®¯æ•°æ®å¼‚å¸¸ï¼Œå¼‚å¸¸å†…å®¹:" + ex1.toString());
                   }
                   SendTime = Calendar.getInstance();
                   SendTime.add(Calendar.MILLISECOND, 100);
                   AckBack = true;
                 }
-                //ÆÁ±ÎÖØ·¢£¬ÒòÎªÍ¨Ñ¶·şÎñ²»ÔÙ»ØÈ·ÈÏ
+                //å±è”½é‡å‘ï¼Œå› ä¸ºé€šè®¯æœåŠ¡ä¸å†å›ç¡®è®¤
                 else if (SendTime.before(Calendar.getInstance()) &&
                          (ReSendTimes < 2)) {
                   if (si != null) {
                     //System.err.println("ReSend");
-                    fl.WriteLog("ÊµÊ±Í¨Ñ¶ÖØ·¢ÃüÁî£¬Ó¦ÓÃID£º" + si.AppID + "£¬ÖÕ¶ËÂß¼­µØÖ·£º" +
-                                si.TerminalAddress + "£¬Êı¾İÇøÄÚÈİ£º" + si.DataContent);
+                    fl.WriteLog("å®æ—¶é€šè®¯é‡å‘å‘½ä»¤ï¼Œåº”ç”¨IDï¼š" + si.AppID + "ï¼Œç»ˆç«¯é€»è¾‘åœ°å€ï¼š" +
+                                si.TerminalAddress + "ï¼Œæ•°æ®åŒºå†…å®¹ï¼š" + si.DataContent);
                     ReSendTimes = ReSendTimes + 1;
                     try {
                       BuildSendFrameAndSend(si.AppID,
@@ -2239,7 +2244,7 @@ public class RealTimeCommunication {
                                             si.ArithmeticNo);
                     }
                     catch (Exception ex2) {
-                      fl.WriteLog("·¢ËÍÊµÊ±Í¨Ñ¶Êı¾İÒì³££¬Òì³£ÄÚÈİ:" + ex2.toString());
+                      fl.WriteLog("å‘é€å®æ—¶é€šè®¯æ•°æ®å¼‚å¸¸ï¼Œå¼‚å¸¸å†…å®¹:" + ex2.toString());
                     }
                     SendTime = Calendar.getInstance();
                     SendTime.add(Calendar.MILLISECOND, 100);
@@ -2268,9 +2273,9 @@ public class RealTimeCommunication {
         }
       }
       catch (Exception ex4) {
-        fl.WriteLog("ÊµÊ±Í¨Ñ¶Á´Â·Òì³££¬Òì³£ÄÚÈİ£º" + ex4.toString());
+        fl.WriteLog("å®æ—¶é€šè®¯é“¾è·¯å¼‚å¸¸ï¼Œå¼‚å¸¸å†…å®¹ï¼š" + ex4.toString());
         try {
-          Thread.sleep(1000 * ReConnectTimes); //¸ù¾İÖØÁ¬´ÎÊı¾ö¶¨ĞèÒªµÈ´ıµÄÊ±¼ä
+          Thread.sleep(1000 * ReConnectTimes); //æ ¹æ®é‡è¿æ¬¡æ•°å†³å®šéœ€è¦ç­‰å¾…çš„æ—¶é—´
         }
         catch (Exception ex8) {
         }
@@ -2284,7 +2289,6 @@ public class RealTimeCommunication {
     try {
 		Thread.sleep(1500);
 	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
     String s = "68BD08BD08684B33332222500F6D0000080C99C5EEC7990C5630303030303330383132313356565623280325051100000002B8390002EC390002EC390002EC390002F2390002EC390002F8390002FE390002043A0002EC390002EC390002EC3900020A3A0002103A0002163A00021C3A0002EC390002EC390002EC390002EC390002EC390002EC390002223A0002283A00022E3A0002343A00023A3A0002EC390002EC390002EC3900026245000254450002EC390002EC39000270450002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002A0450002EC390002EC390002EC390002A84900026E4B0002EC390002EC390002184A0002D84B0002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002BC520002EC390002EC390002EC390002EC390002EC3900028A4A00024E4C0002EC390002EC390002FC4A0002BC4C0002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002EC390002103D0002983C0002A63C0002103D0002B83C0002103D0002103D0002103D0002CA3C0002103D0002103D0002103D0002103D0002EE55554816";
@@ -2311,21 +2315,21 @@ public class RealTimeCommunication {
     }
   }
 
-  class SendInfo { //ĞèÒªÏÂ·¢µÄÄÚÈİ½á¹¹£¬ÓÃÓÚ±£´æµ½¶ÓÁĞÖĞ
-    public int AppID; //Ó¦ÓÃID
-    public String TerminalAddress; //ÖÕ¶ËÂß¼­µØÖ·»òÕßÊÇÄ¿±êµÄÊÖ»úºÅÂë
-    public int TerminalProtocol; //ÖÕ¶Ë¹æÔ¼ºÅ»òÕßÊÇ¶ÌĞÅ·¢ËÍµÄÀàĞÍ
-    public int TerminalCommType; //ÖÕ¶ËÍ¨Ñ¶·½Ê½
-    public String FunctionCode; //¹¦ÄÜÂë
-    public int ContentLength; //Êı¾İÇø³¤¶È
-    public String DataContent; //Êı¾İÇøÄÚÈİ
-    public int TaskID; //ÈÎÎñºÅ
-    public int TaskCount; //ÈÎÎñµãÊı
-    public int AlarmCount; //Òì³£µãÊı
-    public int Priority; //ÓÅÏÈ¼¶(Õë¶Ô230MÍ¨Ñ¶ÀàĞÍ)
-    public int ArithmeticNo; //Ëã·¨±àºÅ(Õë¶Ô¹úÍøºÍÌì½òÄ£¿é±í¼ÓÃÜ)
-    public boolean SendShortMsg = false; //Ö±½Ó·¢ËÍµÄ±êÖ¾£¬ÓÃÓÚ·¢ËÍ¶ÌĞÅ
-    public boolean SendSelfDefinedMsg = false; //ÓÃÓÚ·¢ËÍ×Ô¶¨ÒåÃüÁî
+  class SendInfo { //éœ€è¦ä¸‹å‘çš„å†…å®¹ç»“æ„ï¼Œç”¨äºä¿å­˜åˆ°é˜Ÿåˆ—ä¸­
+    public int AppID; //åº”ç”¨ID
+    public String TerminalAddress; //ç»ˆç«¯é€»è¾‘åœ°å€æˆ–è€…æ˜¯ç›®æ ‡çš„æ‰‹æœºå·ç 
+    public int TerminalProtocol; //ç»ˆç«¯è§„çº¦å·æˆ–è€…æ˜¯çŸ­ä¿¡å‘é€çš„ç±»å‹
+    public int TerminalCommType; //ç»ˆç«¯é€šè®¯æ–¹å¼
+    public String FunctionCode; //åŠŸèƒ½ç 
+    public int ContentLength; //æ•°æ®åŒºé•¿åº¦
+    public String DataContent; //æ•°æ®åŒºå†…å®¹
+    public int TaskID; //ä»»åŠ¡å·
+    public int TaskCount; //ä»»åŠ¡ç‚¹æ•°
+    public int AlarmCount; //å¼‚å¸¸ç‚¹æ•°
+    public int Priority; //ä¼˜å…ˆçº§(é’ˆå¯¹230Mé€šè®¯ç±»å‹)
+    public int ArithmeticNo; //ç®—æ³•ç¼–å·(é’ˆå¯¹å›½ç½‘å’Œå¤©æ´¥æ¨¡å—è¡¨åŠ å¯†)
+    public boolean SendShortMsg = false; //ç›´æ¥å‘é€çš„æ ‡å¿—ï¼Œç”¨äºå‘é€çŸ­ä¿¡
+    public boolean SendSelfDefinedMsg = false; //ç”¨äºå‘é€è‡ªå®šä¹‰å‘½ä»¤
   }
 
   private void jbInit() throws Exception {
@@ -2337,3 +2341,4 @@ class MessageBody {
   public String CommandID;
   public String SeqID;
 }
+

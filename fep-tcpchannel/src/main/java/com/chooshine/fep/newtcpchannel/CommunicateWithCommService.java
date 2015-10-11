@@ -182,6 +182,7 @@ public class CommunicateWithCommService extends Thread {
 	}
 
 	//将收到要发送的数据加入到发送队列中
+	@SuppressWarnings("unchecked")
 	private void AddCommandInfoToSendList(String Data, byte[] bData) {
 		try {
 			int MessageLength = 0;
@@ -261,6 +262,7 @@ public class CommunicateWithCommService extends Thread {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void run() {
 		//boolean SocketInit = true;
 		while (true) {

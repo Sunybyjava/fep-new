@@ -5,14 +5,17 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class HXThreadPool extends ThreadPoolExecutor {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public HXThreadPool() {
 		super(5, 50, 10, TimeUnit.SECONDS, new ArrayBlockingQueue(1000),new DiscardOldestPolicy());
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private HXThreadPool(int min, int max, int queue) {
 		super(min, max, 10, TimeUnit.SECONDS, new ArrayBlockingQueue(queue),new DiscardOldestPolicy());
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private HXThreadPool(int min, int max){
 		super(min, max, 10, TimeUnit.SECONDS, new ArrayBlockingQueue(1000),new DiscardOldestPolicy());
 	}

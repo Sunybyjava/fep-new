@@ -47,7 +47,8 @@ public class SocketCommunicationBase {
 	    serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 	  }
 
-	  public void startWork() throws Exception {
+	  @SuppressWarnings("rawtypes")
+	public void startWork() throws Exception {
 	    while (true) {
 	      int n = selector.select(); //获得io准备就绪的channel数量
 	      if (n == 0) {

@@ -130,6 +130,7 @@ public class FrameDataAreaExplainQuanGuo { //国网数据区解帧类
 		return Result;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public SFE_DataListInfo ExplainNormalDataAreaQuanGuo( //普通数据区解释
 			String FrameDataArea, int TermialProtocolType, String ControlCode) { //帧数据区,终端规约,功能码
 		SFE_DataListInfo DataListInfo = new SFE_DataListInfo();
@@ -231,6 +232,7 @@ public class FrameDataAreaExplainQuanGuo { //国网数据区解帧类
 		return DataListInfo;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public SFE_DataListInfo ExplainSetResultDataAreaQuanGuo( //国网设置返回区解释
 			String FrameDataArea, int TermialProtocolType, String ControlCode) { //帧数据区,终端规约,控制码
 		SFE_DataListInfo DataListInfo = new SFE_DataListInfo();
@@ -295,6 +297,7 @@ public class FrameDataAreaExplainQuanGuo { //国网数据区解帧类
 		return DataListInfo;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public SFE_DataListInfo ExplainHistoryDataAreaQuanGuo(
 			//历史数据区解释(一二类历史数据)
 			String FrameDataArea, int TermialProtocolType, String ControlCode,
@@ -584,6 +587,7 @@ public class FrameDataAreaExplainQuanGuo { //国网数据区解帧类
 		return DataListInfo;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public SFE_DataListInfo ExplainAlarmDataAreaQuanGuo( //终端全国告警数据区解释
 			String FrameDataArea, int TermialProtocolType, String ControlCode) { //帧数据区,终端规约,控制码
 		SFE_DataListInfo DataListInfo = new SFE_DataListInfo();
@@ -624,6 +628,7 @@ public class FrameDataAreaExplainQuanGuo { //国网数据区解帧类
 		return DataListInfo;
 	}
 
+	@SuppressWarnings({ "rawtypes", "static-access" })
 	public ArrayList ExplainAlarmParameterQuanGuo(String sDateContent, int Fn,
 			int AlarmDataCount, int GYH) {
 		ArrayList<SFE_AlarmData> AlarmDataList = new ArrayList<SFE_AlarmData>();
@@ -3421,6 +3426,7 @@ public class FrameDataAreaExplainQuanGuo { //国网数据区解帧类
 	}
 
 	//----------------------------国网数据区解析所用方法-----------------------------
+	@SuppressWarnings("static-access")
 	public String GetTaskDateTimeInfo(String sDateTimeLabel, int DateType,
 			int TermialProtocolType) { //返回值：开始时间(YYYYMMDDHHNNSS)+时间间隔+数据点数
 		String sResult = "";

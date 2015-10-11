@@ -57,6 +57,7 @@ public class IHDTermReadImpl {
 	 */
 	private boolean			isRecvingHead = true;
 	
+	@SuppressWarnings("unused")
 	private long			totalSendBytes;
 		
 	public IHDTermReadImpl() {

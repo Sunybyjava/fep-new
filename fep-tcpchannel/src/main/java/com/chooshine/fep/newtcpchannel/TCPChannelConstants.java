@@ -8,8 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TCPChannelConstants {
+	@SuppressWarnings("rawtypes")
 	public static List GlobalReceiveList; //全局接收队列
 
+	@SuppressWarnings("rawtypes")
 	public static List GlobalSendList; //全局发送队列
 	
 	public static Log4Fep log;
@@ -20,6 +22,7 @@ public class TCPChannelConstants {
 		init();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	static void init() {
 		GlobalReceiveList = Collections.synchronizedList(new LinkedList());
 		GlobalSendList = Collections.synchronizedList(new LinkedList());

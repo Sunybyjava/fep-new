@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 
 import com.chooshine.fep.ConstAndTypeDefine.Glu_ConstDefine;
 import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
@@ -18,7 +18,7 @@ import com.chooshine.fep.FrameDataAreaExplain.SFE_AlarmData;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_DataItem;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_DataListInfo;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_HistoryData;
-import com.chooshine.fep.FrameDataAreaExplain.SFE_NormalData;
+//import com.chooshine.fep.FrameDataAreaExplain.SFE_NormalData;
 import com.chooshine.fep.FrameExplain.FE_FrameExplain;
 import com.chooshine.fep.communicate.CommunicationScheduler.SwitchMPInfo;
 import com.chooshine.fep.communicate.CommunicationScheduler.TerminalInfo;
@@ -76,7 +76,8 @@ public class MessageExchange
   private Glu_DataAccess DataAccess_His; //任务数据保存数据库连接
   //private Hashtable TerminalProList = new Hashtable();
   private List<TaskInfo> DeviceTaskInfo = new LinkedList<TaskInfo>();
-  private int DWDM = 0; //
+  @SuppressWarnings("unused")
+private int DWDM = 0; //
   
   public MessageExchange() {
   }
@@ -672,7 +673,8 @@ public class MessageExchange
 
   //更新召测链路信息，记录召测的终端逻辑地址、命令序号、召测命令类型、应用ID等，用来数据返回后进行比较匹配
  // @SuppressWarnings(value="unchecked")
-  private void UpdateLinkSocketInfo(String ZDLJDZ, int GYH, int MLXH,
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+private void UpdateLinkSocketInfo(String ZDLJDZ, int GYH, int MLXH,
                                     int FrameCount,
                                     SocketChannel channel, int TaskNo,
                                     int TaskCount, int AlarmCount, int AppID,
@@ -759,7 +761,8 @@ public class MessageExchange
   }  
 
   //Build fram according to the DataArea, prepare for send it.
-  private void FrameDLMSUpNormalFrameAndAddToList(String ZDLJDZ, int GYH,int SJQCD,
+  @SuppressWarnings("unused")
+private void FrameDLMSUpNormalFrameAndAddToList(String ZDLJDZ, int GYH,int SJQCD,
                                               String GNM, String SJQNR,
                                               int AppID, int TXCS, int ZNXZ,
                                               int MLXH, int YXJ, int SFBH,
@@ -972,7 +975,8 @@ public class MessageExchange
     }
   }
 
-  private void SetTerminalOnLineStatus(List TerminalList) {
+  @SuppressWarnings("rawtypes")
+private void SetTerminalOnLineStatus(List TerminalList) {
     try {
       for (int i = 0; i < TerminalList.size(); i++) {
         TerminalOnLineStatus to = (TerminalOnLineStatus) TerminalList.get(i);
@@ -994,7 +998,8 @@ public class MessageExchange
   }
 
 //获取一批终端的在线状态，用于回传
-  private List<TerminalOnLineStatus> GetTerminalOnLineStatus(List TerminalList) {
+  @SuppressWarnings("rawtypes")
+private List<TerminalOnLineStatus> GetTerminalOnLineStatus(List TerminalList) {
     List <TerminalOnLineStatus>OnLineList = new LinkedList<TerminalOnLineStatus>();
     try {
       for (int i = 0; i < TerminalList.size(); i++) {
@@ -1013,7 +1018,8 @@ public class MessageExchange
   }
 
 //处理获取终端在线状态命令的函数，获取终端在线状态队列后，组成相应命令返回到实时通讯对象
-  private void ProcessTerminalOnLineList(List tempList, SocketChannel channel) {
+  @SuppressWarnings("rawtypes")
+private void ProcessTerminalOnLineList(List tempList, SocketChannel channel) {
     List OutList = GetTerminalOnLineStatus(tempList);
     if (OutList != null) {
       try {
@@ -1673,7 +1679,25 @@ public class MessageExchange
 
 //处理召测返回数据处理,通过上行数据信息匹配下行命令获取AppID
 //  @SuppressWarnings(value="unchecked")
-  private void DealWithCallBackListData(StructReceiveData rd) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+private void DealWithCallBackListData(StructReceiveData rd) {
+	  //需量轮召的返回需要在这里进行处理
+	  try
+	  {
+		  if (rd.FunctionCode.equalsIgnoreCase("0C"))
+		  {
+			  //判断数据项为0C的F35
+			  if (rd.FrameData.substring(3, 7).equalsIgnoreCase("0404"))
+			  {
+				//数据上来后，首先将数据插入【最近电量示度数据ENT_D_EQ_READING_LATELY】，需量具体值是对应写到最大需量及发生升级字段。
+		        //同时在通讯服务中判断帧的数据项是否为F35，进入需量处理流程，判断是否超过阀值，触发报警流程。
+			  }
+		  }
+	  }catch (Exception e)
+	  {
+		  System.out.println("Process ReceiveData Error,E:"+e.toString());
+	  }
+	  
     try {
       boolean FindLinkInfo = false;
       for (Enumeration e = LinkList.elements(); e.hasMoreElements(); ) {
@@ -1747,12 +1771,12 @@ public class MessageExchange
               }
             }
           }
-          else if (lTemp != null && lTemp.size() == 0) { //该链路的命令维护队列中没有对象，则认为该链路可以不再使用
-   //     	  CommunicationServerConstants.Trc1.TraceLog("29、This Link have no CallInfo " +
-    //                                sc.GetSocketChannel());
-            LinkList.remove(sc.GetSocketChannel());
-            sc.GetSocketChannel().close();
-          }
+//          else if (lTemp != null && lTemp.size() == 0) { //该链路的命令维护队列中没有对象，则认为该链路可以不再使用
+//   //     	  CommunicationServerConstants.Trc1.TraceLog("29、This Link have no CallInfo " +
+//    //                                sc.GetSocketChannel());
+//            LinkList.remove(sc.GetSocketChannel());
+//            sc.GetSocketChannel().close();
+//          }
 
         }
       }
@@ -1855,7 +1879,8 @@ public class MessageExchange
     }
   }*/
   
-  private void InitDeviceAndTaskList() { 
+  @SuppressWarnings("unused")
+private void InitDeviceAndTaskList() { 
 	  
     String sSQL1 =
         "SELECT RWH,RWLX,SJYBS,CLDXH,GYH,SJLX FROM RW_RWXX WHERE (RWLX=1 OR RWLX=2) AND GYH=100 ORDER BY RWH,SJYXH";
@@ -1919,6 +1944,7 @@ public class MessageExchange
 
   }
 
+  @SuppressWarnings("rawtypes")
   public void run() { 
 	  
     ListenThread ls = new ListenThread();
@@ -2000,16 +2026,13 @@ public class MessageExchange
         try {
           if (AckBack) {
             ReSendTimes = 0;
-            if (CommunicationServerConstants.GlobalReceiveCallBackList.size() ==
-                0) {
+            if (CommunicationServerConstants.GlobalReceiveCallBackList.size() == 0) {
               break;
             }
             else {
-              rd = (StructReceiveData) CommunicationServerConstants.
-                  GlobalReceiveCallBackList.get(0);
+              rd = (StructReceiveData) CommunicationServerConstants.GlobalReceiveCallBackList.get(0);
               CommunicationServerConstants.GlobalReceiveCallBackList.remove(0);
-              CommunicationServerConstants.Trc1.TraceLog("21、GetUpFrame ZDLJDZ:" +
-                                      rd.TerminalLogicAdd );
+              CommunicationServerConstants.Trc1.TraceLog("21、GetUpFrame ZDLJDZ:" +rd.TerminalLogicAdd );
               AckBack = false;
               DealWithCallBackListData(rd);
               SendTime = Calendar.getInstance();
@@ -2026,8 +2049,7 @@ public class MessageExchange
             }
             else {
               AckBack = true;
-              iSize = CommunicationServerConstants.GlobalReceiveCallBackList.
-                  size();
+              iSize = CommunicationServerConstants.GlobalReceiveCallBackList.size();
               CommunicationServerConstants.Trc1.TraceLog("21、rd is null");
             }
           }
@@ -2112,7 +2134,8 @@ public class MessageExchange
     }
   }
   
-  private List AdjustTaskNo(List DataList) {
+  @SuppressWarnings({ "unused", "rawtypes" })
+private List AdjustTaskNo(List DataList) {
     List <SFE_HistoryData>l = new LinkedList<SFE_HistoryData>();
     int iCount = DataList.size();
     int iCLDXH = 0;
@@ -2196,7 +2219,8 @@ public class MessageExchange
 		}
 	}
   
-  public ArrayList ExtractAlarmZTZ(String DataCaption, String NewZtz,
+  @SuppressWarnings("rawtypes")
+public ArrayList ExtractAlarmZTZ(String DataCaption, String NewZtz,
 			String OldZtz) {
 		ArrayList <String>alarmCodeList = new ArrayList<String>();
 		String sNewZtz = "", sOldZtz = "";
@@ -2231,7 +2255,8 @@ public class MessageExchange
 		return alarmCodeList;
 	}
   
-  public ArrayList ExtractAlarmData(SFE_AlarmData AlarmData, String ZDLJDZ) {
+  @SuppressWarnings("rawtypes")
+public ArrayList ExtractAlarmData(SFE_AlarmData AlarmData, String ZDLJDZ) {
 		ArrayList <SFE_AlarmData>alarmInfoList = new ArrayList<SFE_AlarmData>();
 		ArrayList alTemp = new ArrayList();
 		SFE_AlarmData alarmDataTemp = new SFE_AlarmData();
@@ -2369,7 +2394,8 @@ public class MessageExchange
 		return alarmInfoList;
 	}
   
-  private ArrayList ExtractAlarmDataInfo(SFE_DataListInfo DataListInfo,
+  @SuppressWarnings({ "unused", "rawtypes" })
+private ArrayList ExtractAlarmDataInfo(SFE_DataListInfo DataListInfo,
 			String ZDLJDZ) {
 		ArrayList <SFE_AlarmData>alarmList = new ArrayList<SFE_AlarmData>();
 		ArrayList alarmListTemp = new ArrayList();
@@ -2399,88 +2425,88 @@ public class MessageExchange
       if (rd.DataType == Glu_ConstDefine.SJLX_YCSJZC ||
           rd.DataType == Glu_ConstDefine.SJLX_YCSJZD) {
         //异常数据提交到异常处理的JMS队列中
-        StructAutoCommitData acd = new StructAutoCommitData();
-        acd.TerminalLogicAdd = rd.TerminalLogicAdd.toCharArray();
-        
-        //System.out.println("====++++++++++DealWithFrameData LJDZ="+acd.TerminalLogicAdd.toString()+"");
-        //从终端本地列表中获取终端的真实规约号，避免在类似规约的情况下，采用帧分析后得到的大类规约号，而导致数据无法解释出来
-        TerminalInfo ti = (TerminalInfo) CommunicationServerConstants.
-            TerminalLocalList.get(new String(rd.TerminalLogicAdd).trim());
-        if (ti != null) {
-          acd.TerminalProtocal = ti.TerminalProtocol;
-        }
-        else {
-          acd.TerminalProtocal = rd.TerminalProtocal;
-          //System.out.println("====++++++++++DealWithFrameData 从TerminalLocalList队列中未取到终端信息");
-        }
-        
-        //System.out.println("====++++++++++DealWithFrameData acd.TerminalProtocal="+Integer.toString(acd.TerminalProtocal));
-        
-       
-        acd.StationNo = rd.StationNo;
-        acd.FrameSeq = rd.FrameSeq;
-        acd.CommandSeq = rd.CommandSeq;
-        acd.DataType = rd.DataType;
-        acd.ControlCode = rd.ControlCode.toCharArray();
-        acd.FunctionCode = rd.FunctionCode.toCharArray();
-        acd.ManufacturerCode = rd.ManufacturerCode.toCharArray();
-        acd.FrameLength = rd.FrameLength;
-        acd.FrameData = rd.FrameData.toCharArray();
-        try {        	
-            //        	<二>、解析规约数据区内容
-            SFE_AlarmData AlarmDataList[];
-            SFE_DataListInfo DataInfo = null;
-            try {
-              //SFE_DataItem DataItem = new SFE_DataItem(); //数据项
-            	CommunicationServerConstants.Trc1.TraceLog("Call FrameDataAreaExplain, FrameData=" 
-            			+ new String(acd.FrameData) + " ProtocolNo=" + acd.TerminalProtocal + " ZDLJDZ=" + new String(acd.TerminalLogicAdd));
-            	if(acd.TerminalProtocal == Glu_ConstDefine.GY_ZD_DLMS){
-            		DataInfo = FrameDataExplain.IFE_ExplainDataAreaDLMS("".toCharArray(), acd.FrameData, acd.TerminalProtocal);
-            	}else{
-            		DataInfo = FrameDataExplain.IFE_ExplainDataArea(acd.FrameData,acd.TerminalLogicAdd,
-            				acd.TerminalProtocal,acd.ControlCode,acd.FunctionCode);
-            	}
-              //dataProcessLog.WriteLog("DataInfo.ExplainResult:" + DataInfo.ExplainResult);
-              //dataProcessLog.WriteLog("DataInfo.DataType:" + DataInfo.DataType);
-            }
-            catch (Exception ex2) {
-            	CommunicationServerConstants.Log1.WriteLog("Error to call FrameDataAreaExplain:" + ex2.toString());
-            }
-            //fl.WriteLog("2==解释数据");
-
-            //<三>、保存数据库
-            try {
-              if ( (DataInfo.ExplainResult == 0) && (DataInfo.DataType == 30)) {
-                ArrayList alarmList = new ArrayList();
-                String ZDLJDZ = new String(acd.TerminalLogicAdd);
-                alarmList = ExtractAlarmDataInfo(DataInfo, ZDLJDZ);
-                int iCount = alarmList.size();
-                AlarmDataList = new SFE_AlarmData[iCount];
-                for (int i = 0; i < iCount; i++) {
-                  AlarmDataList[i] = new SFE_AlarmData(); //异常数据结构
-                  AlarmDataList[i] = (SFE_AlarmData) alarmList.get(i);
-                }
-                //保存数据库
-                String sZDLJDZ = GetMAddress(AlarmDataList[0].GetMeasuredPointNo(),new String(acd.TerminalLogicAdd));
-                
-                DataAccess_Ala.SaveAlarmData(sZDLJDZ.toCharArray(), DWDM, AlarmDataList, iCount);
-              }
-              else {
-            	  CommunicationServerConstants.Log1.WriteLog("FrameDataAreaExplain error!ExplainResult:" +
-                                        Integer.toString(DataInfo.ExplainResult) +
-                                        " DataType:" + Integer.toString(DataInfo.DataType));
-              }
-            }
-            catch (Exception ex1) {
-            	CommunicationServerConstants.Log1.WriteLog("Save data error:" + ex1.toString());
-            }
-            //fl.WriteLog("3==保存数据");
+//        StructAutoCommitData acd = new StructAutoCommitData();
+//        acd.TerminalLogicAdd = rd.TerminalLogicAdd.toCharArray();
+//        
+//        //System.out.println("====++++++++++DealWithFrameData LJDZ="+acd.TerminalLogicAdd.toString()+"");
+//        //从终端本地列表中获取终端的真实规约号，避免在类似规约的情况下，采用帧分析后得到的大类规约号，而导致数据无法解释出来
+//        TerminalInfo ti = (TerminalInfo) CommunicationServerConstants.
+//            TerminalLocalList.get(new String(rd.TerminalLogicAdd).trim());
+//        if (ti != null) {
+//          acd.TerminalProtocal = ti.TerminalProtocol;
+//        }
+//        else {
+//          acd.TerminalProtocal = rd.TerminalProtocal;
+//          //System.out.println("====++++++++++DealWithFrameData 从TerminalLocalList队列中未取到终端信息");
+//        }
+//        
+//        //System.out.println("====++++++++++DealWithFrameData acd.TerminalProtocal="+Integer.toString(acd.TerminalProtocal));
+//        
+//       
+//        acd.StationNo = rd.StationNo;
+//        acd.FrameSeq = rd.FrameSeq;
+//        acd.CommandSeq = rd.CommandSeq;
+//        acd.DataType = rd.DataType;
+//        acd.ControlCode = rd.ControlCode.toCharArray();
+//        acd.FunctionCode = rd.FunctionCode.toCharArray();
+//        acd.ManufacturerCode = rd.ManufacturerCode.toCharArray();
+//        acd.FrameLength = rd.FrameLength;
+//        acd.FrameData = rd.FrameData.toCharArray();
+//        try {        	
+//            //        	<二>、解析规约数据区内容
+//            SFE_AlarmData AlarmDataList[];
+//            SFE_DataListInfo DataInfo = null;
+//            try {
+//              //SFE_DataItem DataItem = new SFE_DataItem(); //数据项
+//            	CommunicationServerConstants.Trc1.TraceLog("Call FrameDataAreaExplain, FrameData=" 
+//            			+ new String(acd.FrameData) + " ProtocolNo=" + acd.TerminalProtocal + " ZDLJDZ=" + new String(acd.TerminalLogicAdd));
+//            	if(acd.TerminalProtocal == Glu_ConstDefine.GY_ZD_DLMS){
+//            		DataInfo = FrameDataExplain.IFE_ExplainDataAreaDLMS("".toCharArray(), acd.FrameData, acd.TerminalProtocal);
+//            	}else{
+//            		DataInfo = FrameDataExplain.IFE_ExplainDataArea(acd.FrameData,acd.TerminalLogicAdd,
+//            				acd.TerminalProtocal,acd.ControlCode,acd.FunctionCode);
+//            	}
+//              //dataProcessLog.WriteLog("DataInfo.ExplainResult:" + DataInfo.ExplainResult);
+//              //dataProcessLog.WriteLog("DataInfo.DataType:" + DataInfo.DataType);
+//            }
+//            catch (Exception ex2) {
+//            	CommunicationServerConstants.Log1.WriteLog("Error to call FrameDataAreaExplain:" + ex2.toString());
+//            }
+//            //fl.WriteLog("2==解释数据");
+//
+//            //<三>、保存数据库
+//            try {
+//              if ( (DataInfo.ExplainResult == 0) && (DataInfo.DataType == 30)) {
+//                ArrayList alarmList = new ArrayList();
+//                String ZDLJDZ = new String(acd.TerminalLogicAdd);
+//                alarmList = ExtractAlarmDataInfo(DataInfo, ZDLJDZ);
+//                int iCount = alarmList.size();
+//                AlarmDataList = new SFE_AlarmData[iCount];
+//                for (int i = 0; i < iCount; i++) {
+//                  AlarmDataList[i] = new SFE_AlarmData(); //异常数据结构
+//                  AlarmDataList[i] = (SFE_AlarmData) alarmList.get(i);
+//                }
+//                //保存数据库
+//                String sZDLJDZ = GetMAddress(AlarmDataList[0].GetMeasuredPointNo(),new String(acd.TerminalLogicAdd));
+//                
+//                DataAccess_Ala.SaveAlarmData(sZDLJDZ.toCharArray(), DWDM, AlarmDataList, iCount);
+//              }
+//              else {
+//            	  CommunicationServerConstants.Log1.WriteLog("FrameDataAreaExplain error!ExplainResult:" +
+//                                        Integer.toString(DataInfo.ExplainResult) +
+//                                        " DataType:" + Integer.toString(DataInfo.DataType));
+//              }
+//            }
+//            catch (Exception ex1) {
+//            	CommunicationServerConstants.Log1.WriteLog("Save data error:" + ex1.toString());
+//            }
+//            //fl.WriteLog("3==保存数据");
           
-        }
-        catch (Exception ex1) {
-
-        	CommunicationServerConstants.Trc1.TraceLog("90、JMS Object Recreated!");
-        }
+//        }
+//        catch (Exception ex1) {
+//
+//        	CommunicationServerConstants.Trc1.TraceLog("90、JMS Object Recreated!");
+//        }
         //ToJMSCount = ToJMSCount + 1;
         CommunicationServerConstants.Trc1.TraceLog("22、SendDataToJMSList DataType:" +
                                 rd.DataType + " DataArea: " + rd.FrameData);
@@ -2517,19 +2543,26 @@ public class MessageExchange
 
               DataInfo = FrameDataExplain.IFE_ExplainDataArea(acd.FrameData,acd.TerminalLogicAdd,
                   acd.TerminalProtocal, acd.ControlCode, acd.FunctionCode);
-              CommunicationServerConstants.Trc1.TraceLog("22-1、FrameDataExplain  GYH=" +
-            		  acd.TerminalProtocal);
+              CommunicationServerConstants.Trc1.TraceLog("22-1、FrameDataExplain  GYH=" + acd.TerminalProtocal);
             }
             catch (Exception ex2) {
               //DataProcessLog.WriteLog("调用规约数据区解析出错:" + ex2.toString());
             }
             
-            //<三>、保存数据库  
+            //<三>、保存数据库
+            String dataArea = rd.FrameData;//根据数据区分析得到对应Fn，然后结果功能码分别处理
             //对于两种任务分别进行固定存库处理。
             //任务1（曲线数据）根据F219命令项判断，解析识别后分别将正向电量示值存入ENT_D_EQ_READING表，其他功率电流电压相关数据项存入ENT_D_POWER表。
             //任务2（日冻结）根据F1命令项判断，解析识别后直接将相关数据项存入ENT_D_EQ_READING表。
-            //数据上来后，首先将数据插入【最近电量示度数据ENT_D_EQ_READING_LATELY】，需量具体值是对应写到最大需量及发生升级字段。
-            //同时在通讯服务中判断帧的数据项是否为F35，进入需量处理流程，判断是否超过阀值，触发报警流程。
+            if (rd.FunctionCode.equals("0D"))//这里处理自动上送任务，根据Fn后固定数据项标识进行不同数据的入库处理
+            {
+            	if (dataArea.substring(3,7).equalsIgnoreCase("0101"))//F1
+            	{
+            		
+            	}
+            }
+            
+            
             
 //            try {
 //            	CommunicationServerConstants.Trc1.TraceLog("22-2、SaveData ExplainResult="+DataInfo.ExplainResult);
@@ -2656,7 +2689,8 @@ public class MessageExchange
 
   class ListenThread
       extends Thread {
-    public void run() {
+    @SuppressWarnings("rawtypes")
+	public void run() {
       while (true) {
         int n = 0;
         try {
@@ -2751,18 +2785,21 @@ class SocketLinkList {
   private int SocketPort = 0;
   private SocketChannel Channel = null;
   private Calendar LastCommDate = null;
-  private List TerminalCorreCommandSeqList = null;
+  @SuppressWarnings("rawtypes")
+private List TerminalCorreCommandSeqList = null;
   //private int ApplicationID = 0;
   private int TaskNo = 0;
   private int TaskCount = 0;
   private int AlarmCount = 0;
   private boolean ListFlag = false;
 
-  public void SetTerminalCorreCommandSeqList(List l) {
+  @SuppressWarnings("rawtypes")
+public void SetTerminalCorreCommandSeqList(List l) {
     this.TerminalCorreCommandSeqList = l;
   }
 
-  public List GetTerminalCorreCommandSeqList() {
+  @SuppressWarnings("rawtypes")
+public List GetTerminalCorreCommandSeqList() {
     try {
       return this.TerminalCorreCommandSeqList;
     }

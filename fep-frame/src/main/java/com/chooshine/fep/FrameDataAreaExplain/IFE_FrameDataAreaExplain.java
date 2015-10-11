@@ -31,7 +31,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
     
     //private Object DateFormat;
     //static {InitialList();}
-    public static void main(String[] args) {
+    @SuppressWarnings("rawtypes")
+	public static void main(String[] args) {
         IFE_FrameDataAreaExplain FrameDataAreaExplain = new
                 IFE_FrameDataAreaExplain("");
         String sFrameDataArea = "00000402E2";
@@ -146,7 +147,6 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
                 try {
     				filecon = new FileInputStream(file);
     			} catch (FileNotFoundException e) {
-    				// TODO Auto-generated catch block
     				Glu_ConstDefine.Log1.WriteLog("new FileInputStream() FileNotFoundException:"+e.getMessage());
     				e.printStackTrace();
     			} //读取配置文件中的内容
@@ -172,7 +172,6 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
             try {
 				filecon = new FileInputStream(file);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} //读取配置文件中的内容
             LoadFile(filecon,"",ur);
@@ -456,7 +455,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
     
     //---------------------------组数据区接口--------------------------------------
     //------------------通用接口-----------------------
-    public char[] IFE_ReadData( //读取测量点参数、终端参数
+    @SuppressWarnings("rawtypes")
+	public char[] IFE_ReadData( //读取测量点参数、终端参数
             int ProtocolType, SFE_MeasuredPointInfor MeasuredPointInfo, //规约号,测量点信息
             int CommandCount, SFE_ParamItem[] ParamList, int BuildSign) { //命令数目,命令列表,组合标志(10交叉组合；20点对点组合)
         String sDataArea = "";
@@ -764,7 +764,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return DataArea;
     }
 
-    public char[] IFE_ReadMeasuredData( //读取电表数据—当前
+    @SuppressWarnings("rawtypes")
+	public char[] IFE_ReadMeasuredData( //读取电表数据—当前
             int ProtocolType, SFE_MeasuredPointInfor MeasuredPointInfo, //规约号,测量点信息
             int CommandSign, int DataCaptionCount, SFE_ParamItem[] DataCaptionList,
             int BuildSign) { //组大小项命令标志(10大项；20小项),数据项数目,数据项列表,组合标志(10交叉组合；20点对点组合)
@@ -993,7 +994,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
     }
 
     //固原集抄中点抄电表组数据区
-    public ArrayList IFE_GYAmmeterSer_PointReadAmmeterData(int PN,
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_GYAmmeterSer_PointReadAmmeterData(int PN,
             char[] AmmeterAdd, //地址域(A)
             int DataItemCount, char[][] DataItemList, int RelayCount, //中继级数  m级中继表地址
             char[][] RelayAddrList, int RelayFlag, int RelaySource, //中继使能标志  中继参数源
@@ -1117,7 +1119,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return FrameList;
     }
 
-    public ArrayList IFE_QGAmmeterSer_ReadAmmeterData(
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_QGAmmeterSer_ReadAmmeterData(
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int DataItemCount, char[][] DataItemList) { //命令字数目,命令字列表
         ArrayList <String>FrameList = new ArrayList<String>();
@@ -1174,7 +1177,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         }
         return FrameList;
     }
-    public ArrayList IFE_DLMSAmmeterSer_ReadAmmeterData(
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_DLMSAmmeterSer_ReadAmmeterData(
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int DataItemCount, char[][] DataItemList) { //命令字数目,命令字列表
         ArrayList <String>FrameList = new ArrayList<String>();
@@ -1198,7 +1202,9 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         }
         return FrameList;
     }
-    public ArrayList IFE_DLMSAmmeterSer_ReadHistoryData(
+    
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_DLMSAmmeterSer_ReadHistoryData(
             char[] AmmeterAdd, int ProtocolType, //电表地址,电表规约号
             int DataItemCount, char[][] DataItemList,  //命令字数目,命令字列表
             char[] DataStartTime, char[] DataEndTime) {//任务起始时间、结束时间 
@@ -1229,7 +1235,9 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         }         
         return FrameList;
     }
-    public ArrayList IFE_DLMSAmmeterSer_SetAmmeterData( //组DLMS电表设置帧
+    
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_DLMSAmmeterSer_SetAmmeterData( //组DLMS电表设置帧
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int ParamCount, SFE_ParamItem[] ParamList, //参数数目,参数列表
             char[] PasswordLevel, char[] Password) { //密码权限,密码
@@ -1257,7 +1265,9 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         }
         return FrameList;
     }
-    public ArrayList IFE_DLMSAmmeterSer_ControlAmmeterData( //组DLMS电表控制帧
+    
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_DLMSAmmeterSer_ControlAmmeterData( //组DLMS电表控制帧
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int ParamCount, SFE_ParamItem[] ParamList, //参数数目,参数列表
             char[] PasswordLevel, char[] Password) { //密码权限,密码
@@ -1285,7 +1295,9 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         }
         return FrameList;
     }
-    public ArrayList IFE_QGAmmeterSer_SetAmmeterData( //组QG电表设置帧
+    
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_QGAmmeterSer_SetAmmeterData( //组QG电表设置帧
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int ParamCount, SFE_ParamItem[] ParamList, //参数数目,参数列表
             char[] PasswordLevel, char[] Password) { //密码权限,密码
@@ -1356,7 +1368,9 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         }
         return FrameList;
     }
-    public ArrayList IFE_QG2007AmmeterSer_ReadAmmeterData(
+    
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_QG2007AmmeterSer_ReadAmmeterData(
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int DataItemCount, SFE_ParamItem[] ParamList) { //命令字数目,命令字列表
         ArrayList <String>FrameList = new ArrayList<String>();
@@ -1422,7 +1436,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return FrameList;
     }
 
-    public ArrayList IFE_QG2007AmmeterSer_SetAmmeterData( //组QG2007电表设置帧
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_QG2007AmmeterSer_SetAmmeterData( //组QG2007电表设置帧
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int ParamCount, SFE_ParamItem[] ParamList, //参数数目,参数列表
             char[] PasswordLevel, char[] Password, char[] OperateCode) { //密码权限,密码,操作者代码
@@ -1505,7 +1520,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
     	
     }
   
-    public ArrayList IFE_WaterAmmeterSer_ReadAmmeterData(//组水表读取帧
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_WaterAmmeterSer_ReadAmmeterData(//组水表读取帧
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int DataItemCount, SFE_ParamItem[] ParamList) { //命令字数目,命令字列表
         ArrayList <String>FrameList = new ArrayList<String>();
@@ -1562,7 +1578,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return FrameList;
     }
 
-    public ArrayList IFE_WaterAmmeterSer_SetAmmeterData(//组水表设置帧
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_WaterAmmeterSer_SetAmmeterData(//组水表设置帧
     		char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int ParamCount, SFE_ParamItem[] ParamList)/*, //参数数目,参数列表
             char[] PasswordLevel, char[] Password, char[] OperateCode) */{ //密码权限,密码,操作者代码
@@ -1626,7 +1643,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return FrameList;
     	
     }
-    public ArrayList IFE_TJAmmeterSer_ReadAmmeterData( //组天津645电表读取帧
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_TJAmmeterSer_ReadAmmeterData( //组天津645电表读取帧
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int DataItemCount, char[][] DataItemList, char[] StartTime,
             int DataCount) { //命令字数目,命令字列表,起始时间(YYYYMMDDHHNNSS),数据点数
@@ -1697,7 +1715,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return FrameList;
     }
 
-    public ArrayList IFE_TJAmmeterSer_SetAmmeterData( //组天津645电表设置帧
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_TJAmmeterSer_SetAmmeterData( //组天津645电表设置帧
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int ParamCount, SFE_ParamItem[] ParamList, //参数数目,参数列表
             char[] PasswordLevel, char[] Password) { //密码权限,密码
@@ -1777,7 +1796,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return FrameList;
     }
 
-    public ArrayList IFE_ZJAmmeterSer_ReadAmmeterData(
+    @SuppressWarnings("rawtypes")
+	public ArrayList IFE_ZJAmmeterSer_ReadAmmeterData(
             char[] AmmeterAdd, int ProtocolType, int CommandSign, //电表地址,电表规约号,大小项标志(10大项;20小项)
             int DataItemCount, char[][] DataItemList) { //命令字数目,命令字列表
         ArrayList <String>FrameList = new ArrayList<String>();
@@ -1917,7 +1937,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
     }
 
     //----------------------------组国网帧专用接口----------------------------------
-    public char[] IFE_QGSer_CurrentDataQuery( //当前数据查询：一类数据查询、查询终端参数/230M终端参数、实时数据查询、状态数据查询、远方读表
+    @SuppressWarnings("rawtypes")
+	public char[] IFE_QGSer_CurrentDataQuery( //当前数据查询：一类数据查询、查询终端参数/230M终端参数、实时数据查询、状态数据查询、远方读表
             int ProtocolType, int PnCount, int[] PnList, int ParamCount, //规约号,信息点数目,信息点列表,参数数目
             SFE_ParamItem[] ParamList, SFE_QGSer_TimeLabel TimeLabel) { //参数列表,时间标签
         String sDataArea = "";
@@ -1969,7 +1990,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return DataArea;
     }
 
-    public char[] IFE_QGSer_HistoryDataQuery( //历史数据查询：国网二类数据/230M历史日、月数据查询
+    @SuppressWarnings("rawtypes")
+	public char[] IFE_QGSer_HistoryDataQuery( //历史数据查询：国网二类数据/230M历史日、月数据查询
             int ProtocolType, int PnCount, int[] PnList, int ParamCount, //规约号,信息点数目,信息点列表,参数数目
             SFE_ParamItem[] ParamList, SFE_QGSer_TimeLabel TimeLabel, //参数列表,时间标签
             int QueryDataType, char[] StartTime, int DataDensity, int DataCount) { //查询数据类型,数据起始时间,数据密度,数据点数
@@ -2011,13 +2033,10 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
                     sDateSign = DataSwitch.DateTimeToBCD(sDateSign, "yymm");
                     sDateSign = DataSwitch.ReverseStringByByte(sDateSign);
                 } else { //曲线数据
-                    sDateSign = DataSwitch.DateTimeToBCD(sDateSign,
-                            "yymmddhhnn");
+                    sDateSign = DataSwitch.DateTimeToBCD(sDateSign,"yymmddhhnn");
                     sDateSign = DataSwitch.ReverseStringByByte(sDateSign);
-                    String sDataDensity = DataSwitch.IntToHex(("" + DataDensity),
-                            "00");
-                    String sDataCount = DataSwitch.IntToHex(("" + DataCount),
-                            "00");
+                    String sDataDensity = DataSwitch.IntToHex(("" + DataDensity),"00");
+                    String sDataCount = DataSwitch.IntToHex(("" + DataCount),"00");
                     sDateSign = sDateSign + sDataDensity + sDataCount;
                 }
                 for (int i = 0; i < sDADTList.size(); i++) {
@@ -2042,7 +2061,9 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         char[] DataArea = sDataArea.toCharArray();
         return DataArea;
     }
-    public char[] IFE_IHDSer_HistoryDataQuery( //历史数据查询：二类数据日、周、月、年数据查询
+    
+    @SuppressWarnings("rawtypes")
+	public char[] IFE_IHDSer_HistoryDataQuery( //历史数据查询：二类数据日、周、月、年数据查询
             int ProtocolType, int PnCount, int[] PnList, int ParamCount, //规约号,信息点数目,信息点列表,参数数目
             SFE_ParamItem[] ParamList, SFE_QGSer_TimeLabel TimeLabel, //参数列表,时间标签
             int QueryDataType, char[] StartTime, int DataDensity, int DataCount) { //查询数据类型,数据起始时间,数据密度,数据点数
@@ -2885,7 +2906,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return DataListInfo;
     }
 
-    public ArrayList SearchCommandList(int ProtocolType, String[] sDataItemList,
+    @SuppressWarnings("rawtypes")
+	public ArrayList SearchCommandList(int ProtocolType, String[] sDataItemList,
                                        SPE_CommandInfoList AmmeterCommandList,
                                        int CommandSign) { //通过数据项列表查找队列中对应的命令标识列表,对于组电表帧在这个方法不能再传大小项标志只对测量点数据有用
         ArrayList <String>ResultList = new ArrayList<String>();
@@ -2993,7 +3015,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return ResultList;
     }
 
-    public ArrayList SearchQGDB2007CommandList(int ProtocolType, int DataItemCount, SFE_ParamItem[] sDataItemList,
+    @SuppressWarnings("rawtypes")
+	public ArrayList SearchQGDB2007CommandList(int ProtocolType, int DataItemCount, SFE_ParamItem[] sDataItemList,
             SPE_CommandInfoList AmmeterCommandList,
             int CommandSign) { //通过数据项列表查找队列中对应的命令标识列表,对于组电表帧在这个方法不能再传大小项标志只对测量点数据有用
     	ArrayList <SFE_ParamItem>ResultList = new ArrayList<SFE_ParamItem>();
@@ -3163,7 +3186,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return sResult;
     }
 
-    public ArrayList SearchZheJiangCommandList(int ProtocolType,
+    @SuppressWarnings("rawtypes")
+	public ArrayList SearchZheJiangCommandList(int ProtocolType,
                                                String[] sDataItemList,
                                                int CommandSign) { //通过数据项列表查找队列中对应的命令标识列表,主要用于终端浙规系列
         ArrayList <String>ResultList = new ArrayList<String>();
@@ -3173,8 +3197,7 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
                 String sCommandNow = "";
                 int iCommandCount = 0;
 
-                SPE_CommandInfoList TerminalCommandList = new
-                        SPE_CommandInfoList();
+                SPE_CommandInfoList TerminalCommandList = new SPE_CommandInfoList();
                 for (int k = 0; k < sDataItemList.length; k++) { //组帧数据项数目
                     if (ProtocolType == Glu_ConstDefine.GY_ZD_ZJZB0404) { //浙江增补
                         TerminalCommandList = FrameDataExplainZheJiang.
@@ -3359,7 +3382,8 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
         return sResult;
     }
 
-    public ArrayList GetIncorporateDataDellIDList(int ProtocolType,
+    @SuppressWarnings("rawtypes")
+	public ArrayList GetIncorporateDataDellIDList(int ProtocolType,
                                                   int[] MeasuredPointList,
                                                   int MeasuredPointCount,
                                                   String[] sCommandList) { //得到合并过的国网数据单元标识队列

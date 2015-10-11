@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class UpdateFramePushThread extends Thread{
+	@SuppressWarnings("resource")
 	public void run(){
 		while (true){
 			try{

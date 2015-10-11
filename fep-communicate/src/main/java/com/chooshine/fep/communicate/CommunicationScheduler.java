@@ -200,6 +200,7 @@ public class CommunicationScheduler extends Thread {
 	}
 
 	//将变更的终端物理地址信息写回数据库
+	@SuppressWarnings("rawtypes")
 	public void WriteTerminalInfotoDataBase() {
 		for (Enumeration e = CommunicationServerConstants.TerminalLocalList
 				.elements(); e.hasMoreElements();) {
@@ -582,6 +583,7 @@ public class CommunicationScheduler extends Thread {
 	}
 
 	//将长期没有运行的网络终端睡眠掉
+	@SuppressWarnings("rawtypes")
 	public void SleepDownOnLineTerminal() {
 		for (Enumeration e = CommunicationServerConstants.TerminalLocalList
 				.elements(); e.hasMoreElements();) {
@@ -634,6 +636,7 @@ public class CommunicationScheduler extends Thread {
 	}
 
 	//记录当前队列中的终端信息
+	@SuppressWarnings("rawtypes")
 	public void DisplayTerminalInfo() {
 		Trc4Fep fl = new Trc4Fep("TerminalInfo");
 		for (Enumeration e = CommunicationServerConstants.TerminalLocalList
@@ -690,6 +693,7 @@ public class CommunicationScheduler extends Thread {
 	}
 
 	//终端在线情况的检查、更新
+	@SuppressWarnings("rawtypes")
 	public void OnLineStatusCheck() {
 		for (Enumeration e = CommunicationServerConstants.TerminalLocalList
 				.elements(); e.hasMoreElements();) {
@@ -2039,6 +2043,7 @@ public class CommunicationScheduler extends Thread {
 		}
 	}
 
+	@SuppressWarnings({ "unused", "rawtypes" })
 	private String SearchTerminalAddress(int SourceChannel,
 			SocketChannel channel, String MsgSrc, String LocalAddr) {
 		String sZDLJDZ = "";
@@ -3189,6 +3194,7 @@ public class CommunicationScheduler extends Thread {
 	}
 
 	class ListenThread extends Thread { //监听线程，负责处理socket的监听和消息的接收
+		@SuppressWarnings("rawtypes")
 		public void run() {
 			while (true) {
 				try {

@@ -469,40 +469,35 @@ public class Glu_DataAccess {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public boolean SaveUpFlowRecordToDB(ArrayList CommRecordList) {
-		if (FDataBaseType == 10) { //Oracle  ��ݿ�
+		if ((FDataBaseType == 10)||(FDataBaseType == 30)) { //Oracle,Mysql
 			try {
 				int icount = CommRecordList.size();
 				Struct_CommRecordItem CommRecord = null; // new Struct_CommRecordItem();
 				for (int i = 0; i < icount; i++) {
 					CommRecord = (Struct_CommRecordItem) CommRecordList.get(i);
-					String LYDZ = new String(CommRecord.GetSourceAddress())
-							.trim(); //��Դ��ַ
-					String MBDZ = new String(CommRecord.GetTargetAddress())
-							.trim(); //Ŀ���ַ
-					String TerminalAddress = new String(CommRecord
-							.GetTerminalAddress()).trim();
-					String Content = new String(CommRecord.GetMessageContent())
-							.trim();
+					String LYDZ = new String(CommRecord.GetSourceAddress()).trim();
+					String MBDZ = new String(CommRecord.GetTargetAddress()).trim();
+					String TerminalAddress = new String(CommRecord.GetTerminalAddress()).trim();
+					String Content = new String(CommRecord.GetMessageContent()).trim();
 					int iChannelType = CommRecord.GetChannelType();
 					StoreCommunicationUpFlowDataByOracle(LYDZ, MBDZ,
 							iChannelType, Content, TerminalAddress);
 				}
 				return Commit();
 			} catch (Exception ex) {
-				DataAccessLog.WriteLog("SaveUpFlowRecordToOracleDB����:"
-						+ ex.toString());
+				DataAccessLog.WriteLog("SaveUpFlowRecordToOracleDB :"+ ex.toString());
 				return false;
 			}
 
 		}
 
-		else if (FDataBaseType == 20) { //Sybase  ��ݿ�
+		else if (FDataBaseType == 20) { //Sybase
 			try {
 				return false;
 			} catch (Exception ex) {
-				DataAccessLog.WriteLog("SaveUpFlowRecordToSybaseDB����:"
-						+ ex.toString());
+				DataAccessLog.WriteLog("SaveUpFlowRecordToSybaseDB :" + ex.toString());
 				return false;
 			}
 		} else {
@@ -510,25 +505,20 @@ public class Glu_DataAccess {
 		}
 	}
 
-	//��������ͨѶ��¼
+	@SuppressWarnings("rawtypes")
 	public boolean SaveDownFlowRecordToDB(ArrayList CommRecordList) {
-		if (FDataBaseType == 10) { //Oracle  ��ݿ�
+		if ((FDataBaseType == 10)||(FDataBaseType == 30)) { //Oracle
 			try {
 				int icount = CommRecordList.size();
 				Struct_CommRecordItem CommRecord = null; // new Struct_CommRecordItem();
 				for (int i = 0; i < icount; i++) {
 					CommRecord = (Struct_CommRecordItem) CommRecordList.get(i);
-					String LYDZ = new String(CommRecord.GetSourceAddress())
-							.trim(); //��Դ��ַ
-					String MBDZ = new String(CommRecord.GetTargetAddress())
-							.trim(); //Ŀ���ַ
-					String TerminalAddress = new String(CommRecord
-							.GetTerminalAddress()).trim();
-					String Content = new String(CommRecord.GetMessageContent())
-							.trim();
+					String LYDZ = new String(CommRecord.GetSourceAddress()).trim();
+					String MBDZ = new String(CommRecord.GetTargetAddress()).trim();
+					String TerminalAddress = new String(CommRecord.GetTerminalAddress()).trim();
+					String Content = new String(CommRecord.GetMessageContent()).trim();
 					int iChannelType = CommRecord.GetChannelType();
-					StoreCommunicationDownFlowDataByOracle(LYDZ, MBDZ,
-							iChannelType, Content, TerminalAddress);
+					StoreCommunicationDownFlowDataByOracle(LYDZ, MBDZ,iChannelType, Content, TerminalAddress);
 				}
 				return Commit();
 
@@ -537,7 +527,7 @@ public class Glu_DataAccess {
 						+ ex.toString());
 				return false;
 			}
-		} else if (FDataBaseType == 20) { //Sybase  ��ݿ�
+		} else if (FDataBaseType == 20) { //Sybase
 			try {
 				return false;
 			} catch (Exception ex) {
@@ -759,6 +749,7 @@ public class Glu_DataAccess {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
 		Glu_DataAccess da = new Glu_DataAccess("");
 		da.LogIn(30);
@@ -773,7 +764,8 @@ public class Glu_DataAccess {
 		da.GetTaskInfoList(105);
 	}
 
-	public Hashtable GetTerminalList() { //��ʼ���ն��߼���ַ�������ַ��Ӧ�Ķ���
+	@SuppressWarnings("rawtypes")
+	public Hashtable GetTerminalList() {
 		Hashtable<String, TerminalInfo> lTerminalList = new Hashtable<String, TerminalInfo>();
 		try {
 			Statement stmt = conn.createStatement();
@@ -823,6 +815,7 @@ public class Glu_DataAccess {
 		return lTerminalList;
 	}
 
+	@SuppressWarnings("finally")
 	public SPE_TaskInfoList GetTaskInfoList(int ProtocolType) { // ��ʼ��������Ϣ����
 		SPE_TaskInfoList TaskInfoList = new SPE_TaskInfoList();
 		Statement stmttemp = null;
@@ -924,17 +917,17 @@ public class Glu_DataAccess {
 		}
 	}
 
-	// ��ȡ�Զ�����/ID
 	public String GetAutoID(String SequenceName) {
 		String sID = new String("0");
 		if (FDataBaseType == 10) { // Oracle ��ݿ�
 			sID = GetSequence(SequenceName);
 		} else if (FDataBaseType == 20) { // Sybase ��ݿ�
-			// ���Բ��ô洢��̷�ʽ����
+
 		}
 		return sID;
 	}
 
+	@SuppressWarnings("unused")
 	private String GetCurrentDateTime() {
 		Calendar cLogTime = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -967,13 +960,12 @@ public class Glu_DataAccess {
 		return sID;
 	}
 
-	//Oracle��ݿⱣ������ͨѶ��¼
 	private int StoreCommunicationUpFlowDataByOracle(String TargetAddress,
 			String SourceAddress, int SourceChannel, String MessageContent,
 			String ZDLJDZ) {
 		try {
 	//		DataAccessLog.WriteLog("StoreCommunicationUpFlowDataByOracle");
-			if (PpstmtOfCommunicationUp == null) { //��ݿ�û�����ӳɹ�������
+			if (PpstmtOfCommunicationUp == null) {
 				LogIn(30);
 			}
 			PpstmtOfCommunicationUp.setString(1, SourceAddress);
@@ -984,7 +976,7 @@ public class Glu_DataAccess {
 			PpstmtOfCommunicationUp.executeUpdate();
 			return 0;
 		} catch (SQLException ex) {
-			DataAccessLog.WriteLog("StoreCommunicationUpFlowDataByOracle����:"
+			DataAccessLog.WriteLog("StoreCommunicationUpFlowDataByOracle:"
 					+ ex.toString());
 			return -1;
 		}
@@ -1226,34 +1218,33 @@ public class Glu_DataAccess {
 	private void jbInit() throws Exception {
 	}
 
-	class TerminalInfo { //�ն��߼���ַ�������ַ�Ķ�Ӧ��ϵ�ṹ
-		public String TerminalAddress = ""; //�ն��߼���ַ
+	class TerminalInfo { //终端逻辑地址和物理地址的对应关系结构
+		public String TerminalAddress = ""; //终端逻辑地址
 
-		public int CommandIndex = 0; //�������
+		public int CommandIndex = 0; //命令序号
 
-		public String TerminalSIMID = ""; //�ն�SIM������
+		public String TerminalSIMID = ""; //终端SIM卡号码
 
-		public String SIMCommunicationIP = ""; //����ǰ�û��IP
+		public String SIMCommunicationIP = ""; //短信前置机的IP
 
-		public String SIMLocalAddress = ""; //������Դ�����к���
+		public String SIMLocalAddress = ""; //短信来源的主叫号码
 
-		public String COMCommunicationIP = ""; //����ͨѶ��ǰ�û�IP
+		public String COMCommunicationIP = ""; //串口通讯的前置机IP
 
-		public String COMSourceSIMID = ""; //����ͨѶ�Ķ�Ӧ��SIM������
+		public String COMSourceSIMID = ""; //串口通讯的对应的SIM卡号码
 
-		public String COMLocalAddress = ""; //������Դ�����к���
+		public String COMLocalAddress = ""; //串口来源的主叫号码
 
-		public String TerminalUDPAddress = ""; //�ն�UDP�������ַ
+		public String TerminalUDPAddress = ""; //终端UDP的物理地址
 
-		public String UDPCommunicationIp = ""; //UDPǰ�û��IP
+		public String UDPCommunicationIp = ""; //UDP前置机的IP
 
-		public String UDPLocalAddress = ""; //UDP��Դ��ͨ����ַ
+		public String UDPLocalAddress = ""; //UDP来源的通道地址
 
-		public String TerminalTCPAddress = ""; //�ն�TCP�������ַ
+		public String TerminalTCPAddress = ""; //终端TCP的物理地址
 
-		public String TCPCommunicationIp = ""; //TCPǰ�û��IP
+		public String TCPCommunicationIp = ""; //TCP前置机的IP
 
-		public String TCPLocalAddress = ""; //TCP��Դ��ͨ����ַ
+		public String TCPLocalAddress = ""; //TCP来源的通道地址
 	}
-
 }

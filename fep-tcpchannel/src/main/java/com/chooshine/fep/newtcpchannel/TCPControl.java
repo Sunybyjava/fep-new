@@ -135,6 +135,7 @@ public class TCPControl {
 		return ConvertUtil.bcd2AscStr(byteLogicAddr);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void checkDupTerm(String logicAddr) {
 		Map nc = (Map) termChannelPool.getNamedChannelSet();
 		if (nc.containsKey(logicAddr)) {
@@ -193,6 +194,7 @@ public class TCPControl {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void AddReceiveDataList(String FullFrame, String strLogicAddr, String ip, int port) {
 		UpDataStruct uds = new UpDataStruct();
 		uds.LocalAddr = LocalIp + ":" + ListenPort;
@@ -206,6 +208,7 @@ public class TCPControl {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void LinkTestReturn(String FullFrame, String strLogicAddr, String ip, int port) {
 		String sGNM = FullFrame.substring(20, 22);
 		String sDT = FullFrame.substring(24, 32);
@@ -290,6 +293,7 @@ public class TCPControl {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void doRun() throws IOException {
 		int status = selector.select();
 		if (status == 0) {
@@ -396,6 +400,7 @@ public class TCPControl {
 	}
 
 	class ChannelSetCheckerThread extends Thread {
+		@SuppressWarnings({ "rawtypes" })
 		public void run() {
 			while (true) {
 				Iterator i = termChannelPool.getNamedChannelSet().entrySet().iterator();
