@@ -110,11 +110,11 @@ private int DWDM = 0; //
     */
     
     //	创建数据库链接
-	DataAccess_Ala = new Glu_DataAccess("");
-	DataAccess_His = new Glu_DataAccess("");
-	if (DataAccess_Ala.LogIn(20) == false) {
-		CommunicationServerConstants.Log1.WriteLog("Database connection failed(Save the Alarm data)!");
-    }
+//	DataAccess_Ala = new Glu_DataAccess("");
+	DataAccess_His = new Glu_DataAccess("./EMSDB.config");
+//	if (DataAccess_Ala.LogIn(20) == false) {
+//		CommunicationServerConstants.Log1.WriteLog("Database connection failed(Save the Alarm data)!");
+//    }
 	if (DataAccess_His.LogIn(10) == false) {
 		CommunicationServerConstants.Log1.WriteLog("Database connection failed(Save the history data)!");
     }

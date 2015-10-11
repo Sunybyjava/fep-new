@@ -73,50 +73,50 @@ public class Glu_DataAccess {
 	public Glu_DataAccess(String path) {
 		Properties prop = new Properties();
 		InputStream filecon = null;
-		if (path!=null && !path.equals("") && path.substring(0,4).equals("smb:")){
-			SmbFile file = null;
-    		try {
-    			file = new SmbFile(path);
-    			try {
-					if (!file.exists()) {
-						FFileName = "C:/hexing/CommService.config";
-						file = new SmbFile(FFileName);
-						if (!file.exists()) {
-							DataAccessLog.WriteLog("获取数据库配置信息出错!");
-						}
-					}
-				} catch (SmbException e) {
-					e.printStackTrace();
-				}
-    		} catch (MalformedURLException e) {    
-    			DataAccessLog.WriteLog("new SmbFile()MalformedURLException:"+e.getMessage());
-    		}
-    		
-    		try {
-    			filecon = new SmbFileInputStream(file);
-    		} catch (SmbException e) {
-    			DataAccessLog.WriteLog("new SmbFileInputStream() SmbException:"+e.getMessage());
-    		} catch (MalformedURLException e) {
-    			DataAccessLog.WriteLog("new SmbFileInputStream() MalformedURLException:"+e.getMessage());
-    		} catch (UnknownHostException e) {
-    			DataAccessLog.WriteLog("new SmbFileInputStream() UnknownHostException:"+e.getMessage());
-    		} 
-		}else{
-			File file = new File(FFileName);
+//		if (path!=null && !path.equals("") && path.substring(0,4).equals("smb:")){
+//			SmbFile file = null;
+//    		try {
+//    			file = new SmbFile(path);
+//    			try {
+//					if (!file.exists()) {
+//						FFileName = "C:/hexing/CommService.config";
+//						file = new SmbFile(FFileName);
+//						if (!file.exists()) {
+//							DataAccessLog.WriteLog("获取数据库配置信息出错!");
+//						}
+//					}
+//				} catch (SmbException e) {
+//					e.printStackTrace();
+//				}
+//    		} catch (MalformedURLException e) {    
+//    			DataAccessLog.WriteLog("new SmbFile()MalformedURLException:"+e.getMessage());
+//    		}
+//    		
+//    		try {
+//    			filecon = new SmbFileInputStream(file);
+//    		} catch (SmbException e) {
+//    			DataAccessLog.WriteLog("new SmbFileInputStream() SmbException:"+e.getMessage());
+//    		} catch (MalformedURLException e) {
+//    			DataAccessLog.WriteLog("new SmbFileInputStream() MalformedURLException:"+e.getMessage());
+//    		} catch (UnknownHostException e) {
+//    			DataAccessLog.WriteLog("new SmbFileInputStream() UnknownHostException:"+e.getMessage());
+//    		} 
+//		}else{
+			File file = new File(path);
 			if (!file.exists()) {
 				FFileName = "C:/hexing/CommService.config";
-				file = new File(FFileName);
+				file = new File(path);
 				if (!file.exists()) {
 					DataAccessLog.WriteLog("获取数据库配置信息出错!");
 				}
 			}
 
 			try {
-				filecon = new FileInputStream(FFileName);
+				filecon = new FileInputStream(path);
 			} catch (FileNotFoundException ex) {
 				DataAccessLog.WriteLog("获取数据库配置信息出错FileInputStream,错误类型:"+ ex.toString());
 			}
-		}
+//		}
 		
 		try {
 			prop.load(filecon);
@@ -128,7 +128,6 @@ public class Glu_DataAccess {
 		FConnectURL = (String) prop.get("JDBC_CONNECTION_URL");
 		FUserName = (String) prop.get("JDBC_CONNECTION_USERNAME");
 		FPassWord = (String) prop.get("JDBC_CONNECTION_PASSWORD");
-		FTableName = (String) prop.getProperty("JDBC_TASKTABLENAME", "RW_RWSJB");
 		DataAccessTrc.TraceLog("Glu_DataAccess->FConnectURL:" + FConnectURL + " FUserName:"+FUserName+" FPassWord:"+FPassWord);
 		try {
 			jbInit();
@@ -136,6 +135,7 @@ public class Glu_DataAccess {
 			ex.printStackTrace();
 		}
 	}
+	
 	public Glu_DataAccess(URI ur) {
 		Properties prop = new Properties();
 		File file = new File(ur);
@@ -240,6 +240,31 @@ public class Glu_DataAccess {
 			}
 		}
 		return false;
+	}
+	
+	private boolean LogInOfSaveTask1()//任务1采用insert into的方式
+	{
+		try
+		{
+			String sSql = "INSERT INTO ent_d_eq_reading";
+			String sSql1 = "INSERT INTO ent_d_power";
+			return true;
+		}catch (Exception e)
+		{
+			return false;
+		}
+	}
+	
+	private boolean LogInOfSaveTask2()//任务2采用replace into的方式
+	{
+		try
+		{
+			String sSql = "REPLACE INTO ent_d_eq_reading";
+			return true;
+		}catch (Exception e)
+		{
+			return false;
+		}
 	}
 
 	private boolean LogInOfCommunicationDataStore() {
