@@ -98,19 +98,17 @@ public class applicationFunction {
             DataContentInfo.add(CopyInfo_DataContentStruct(DataArea));
     	}
     	try {
-            bResult = rtc.SendBatchToFep(1, TerminalCount,
-                    terminalInfoStructList, DataContentInfo, sGnm.toCharArray(),
+            bResult = rtc.SendBatchToFep(1, TerminalCount,terminalInfoStructList, DataContentInfo, sGnm.toCharArray(),
                     1, 0, 0, 3);
             int iRealTime = 0;
             while (!bResult && iRealTime < 3) {
                 RealTimeReconnection(rtc);
-                bResult = rtc.SendBatchToFep(1,
-                        TerminalCount, terminalInfoStructList, DataContentInfo,
+                bResult = rtc.SendBatchToFep(1,TerminalCount, terminalInfoStructList, DataContentInfo,
                         sGnm.toCharArray(), 1, 0, 0, 3);
                 iRealTime = iRealTime + 1;
-                Thread.sleep(CommonClass.FRAME_INTERVAL *1000);
+                Thread.sleep(1000);
             }
-            Thread.sleep(CommonClass.FRAME_INTERVAL *1000);
+            Thread.sleep(1000);
         } catch (Exception ex) {
             System.out.println("数据发送异常！" + ex.toString());
         }

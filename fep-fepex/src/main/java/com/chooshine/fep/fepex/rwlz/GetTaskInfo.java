@@ -38,6 +38,7 @@ public class GetTaskInfo {
     	ResultSet rset = null;
     	TerminalTaskInfo TaskInfoList = null;
     	String sSQL = "SELECT ZDLJDZ,CLDXH FROM RW_LZ_XL order by ZDLJDZ,CLDXH";
+    	applicationFunction.gTerminalList.clear();
     	utils.PrintDebugMessage("获取终端任务信息SQL:" + sSQL, "D");
         try {
             rset = dataAccess.executeQuery(sSQL);

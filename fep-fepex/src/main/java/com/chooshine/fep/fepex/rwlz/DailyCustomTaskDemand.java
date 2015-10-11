@@ -94,9 +94,9 @@ public class DailyCustomTaskDemand extends Thread {
                 terminal.CldLx = 10;
                 terminal.Cldxh = t.CLDXH;
                 terminal.Clddz = t.CLDDZ;
-                ParamItem = new SFE_ParamItem[t.DataCout];
-                ParamItem[0] = new SFE_ParamItem();
-                ParamItem[0].SetParamCaption(t.DataItemList[0]);
+//                ParamItem = new SFE_ParamItem[t.DataCout];
+//                ParamItem[0] = new SFE_ParamItem();
+//                ParamItem[0].SetParamCaption(t.DataItemList[0]);
                 listTerminalInfo.add(terminal);
                 applicationFunction.ReadCurrentData(rtc, 1, listTerminalInfo);
                 //只需要根据终端，逐个终端进行发送命令即可，数据项目前固定
@@ -133,8 +133,7 @@ public class DailyCustomTaskDemand extends Thread {
             } catch (InterruptedException ex6) {
             }
         } catch (Exception ex5) {
-            utils.PrintDebugMessage("TaskDemand encounter Error " +
-                                    ex5.toString(), "D");
+            utils.PrintDebugMessage("TaskDemand encounter Error " +ex5.toString(), "D");
         }
         rtc = null;
         try {

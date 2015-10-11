@@ -11,7 +11,7 @@ public class CustomTaskAutomaticDemand extends Thread {
     Calendar NowDateTime; //当前时间
     Calendar StartTime; //程序启动时间
     DataAccess dataAccess = null;
-    private String StartNow = "";
+//    private String StartNow = "";
     SimpleDateFormat formatter = null;
     SimpleDateFormat formatter1 = null;
     public CustomTaskAutomaticDemand() {
@@ -26,7 +26,7 @@ public class CustomTaskAutomaticDemand extends Thread {
     }
 
     public CustomTaskAutomaticDemand(String StartFlag) {
-        StartNow = StartFlag;
+//        StartNow = StartFlag;
         try {
             dataAccess = new DataAccess(CommonClass.JDBC_DATABASETYPE,
                                         CommonClass.JDBC_CONNECTIONURL,
@@ -48,13 +48,11 @@ public class CustomTaskAutomaticDemand extends Thread {
         }
         //1、调整补召时间，为明天的0点15以后
         try {
-            formatter = new SimpleDateFormat("yyyy-MM-dd");
-            StartNow = "startnow";
-            if (!StartNow.toLowerCase().equals("startnow")) {
-                RedoTime.add(Calendar.MINUTE, CommonClass.REDO_INTERVAL);
-            }
-            String sDate = formatter.format(RedoTime.getTime()) + " " +CommonClass.STARTTIME;
-            formatter1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            RedoTime.add(Calendar.MINUTE, CommonClass.REDO_INTERVAL);
+            RedoTime.set(Calendar.SECOND, 0);
+            String sDate = formatter.format(RedoTime.getTime());// + " " +CommonClass.STARTTIME;
+            formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 java.util.Date d = formatter1.parse(sDate);
                 RedoTime.setTime(d);
@@ -69,13 +67,14 @@ public class CustomTaskAutomaticDemand extends Thread {
             if (c.after(RedoTime)) {
                 GetTaskInfo gti = new GetTaskInfo(dataAccess);
                 gti.GetTerminalInforList();
-                gti.GetTaskInforList();
+//                gti.GetTaskInforList();
                 DailyCustomTaskDemand dt = new DailyCustomTaskDemand();
                 dt.start();
                 utils.PrintDebugMessage("Start Today DailyTaskDemand.........","D");
                 formatter = new SimpleDateFormat("yyyy-MM-dd");
-                RedoTime = Calendar.getInstance();
+//                RedoTime = Calendar.getInstance();
                 RedoTime.add(Calendar.MINUTE, CommonClass.REDO_INTERVAL);
+                RedoTime.set(Calendar.SECOND, 0);
 //                String sDate = formatter.format(RedoTime.getTime()) + " " +CommonClass.STARTTIME;
 //                formatter1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 //                try {

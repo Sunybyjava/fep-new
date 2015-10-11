@@ -23,14 +23,17 @@ public class CommResultConver {
 	 * @param listResult List
 	 * @return Hashtable
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Hashtable getHashtableResult(List listResult) {
 		return getHashtableResultInside(listResult, 0);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static Hashtable getHashtableResultHx(List listResult) {
 		return getHashtableResultInsideHX(listResult, 0);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Hashtable getHashtableResultInsideHX(List listResult, int iZjFlag) {
 		Hashtable htResult = new Hashtable();
 		
@@ -52,7 +55,9 @@ public class CommResultConver {
 		int iCldxh = -1;
 		String sClddz = null;
 		ArrayList alDataItemList = null;
+		@SuppressWarnings("unused")
 		int iTaskNo = -1;
+		@SuppressWarnings("unused")
 		String sTaskDateTime = null;
 		String sAlarmCode = null;
 		int iAlarmType = -1;
@@ -272,6 +277,7 @@ public class CommResultConver {
 	 * @param iZjFlag int : 中继标记 0-非中继；1-中继
 	 * @return Hashtable
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Hashtable getHashtableResult(List listResult, int iZjFlag) {
 		return getHashtableResultInside(listResult, iZjFlag);
 	}
@@ -282,6 +288,7 @@ public class CommResultConver {
 	 * @param iZjFlag int : 中继标记 0-非中继；1-中继
 	 * @return Hashtable
 	 */
+	@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 	private static Hashtable getHashtableResultInside(List listResult, int iZjFlag) {
 		//System.out.println("&&&&&listResult&&&&& : " + listResult);
 
