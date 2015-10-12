@@ -26,7 +26,7 @@ public class TCPControl {
 
 	private String LocalIp;
 
-//	private int listenPort;
+	// private int listenPort;
 
 	private TerminalChannelSet termChannelPool;
 
@@ -37,7 +37,7 @@ public class TCPControl {
 	private int UnNamedChannelTimeOut;
 
 	private static int NamedChannelTimeOut;
-	
+
 	private static String CommService_Ip = ""; // 数据提交的前置机IP
 
 	private static int CommService_Port = 0; // 数据提交的前置机端口
@@ -45,34 +45,27 @@ public class TCPControl {
 	private static int ListenPort = 0; // 总共TCP端口的数量
 
 	public static void main(String[] args) {
-		//从配置文件获取通道配置信息
+		// 从配置文件获取通道配置信息
 		InputStream filecon = null;
-	    try {
-	      String file_name =
-	          "./NewTCPChannel.config";
-	      Properties prop = new Properties();
-	      filecon = new FileInputStream(file_name); //读取配置文件中的内容
-	      prop.load(filecon);
-	      CommService_Ip = (String) prop.getProperty("CommService_Ip",
-	                                                 InetAddress.getLocalHost().
-	                                                 getHostAddress()); //通讯服务所在的Ip，默认为本机IP
-	      CommService_Port = Integer.parseInt( (String) prop.getProperty(
-	          "CommService_Port", "5000")); //通讯服务监听前置机的端口，默认为5000
-	      ListenPort = Integer.parseInt( (String) prop.getProperty("ListenPort",
-	          "6000")); //TCP端口数量，默认为1
-	      NamedChannelTimeOut = Integer.parseInt( (String) prop.getProperty(
-	          "Connection_TimeOut", "15")); //连接超时时间，默认为15分钟
-	    } catch (Exception fe) { //配置文件没有找到，需要填入默认的信息
-	          try {
-	            CommService_Ip = InetAddress.getLocalHost().getHostAddress();
-	          }
-	          catch (Exception e) {
-	          }
-	          CommService_Port = 5000;
-	          ListenPort = 6000;
-	          NamedChannelTimeOut = 15;
-	      }
-		
+		try {
+			String file_name = "./NewTCPChannel.config";
+			Properties prop = new Properties();
+			filecon = new FileInputStream(file_name); // 读取配置文件中的内容
+			prop.load(filecon);
+			CommService_Ip = (String) prop.getProperty("CommService_Ip", InetAddress.getLocalHost().getHostAddress()); // 通讯服务所在的Ip，默认为本机IP
+			CommService_Port = Integer.parseInt((String) prop.getProperty("CommService_Port", "5000")); // 通讯服务监听前置机的端口，默认为5000
+			ListenPort = Integer.parseInt((String) prop.getProperty("ListenPort", "6000")); // TCP端口数量，默认为1
+			NamedChannelTimeOut = Integer.parseInt((String) prop.getProperty("Connection_TimeOut", "15")); // 连接超时时间，默认为15分钟
+		} catch (Exception fe) { // 配置文件没有找到，需要填入默认的信息
+			try {
+				CommService_Ip = InetAddress.getLocalHost().getHostAddress();
+			} catch (Exception e) {
+			}
+			CommService_Port = 5000;
+			ListenPort = 6000;
+			NamedChannelTimeOut = 15;
+		}
+
 		TCPControl tcp = new TCPControl();
 		tcp.ChannelInit(ListenPort);
 	}
@@ -101,7 +94,7 @@ public class TCPControl {
 			e1.printStackTrace();
 		}
 
-//		listenPort = 6001;
+		// listenPort = 6001;
 		termChannelPool = new TerminalChannelSet();
 		try {
 			serverSocket = ServerSocketChannel.open();
@@ -112,14 +105,14 @@ public class TCPControl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		utils.PrintDebugMessage("Listening on port "+listenPort, "D");
+		utils.PrintDebugMessage("Listening on port " + listenPort, "D");
 		ListenThread lt = new ListenThread();
 		lt.start();
 		SendDataThread sdt = new SendDataThread();
 		sdt.start();
 		ChannelSetCheckerThread sct = new ChannelSetCheckerThread();
 		sct.start();
-		CommunicateWithCommService cc =new CommunicateWithCommService(CommService_Ip,CommService_Port,"");
+		CommunicateWithCommService cc = new CommunicateWithCommService(CommService_Ip, CommService_Port, "");
 		cc.start();
 	}
 
@@ -174,9 +167,10 @@ public class TCPControl {
 			termChannelPool.addNamedChannel(strLogicAddr, key);
 			termChannelPool.deleteUnNamedChannel(ip + ":" + port);
 		} else {
-			//相同物理地址、不同终端逻辑地址
+			// 相同物理地址、不同终端逻辑地址
 			if (strLogicAddr.equals(readImpl.getTermLogicAddr()) == false) {
-				TCPChannelConstants.log.WriteLog("Term[" + strLogicAddr + "] send data to channel["	+ readImpl.getTermLogicAddr() + "]");
+				TCPChannelConstants.log.WriteLog(
+						"Term[" + strLogicAddr + "] send data to channel[" + readImpl.getTermLogicAddr() + "]");
 				// mixFlag = true;
 				termChannelPool.addNamedChannel(strLogicAddr, key);
 			}
@@ -185,8 +179,9 @@ public class TCPControl {
 			String sFrameBody = ConvertUtil.bcd2AscStr(data);
 			String sFullFrame = "68" + CalcFrameLength(sFrameBody) + "68" + sFrameBody;
 			TCPChannelConstants.trc.TraceLog("Term[" + strLogicAddr + "] recv data:" + sFullFrame);
-//			log.WriteLog("Term[" + strLogicAddr + "] recv data:" + ConvertUtil.bcd2AscStr(data));
-			//判断是否是心跳、登录报文，如果是的话，需要返回确认
+			// log.WriteLog("Term[" + strLogicAddr + "] recv data:" +
+			// ConvertUtil.bcd2AscStr(data));
+			// 判断是否是心跳、登录报文，如果是的话，需要返回确认
 			LinkTestReturn(sFullFrame, strLogicAddr, ip, port);
 			AddReceiveDataList(sFullFrame, strLogicAddr, ip, port);
 		} catch (Exception e) {
@@ -213,10 +208,10 @@ public class TCPControl {
 		String sGNM = FullFrame.substring(20, 22);
 		String sDT = FullFrame.substring(24, 32);
 		if (sGNM.equals("02")) {
-			String sLinkTestReturn = "684A006800" + FullFrame.substring(10, 20) + "006"
-					+ FullFrame.substring(23, 24) + "0000040002" + sDT + "00";
+			String sLinkTestReturn = "684A006800" + FullFrame.substring(10, 20) + "006" + FullFrame.substring(23, 24)
+					+ "0000040002" + sDT + "00";
 			String sBuf = sLinkTestReturn.substring(8);
-			sLinkTestReturn = sLinkTestReturn.toUpperCase()	+ calcCheckSum(sBuf) + "16";
+			sLinkTestReturn = sLinkTestReturn.toUpperCase() + calcCheckSum(sBuf) + "16";
 			TCPChannelConstants.trc.TraceLog("LinkTestReturn:" + sLinkTestReturn);
 			DownDataStruct ds = new DownDataStruct();
 			ds.FrameContent = sLinkTestReturn;
@@ -243,13 +238,13 @@ public class TCPControl {
 		sJYM = "00".substring(0, 2 - sJYM.length()) + sJYM;
 		return sJYM.toUpperCase();
 	}
-	
-	private void dealTermException(SelectionKey key,IHDTermReadImpl readImpl) throws IOException{
-		SocketChannel  channel = (SocketChannel) key.channel();
-		if( !channel.socket().isInputShutdown() ) {
+
+	private void dealTermException(SelectionKey key, IHDTermReadImpl readImpl) throws IOException {
+		SocketChannel channel = (SocketChannel) key.channel();
+		if (!channel.socket().isInputShutdown()) {
 			channel.socket().shutdownInput();
 		}
-		if( !channel.socket().isOutputShutdown() ) {
+		if (!channel.socket().isOutputShutdown()) {
 			channel.socket().shutdownOutput();
 		}
 
@@ -258,7 +253,7 @@ public class TCPControl {
 		if (readImpl.getTermLogicAddr() != null) {
 			termChannelPool.deleteNamedChannel(readImpl.getTermLogicAddr().trim());
 			TCPChannelConstants.trc.TraceLog("Link:" + readImpl.getTermLogicAddr() + " disconnect!");
-		}else{
+		} else {
 			String ip = ((SocketChannel) key.channel()).socket().getInetAddress().getHostAddress();
 			int port = ((SocketChannel) key.channel()).socket().getPort();
 			termChannelPool.deleteUnNamedChannel(ip + ":" + port);
@@ -286,7 +281,7 @@ public class TCPControl {
 				TCPChannelConstants.log.WriteLog("接收数据为空或者内容非法");
 			}
 		} catch (Exception e) {
-			if (e.getMessage().equals("recvLen<0")){
+			if (e.getMessage().equals("recvLen<0")) {
 				dealTermException(key, readImpl);
 			}
 		}
@@ -319,7 +314,7 @@ public class TCPControl {
 		}
 	}
 
-	private void doWrite(String DestAddr, String LocalAddr,	String TerminalAddr, String FrameContent) {
+	private void doWrite(String DestAddr, String LocalAddr, String TerminalAddr, String FrameContent) {
 		SelectionKey key;
 		if (TerminalAddr.length() > 0) {
 			key = (SelectionKey) termChannelPool.getNamedChannel(TerminalAddr);
@@ -349,8 +344,8 @@ public class TCPControl {
 		readImpl.setRecentCommTime(System.currentTimeMillis());
 		tmpKey.attach(readImpl);
 
-		termChannelPool.addUnNamedChannel(channel.socket().getInetAddress().getHostAddress()
-				+ ":" + channel.socket().getPort(), tmpKey);
+		termChannelPool.addUnNamedChannel(
+				channel.socket().getInetAddress().getHostAddress() + ":" + channel.socket().getPort(), tmpKey);
 	}
 
 	class ListenThread extends Thread {
@@ -384,8 +379,8 @@ public class TCPControl {
 						// int iFramePriority = ds.GetFramePriority();
 						String sTerminalAddr = ds.TerminalAddr;
 						String sFrameContent = ds.FrameContent;
-						TCPChannelConstants.trc.TraceLog("目标地址：" + sDestAddr + " ,通道地址：" + sLocalAddr + " ,通讯方式：" + iChannelType
-								+ " ,终端逻辑地址：" + sTerminalAddr + " ,命令内容：" + sFrameContent);
+						TCPChannelConstants.trc.TraceLog("目标地址：" + sDestAddr + " ,通道地址：" + sLocalAddr + " ,通讯方式："
+								+ iChannelType + " ,终端逻辑地址：" + sTerminalAddr + " ,命令内容：" + sFrameContent);
 						doWrite(sDestAddr, sLocalAddr, sTerminalAddr, sFrameContent);
 					}
 					TCPChannelConstants.GlobalSendList.remove(0);
@@ -405,7 +400,7 @@ public class TCPControl {
 			while (true) {
 				Iterator i = termChannelPool.getNamedChannelSet().entrySet().iterator();
 				while (i.hasNext()) {
-					try{
+					try {
 						long tm;
 						Map.Entry en = (Map.Entry) i.next();
 						SelectionKey k = (SelectionKey) en.getValue();
@@ -426,17 +421,17 @@ public class TCPControl {
 								e.printStackTrace();
 							}
 							termChannelPool.deleteNamedChannel(logicAddr);
-							TCPChannelConstants.trc.TraceLog("Link:" + ip + "," + port + " no data for [" + NamedChannelTimeOut
-									+ "] minute,disconnect!");
+							TCPChannelConstants.trc.TraceLog("Link:" + ip + "," + port + " no data for ["
+									+ NamedChannelTimeOut + "] minute,disconnect!");
 						}
-					}catch(Exception e){
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 
 				i = termChannelPool.getUnNamedChannelSet().entrySet().iterator();
 				while (i.hasNext()) {
-					try{
+					try {
 						long tm;
 						Map.Entry en = (Map.Entry) i.next();
 						SelectionKey k = (SelectionKey) en.getValue();
@@ -456,15 +451,15 @@ public class TCPControl {
 								e.printStackTrace();
 							}
 							termChannelPool.deleteUnNamedChannel(ip + ":" + port);
-							TCPChannelConstants.trc.TraceLog("Link:" + ip + "," + port + " no data for [" + UnNamedChannelTimeOut
-									+ "] minute,disconnect!");
+							TCPChannelConstants.trc.TraceLog("Link:" + ip + "," + port + " no data for ["
+									+ UnNamedChannelTimeOut + "] minute,disconnect!");
 						}
-					}catch(Exception e){
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 				try {
-					Thread.sleep(ChannelSetCheckInterval *1000 * 60);
+					Thread.sleep(ChannelSetCheckInterval * 1000 * 60);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

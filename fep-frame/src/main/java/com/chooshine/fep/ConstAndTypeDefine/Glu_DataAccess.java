@@ -73,6 +73,8 @@ public class Glu_DataAccess {
 	public Glu_DataAccess(String path) {
 		Properties prop = new Properties();
 		InputStream filecon = null;
+		if (path.length()==0)
+			path = "./CommService.config";
 //		if (path!=null && !path.equals("") && path.substring(0,4).equals("smb:")){
 //			SmbFile file = null;
 //    		try {
