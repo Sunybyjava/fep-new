@@ -237,7 +237,13 @@ public class Glu_DataAccess {
 			}
 			if (FunctionType == 30) {
 				return LogInOfCommunicationDataStore();
-			} else {
+			} else if (FunctionType == 40)
+			{
+				LogInOfSaveTask1();
+				LogInOfSaveTask2();
+				return true;
+			}
+			else {
 				return true;
 			}
 		}
@@ -248,8 +254,12 @@ public class Glu_DataAccess {
 	{
 		try
 		{
-			String sSql = "INSERT INTO ent_d_eq_reading";
-			String sSql1 = "INSERT INTO ent_d_power";
+			String sSql = "INSERT INTO ent_d_eq_reading(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,"
+					+ "P_ACT_TOTAL,P_ACT_SHARP,P_ACT_PEAK,P_ACT_LEVEL,P_ACT_VALLEY,I_ACT_TOTAL,P_REACT_TOTAL,P_ACT_MAX_DEMAND,P_ACT_MAX_DEMAND_TIME,DATA_FLAG) "
+					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,?,?,?,?,?,?,?,1)";
+			String sSql1 = "INSERT INTO ent_d_power(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,"
+					+ "ACT_POWER,REACT_POWER,CUR_A,CUR_B,CUR_C,VOLT_A,VOLT_B,VOLT_C,POWER_FACTOR,DATA_FLAG) "
+					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,?,?,?,?,?,?,?,1)";
 			return true;
 		}catch (Exception e)
 		{
