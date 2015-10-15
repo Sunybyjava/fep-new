@@ -2403,10 +2403,72 @@ public class MessageExchange extends Thread {
 					{
 						if (dataArea.substring(4, 8).equalsIgnoreCase("0100")) // F1
 						{
-
+							int iTaskCount = DataInfo.DataList.size();
+							for (int i = 0;i<iTaskCount;i++)
+							{
+								HashMap<String,String> DataItemMap = new HashMap<String,String>();
+								SFE_HistoryData hisData = (SFE_HistoryData)DataInfo.DataList.get(i);
+								int iDataItemCount = hisData.DataItemList.size();
+								for (int j=0;j<iDataItemCount;j++)
+								{
+									 SFE_DataItem item = hisData.DataItemList.get(j);
+								}
+							}
 						} else if ((dataArea.substring(4, 8).equalsIgnoreCase("010D"))
 								|| (dataArea.substring(4, 8).equalsIgnoreCase("041B"))) {
 							// F219和F105不一定那个开头的
+							int iTaskCount = DataInfo.DataList.size();
+							for (int i = 0;i<iTaskCount;i++)
+							{
+								HashMap<String,String> DataItemMap = new HashMap<String,String>();
+								SFE_HistoryData hisData = (SFE_HistoryData)DataInfo.DataList.get(i);
+								int iDataItemCount = hisData.DataItemList.size();
+								for (int j=0;j<iDataItemCount;j++)
+								{
+									 SFE_DataItem item = hisData.DataItemList.get(j);
+									 if (item.GetDataCaption().toString().equalsIgnoreCase("000008"))
+									 {
+										 //正向有功总,入库ENT_D_EQ_READING，字段名为key，数据值为value
+										 DataItemMap.put("P_ACT_TOTAL", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("345008"))
+									 {
+										 //有功功率
+										 DataItemMap.put("ACT_POWER", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("346008"))
+									 {
+										 //无功功率
+										 DataItemMap.put("REACT_POWER", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("341008"))
+									 {
+										 //A相电压
+										 DataItemMap.put("CUR_A", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("341108"))
+									 {
+										 //B相电压
+										 DataItemMap.put("CUR_B", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("341208"))
+									 {
+										 //C相电压
+										 DataItemMap.put("CUR_C", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("342008"))
+									 {
+										 //A相电流
+										 DataItemMap.put("VOLT_A", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("342108"))
+									 {
+										 //B相电流
+										 DataItemMap.put("VOLT_B", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("342208"))
+									 {
+										 //C相电流
+										 DataItemMap.put("VOLT_C", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("343008"))
+									 {
+										 //功率因数
+										 DataItemMap.put("POWER_FACTOR", item.GetDataContent().toString());
+									 }
+								}
+							}
 						}
 					}
 

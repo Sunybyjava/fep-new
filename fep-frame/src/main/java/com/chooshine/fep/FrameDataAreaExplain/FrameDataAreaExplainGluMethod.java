@@ -821,7 +821,7 @@ public class FrameDataAreaExplainGluMethod { //数据区解析公用函数类
                             iResult = 10;
                         }
                     } else if (FunctionCode.equals("0D")) { //二类数据的曲线数据、
-                        if ((iFn >= 73 && iFn <= 108) || iFn == 138) {
+                        if ((iFn >= 73 && iFn <= 108) || iFn == 138 || iFn >=219) {
                             iResult = 22; //曲线数据
                         } else if (((iFn >= 1 && iFn <= 12) ||
                                     (iFn >= 25 && iFn <= 31) ||

@@ -1,16 +1,21 @@
 package com.chooshine.fep.FrameDataAreaExplain;
 
 import java.util.ArrayList;
+
 import com.chooshine.fep.ConstAndTypeDefine.*;
 
 import java.util.Properties;
+
 import javax.swing.JOptionPane;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
+
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.io.File;
@@ -35,6 +40,20 @@ public class IFE_FrameDataAreaExplain { //规约数据区解析实现类
 	public static void main(String[] args) {
         IFE_FrameDataAreaExplain FrameDataAreaExplain = new
                 IFE_FrameDataAreaExplain("");
+        SFE_DataListInfo DataInfo = null;
+		try {
+			// SFE_DataItem DataItem = new SFE_DataItem(); //数据项
+
+			DataInfo = FrameDataAreaExplain.IFE_ExplainDataArea("0101010D4523101015010100100101041B45231010150101991000070000012207220322000500990400000500567900002601000050380000".toCharArray(), "90100001".toCharArray(),
+					100, "CB".toCharArray(), "0D".toCharArray());
+		} catch (Exception ex2) {
+			// DataProcessLog.WriteLog("调用规约数据区解析出错:" +
+			// ex2.toString());
+		}
+        
+        
+        
+        
         String sFrameDataArea = "00000402E2";
         String sControlCode = "88";
         String sFunctionCode = "0A";
