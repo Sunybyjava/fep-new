@@ -2380,7 +2380,6 @@ public class MessageExchange extends Thread {
 				acd.FrameData = rd.FrameData.toCharArray();
 				try {
 					// <二>、解析规约数据区内容
-					SFE_HistoryData HistoryList[];
 					SFE_DataListInfo DataInfo = null;
 					try {
 						// SFE_DataItem DataItem = new SFE_DataItem(); //数据项
@@ -2408,10 +2407,61 @@ public class MessageExchange extends Thread {
 							{
 								HashMap<String,String> DataItemMap = new HashMap<String,String>();
 								SFE_HistoryData hisData = (SFE_HistoryData)DataInfo.DataList.get(i);
+								DataItemMap.put("DATA_TIME", hisData.GetTaskDateTime().toString());
 								int iDataItemCount = hisData.DataItemList.size();
 								for (int j=0;j<iDataItemCount;j++)
 								{
 									 SFE_DataItem item = hisData.DataItemList.get(j);
+									 if (item.GetDataCaption().toString().equalsIgnoreCase("000005"))
+									 {
+										 //正向有功总,入库ENT_D_EQ_READING，字段名为key，数据值为value
+										 DataItemMap.put("P_ACT_TOTAL", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000105"))
+									 {
+										 //正向有功尖
+										 DataItemMap.put("P_ACT_SHARP", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000205"))
+									 {
+										 //正向有功峰
+										 DataItemMap.put("P_ACT_PEAK", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000305"))
+									 {
+										 //正向有功平
+										 DataItemMap.put("P_ACT_LEVEL", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000405"))
+									 {
+										 //正向有功谷
+										 DataItemMap.put("P_ACT_VALLEY", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("010005"))
+									 {
+										 //反向有功总
+										 DataItemMap.put("I_ACT_TOTAL", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("020005"))
+									 {
+										 //正向无功总
+										 DataItemMap.put("P_REACT_TOTAL", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("100005"))
+									 {
+										 //正向有功最大需量
+										 DataItemMap.put("P_ACT_MAX_DEMAND", item.GetDataContent().toString());
+									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("200005"))
+									 {
+										 //正向有功最大需量发生时间
+										 DataItemMap.put("P_ACT_MAX_DEMAND_TIME", item.GetDataContent().toString());
+									 }
+								}
+								
+								String sKey = acd.TerminalLogicAdd.toString()+"_"+hisData.GetMeasuredPointNo();
+								CLDInfo cld = CLDInfoMap.get(sKey);
+								if (cld!=null)
+								{
+									boolean b = DataAccess_His.SaveTaskTwo(cld.CLDID, cld.CT, cld.PT, DataItemMap);
+									if (!b)
+										CommunicationServerConstants.Log1.WriteLog("SaveTaskTwo Failed.");
+								}
+								else
+								{
+									CommunicationServerConstants.Log1.WriteLog("Key["+sKey+"] no CLDInfo find.");
 								}
 							}
 						} else if ((dataArea.substring(4, 8).equalsIgnoreCase("010D"))
@@ -2422,6 +2472,7 @@ public class MessageExchange extends Thread {
 							{
 								HashMap<String,String> DataItemMap = new HashMap<String,String>();
 								SFE_HistoryData hisData = (SFE_HistoryData)DataInfo.DataList.get(i);
+								DataItemMap.put("DATA_TIME", hisData.GetTaskDateTime().toString());
 								int iDataItemCount = hisData.DataItemList.size();
 								for (int j=0;j<iDataItemCount;j++)
 								{
@@ -2467,6 +2518,18 @@ public class MessageExchange extends Thread {
 										 //功率因数
 										 DataItemMap.put("POWER_FACTOR", item.GetDataContent().toString());
 									 }
+								}
+								String sKey = acd.TerminalLogicAdd.toString()+"_"+hisData.GetMeasuredPointNo();
+								CLDInfo cld = CLDInfoMap.get(sKey);
+								if (cld!=null)
+								{
+									boolean b = DataAccess_His.SaveTaskOne(cld.CLDID, cld.CT, cld.PT, DataItemMap);
+									if (!b)
+										CommunicationServerConstants.Log1.WriteLog("SaveTaskTwo Failed.");
+								}
+								else
+								{
+									CommunicationServerConstants.Log1.WriteLog("Key["+sKey+"] no CLDInfo find.");
 								}
 							}
 						}

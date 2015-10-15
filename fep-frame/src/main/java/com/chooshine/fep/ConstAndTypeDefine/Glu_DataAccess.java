@@ -2,9 +2,9 @@ package com.chooshine.fep.ConstAndTypeDefine;
 
 import java.util.Properties;
 import java.io.*;
-import java.net.MalformedURLException;
+//import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.UnknownHostException;
+//import java.net.UnknownHostException;
 import java.sql.*;
 import java.util.*;
 
@@ -14,9 +14,9 @@ import com.chooshine.fep.FrameDataAreaExplain.SFE_DataItem;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
-import jcifs.smb.SmbFileInputStream;
+//import jcifs.smb.SmbException;
+//import jcifs.smb.SmbFile;
+//import jcifs.smb.SmbFileInputStream;
 
 import com.chooshine.fep.FrameDataAreaExplain.SFE_HistoryData;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_CommandInfo;
@@ -65,6 +65,8 @@ public class Glu_DataAccess {
 	private PreparedStatement PpstmtOfAlarmData, PpstmtOfAlarmDataList;
 
 	private PreparedStatement PpstmtOfCommunicationUp,PpstmtOfCommunicationDown;
+	
+	private PreparedStatement PpstmtofTaskOne1,PpstmtofTaskOne2,PpstmtofTaskTwo;
 
 	Log4Fep DataAccessLog = new Log4Fep("Glu_DataAccess");
 
@@ -250,15 +252,86 @@ public class Glu_DataAccess {
 		return false;
 	}
 	
+	public boolean SaveTaskOne(int CLDBH,int CT,int PT,HashMap<String,String> dataItemMap)
+	{
+		String P_ACT_TOTAL = dataItemMap.get("P_ACT_TOTAL");
+		if (P_ACT_TOTAL!=null)
+		{
+			try {
+				PpstmtofTaskOne1.setInt(1, CLDBH);
+				PpstmtofTaskOne1.setString(2, dataItemMap.get("DATA_TIME"));
+				PpstmtofTaskOne1.setString(3, dataItemMap.get("DATA_TIME").substring(0, 8));
+				PpstmtofTaskOne1.setInt(4, CT);
+				PpstmtofTaskOne1.setInt(5, PT);
+				PpstmtofTaskOne1.setString(6, P_ACT_TOTAL);
+				PpstmtofTaskOne1.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (dataItemMap.size()>=11)
+		{
+			try {
+				PpstmtofTaskOne2.setInt(1, CLDBH);
+				PpstmtofTaskOne2.setString(2, dataItemMap.get("DATA_TIME"));
+				PpstmtofTaskOne2.setString(3, dataItemMap.get("DATA_TIME").substring(0, 8));
+				PpstmtofTaskOne2.setInt(4, CT);
+				PpstmtofTaskOne2.setInt(5, PT);
+				PpstmtofTaskOne2.setString(6, dataItemMap.get("ACT_POWER"));
+				PpstmtofTaskOne2.setString(7, dataItemMap.get("REACT_POWER"));
+				PpstmtofTaskOne2.setString(8, dataItemMap.get("CUR_A"));
+				PpstmtofTaskOne2.setString(9, dataItemMap.get("CUR_B"));
+				PpstmtofTaskOne2.setString(10, dataItemMap.get("CUR_C"));
+				PpstmtofTaskOne2.setString(11, dataItemMap.get("VOLT_A"));
+				PpstmtofTaskOne2.setString(12, dataItemMap.get("VOLT_B"));
+				PpstmtofTaskOne2.setString(13, dataItemMap.get("VOLT_C"));
+				PpstmtofTaskOne2.setString(14, dataItemMap.get("POWER_FACTOR"));
+				PpstmtofTaskOne2.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
+	public boolean SaveTaskTwo(int CLDBH,int CT,int PT,HashMap<String,String> dataItemMap)
+	{
+		if (dataItemMap.size()>=10)
+		{
+			try {
+				PpstmtofTaskTwo.setInt(1, CLDBH);
+				PpstmtofTaskTwo.setString(2, dataItemMap.get("DATA_TIME"));
+				PpstmtofTaskTwo.setString(3, dataItemMap.get("DATA_TIME").substring(0, 8));
+				PpstmtofTaskTwo.setInt(4, CT);
+				PpstmtofTaskTwo.setInt(5, PT);
+				PpstmtofTaskTwo.setString(6, dataItemMap.get("P_ACT_TOTAL"));
+				PpstmtofTaskTwo.setString(7, dataItemMap.get("P_ACT_SHARP"));
+				PpstmtofTaskTwo.setString(8, dataItemMap.get("P_ACT_PEAK"));
+				PpstmtofTaskTwo.setString(9, dataItemMap.get("P_ACT_LEVEL"));
+				PpstmtofTaskTwo.setString(10, dataItemMap.get("P_ACT_VALLEY"));
+				PpstmtofTaskTwo.setString(11, dataItemMap.get("I_ACT_TOTAL"));
+				PpstmtofTaskTwo.setString(12, dataItemMap.get("P_REACT_TOTAL"));
+				PpstmtofTaskTwo.setString(13, dataItemMap.get("P_ACT_MAX_DEMAND"));
+				PpstmtofTaskTwo.setString(14, dataItemMap.get("P_ACT_MAX_DEMAND_TIME"));
+				PpstmtofTaskTwo.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
 	private boolean LogInOfSaveTask1()//任务1采用insert into的方式
 	{
 		try
 		{
 			String sSql = "INSERT INTO ent_d_eq_reading(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,P_ACT_TOTAL,DATA_FLAG) "
 					+ "VALUES(?,?,SYSDATE(),?,?,?,?,1)";
+			PpstmtofTaskOne1 = conn.prepareStatement(sSql);
 			String sSql1 = "INSERT INTO ent_d_power(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,"
 					+ "ACT_POWER,REACT_POWER,CUR_A,CUR_B,CUR_C,VOLT_A,VOLT_B,VOLT_C,POWER_FACTOR,DATA_FLAG) "
 					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,?,?,?,?,?,?,?,1)";
+			PpstmtofTaskOne2 = conn.prepareStatement(sSql1);
 			return true;
 		}catch (Exception e)
 		{
@@ -270,7 +343,10 @@ public class Glu_DataAccess {
 	{
 		try
 		{
-			String sSql = "REPLACE INTO ent_d_eq_reading";
+			String sSql = "REPLACE INTO ent_d_eq_reading(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,"
+					+ "P_ACT_TOTAL,P_ACT_SHARP,P_ACT_PEAK,P_ACT_LEVEL,P_ACT_VALLEY,I_ACT_TOTAL,P_REACT_TOTAL,P_ACT_MAX_DEMAND,P_ACT_MAX_DEMAND_TIME,DATA_FLAG) "
+					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,?,?,?,?,?,?,?,1)";
+			PpstmtofTaskTwo = conn.prepareStatement(sSql);
 			return true;
 		}catch (Exception e)
 		{
