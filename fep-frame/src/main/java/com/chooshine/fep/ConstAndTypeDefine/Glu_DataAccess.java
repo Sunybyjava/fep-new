@@ -258,9 +258,14 @@ public class Glu_DataAccess {
 		if (P_ACT_TOTAL!=null)
 		{
 			try {
+				//数据时间可能需要根据调试情况进行调整，后续保存的数据由于数据库格式和保存处理的格式不同也需要进行调试
+				//保存不成功的话，需要在这里进行类型转换
 				PpstmtofTaskOne1.setInt(1, CLDBH);
-				PpstmtofTaskOne1.setString(2, dataItemMap.get("DATA_TIME"));
-				PpstmtofTaskOne1.setString(3, dataItemMap.get("DATA_TIME").substring(0, 8));
+				String DATA_TIME = dataItemMap.get("DATA_TIME");
+				if (DATA_TIME==null)
+					return false;
+				PpstmtofTaskOne1.setString(2, DATA_TIME);
+				PpstmtofTaskOne1.setString(3, DATA_TIME.substring(0, 8));
 				PpstmtofTaskOne1.setInt(4, CT);
 				PpstmtofTaskOne1.setInt(5, PT);
 				PpstmtofTaskOne1.setString(6, P_ACT_TOTAL);
@@ -273,18 +278,48 @@ public class Glu_DataAccess {
 		{
 			try {
 				PpstmtofTaskOne2.setInt(1, CLDBH);
-				PpstmtofTaskOne2.setString(2, dataItemMap.get("DATA_TIME"));
-				PpstmtofTaskOne2.setString(3, dataItemMap.get("DATA_TIME").substring(0, 8));
+				String DATA_TIME = dataItemMap.get("DATA_TIME");
+				if (DATA_TIME==null)
+					return false;
+				PpstmtofTaskOne2.setString(2, DATA_TIME);
+				PpstmtofTaskOne2.setString(3, DATA_TIME.substring(0, 8));
 				PpstmtofTaskOne2.setInt(4, CT);
 				PpstmtofTaskOne2.setInt(5, PT);
-				PpstmtofTaskOne2.setString(6, dataItemMap.get("ACT_POWER"));
+				String ACT_POWER = dataItemMap.get("ACT_POWER");
+				if (ACT_POWER==null)
+					return false;
+				PpstmtofTaskOne2.setString(6, ACT_POWER);
+				String REACT_POWER = dataItemMap.get("REACT_POWER");
+				if (REACT_POWER==null)
+					return false;
 				PpstmtofTaskOne2.setString(7, dataItemMap.get("REACT_POWER"));
+				String CUR_A = dataItemMap.get("CUR_A");
+				if (CUR_A==null)
+					return false;
 				PpstmtofTaskOne2.setString(8, dataItemMap.get("CUR_A"));
+				String CUR_B = dataItemMap.get("CUR_B");
+				if (CUR_B==null)
+					return false;
 				PpstmtofTaskOne2.setString(9, dataItemMap.get("CUR_B"));
+				String CUR_C = dataItemMap.get("CUR_C");
+				if (CUR_C==null)
+					return false;
 				PpstmtofTaskOne2.setString(10, dataItemMap.get("CUR_C"));
+				String VOLT_A = dataItemMap.get("VOLT_A");
+				if (VOLT_A==null)
+					return false;
 				PpstmtofTaskOne2.setString(11, dataItemMap.get("VOLT_A"));
+				String VOLT_B = dataItemMap.get("VOLT_B");
+				if (VOLT_B==null)
+					return false;
 				PpstmtofTaskOne2.setString(12, dataItemMap.get("VOLT_B"));
+				String VOLT_C = dataItemMap.get("VOLT_C");
+				if (VOLT_C==null)
+					return false;
 				PpstmtofTaskOne2.setString(13, dataItemMap.get("VOLT_C"));
+				String POWER_FACTOR = dataItemMap.get("POWER_FACTOR");
+				if (POWER_FACTOR==null)
+					return false;
 				PpstmtofTaskOne2.setString(14, dataItemMap.get("POWER_FACTOR"));
 				PpstmtofTaskOne2.executeUpdate();
 			} catch (Exception e) {
@@ -300,18 +335,48 @@ public class Glu_DataAccess {
 		{
 			try {
 				PpstmtofTaskTwo.setInt(1, CLDBH);
-				PpstmtofTaskTwo.setString(2, dataItemMap.get("DATA_TIME"));
-				PpstmtofTaskTwo.setString(3, dataItemMap.get("DATA_TIME").substring(0, 8));
+				String DATA_TIME = dataItemMap.get("DATA_TIME");
+				if (DATA_TIME==null)
+					return false;
+				PpstmtofTaskTwo.setString(2, DATA_TIME);
+				PpstmtofTaskTwo.setString(3, DATA_TIME.substring(0, 8));
 				PpstmtofTaskTwo.setInt(4, CT);
 				PpstmtofTaskTwo.setInt(5, PT);
+				String P_ACT_TOTAL = dataItemMap.get("P_ACT_TOTAL");
+				if (P_ACT_TOTAL==null)
+					return false;
 				PpstmtofTaskTwo.setString(6, dataItemMap.get("P_ACT_TOTAL"));
+				String P_ACT_SHARP = dataItemMap.get("P_ACT_SHARP");
+				if (P_ACT_SHARP==null)
+					return false;
 				PpstmtofTaskTwo.setString(7, dataItemMap.get("P_ACT_SHARP"));
+				String P_ACT_PEAK = dataItemMap.get("P_ACT_PEAK");
+				if (P_ACT_PEAK==null)
+					return false;
 				PpstmtofTaskTwo.setString(8, dataItemMap.get("P_ACT_PEAK"));
+				String P_ACT_LEVEL = dataItemMap.get("P_ACT_LEVEL");
+				if (P_ACT_LEVEL==null)
+					return false;
 				PpstmtofTaskTwo.setString(9, dataItemMap.get("P_ACT_LEVEL"));
+				String P_ACT_VALLEY = dataItemMap.get("P_ACT_VALLEY");
+				if (P_ACT_VALLEY==null)
+					return false;
 				PpstmtofTaskTwo.setString(10, dataItemMap.get("P_ACT_VALLEY"));
+				String I_ACT_TOTAL = dataItemMap.get("I_ACT_TOTAL");
+				if (I_ACT_TOTAL==null)
+					return false;
 				PpstmtofTaskTwo.setString(11, dataItemMap.get("I_ACT_TOTAL"));
+				String P_REACT_TOTAL = dataItemMap.get("P_REACT_TOTAL");
+				if (P_REACT_TOTAL==null)
+					return false;
 				PpstmtofTaskTwo.setString(12, dataItemMap.get("P_REACT_TOTAL"));
+				String P_ACT_MAX_DEMAND = dataItemMap.get("P_ACT_MAX_DEMAND");
+				if (P_ACT_MAX_DEMAND==null)
+					return false;
 				PpstmtofTaskTwo.setString(13, dataItemMap.get("P_ACT_MAX_DEMAND"));
+				String P_ACT_MAX_DEMAND_TIME = dataItemMap.get("P_ACT_MAX_DEMAND_TIME");
+				if (P_ACT_MAX_DEMAND_TIME==null)
+					return false;
 				PpstmtofTaskTwo.setString(14, dataItemMap.get("P_ACT_MAX_DEMAND_TIME"));
 				PpstmtofTaskTwo.executeUpdate();
 			} catch (Exception e) {
