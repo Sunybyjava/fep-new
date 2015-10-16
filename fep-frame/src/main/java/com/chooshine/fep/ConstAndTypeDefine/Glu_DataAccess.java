@@ -11,12 +11,14 @@ import java.util.*;
 import com.chooshine.fep.ConstAndTypeDefine.Struct_CommRecordItem;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_AlarmData;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_DataItem;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 //import jcifs.smb.SmbException;
 //import jcifs.smb.SmbFile;
 //import jcifs.smb.SmbFileInputStream;
+
 
 import com.chooshine.fep.FrameDataAreaExplain.SFE_HistoryData;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_CommandInfo;
@@ -66,7 +68,7 @@ public class Glu_DataAccess {
 
 	private PreparedStatement PpstmtOfCommunicationUp,PpstmtOfCommunicationDown;
 	
-	private PreparedStatement PpstmtofTaskOne1,PpstmtofTaskOne2,PpstmtofTaskTwo;
+	private PreparedStatement PpstmtofTaskOne1,PpstmtofTaskOne2,PpstmtofTaskTwo,PpstmtofTaskLately;
 
 	Log4Fep DataAccessLog = new Log4Fep("Glu_DataAccess");
 
@@ -243,6 +245,7 @@ public class Glu_DataAccess {
 			{
 				LogInOfSaveTask1();
 				LogInOfSaveTask2();
+				LogInOfSaveLATELY();
 				return true;
 			}
 			else {
@@ -386,6 +389,35 @@ public class Glu_DataAccess {
 		return true;
 	}
 	
+	public boolean SaveTaskLately(int CLDBH,int CT,int PT,HashMap<String,String> dataItemMap)
+	{
+		if (dataItemMap.size()>=3)
+		{
+			try {
+				PpstmtofTaskLately.setInt(1, CLDBH);
+				String DATA_TIME = dataItemMap.get("DATA_TIME");
+				if (DATA_TIME==null)
+					return false;
+				PpstmtofTaskLately.setString(2, DATA_TIME);
+				PpstmtofTaskLately.setString(3, DATA_TIME.substring(0, 8));
+				PpstmtofTaskLately.setInt(4, CT);
+				PpstmtofTaskLately.setInt(5, PT);
+				String P_ACT_MAX_DEMAND = dataItemMap.get("P_ACT_MAX_DEMAND");
+				if (P_ACT_MAX_DEMAND==null)
+					return false;
+				PpstmtofTaskLately.setString(6, dataItemMap.get("P_ACT_MAX_DEMAND"));
+				String P_ACT_MAX_DEMAND_TIME = dataItemMap.get("P_ACT_MAX_DEMAND_TIME");
+				if (P_ACT_MAX_DEMAND_TIME==null)
+					return false;
+				PpstmtofTaskLately.setString(7, dataItemMap.get("P_ACT_MAX_DEMAND_TIME"));
+				PpstmtofTaskLately.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
 	private boolean LogInOfSaveTask1()//任务1采用insert into的方式
 	{
 		try
@@ -412,6 +444,21 @@ public class Glu_DataAccess {
 					+ "P_ACT_TOTAL,P_ACT_SHARP,P_ACT_PEAK,P_ACT_LEVEL,P_ACT_VALLEY,I_ACT_TOTAL,P_REACT_TOTAL,P_ACT_MAX_DEMAND,P_ACT_MAX_DEMAND_TIME,DATA_FLAG) "
 					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,?,?,?,?,?,?,?,1)";
 			PpstmtofTaskTwo = conn.prepareStatement(sSql);
+			return true;
+		}catch (Exception e)
+		{
+			return false;
+		}
+	}
+	
+	private boolean LogInOfSaveLATELY()//轮招任务保存
+	{
+		try
+		{
+			String sSql = "REPLACE INTO ent_d_eq_reading_lately(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,"
+					+ "P_ACT_MAX_DEMAND,P_ACT_MAX_DEMAND_TIME,DATA_FLAG) "
+					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,1)";
+			PpstmtofTaskLately = conn.prepareStatement(sSql);
 			return true;
 		}catch (Exception e)
 		{
@@ -500,7 +547,7 @@ public class Glu_DataAccess {
 
 	public boolean LogOut(int FunctionType) {
 		//Oracle
-		if (FDataBaseType == 10) {
+		if ((FDataBaseType == 10)||(FDataBaseType == 30)) {
 			if (FunctionType == 10) {
 				try {
 					PpstmtOfHistory.close();

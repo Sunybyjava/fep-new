@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.LinkedList;
 //import java.text.SimpleDateFormat;
 
+
+
+import java.util.Map.Entry;
+
 import com.chooshine.fep.ConstAndTypeDefine.Glu_ConstDefine;
 import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
 import com.chooshine.fep.FrameDataAreaExplain.DataSwitch;
@@ -18,6 +22,7 @@ import com.chooshine.fep.FrameDataAreaExplain.SFE_AlarmData;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_DataItem;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_DataListInfo;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_HistoryData;
+import com.chooshine.fep.FrameDataAreaExplain.SFE_NormalData;
 //import com.chooshine.fep.FrameDataAreaExplain.SFE_NormalData;
 import com.chooshine.fep.FrameExplain.FE_FrameExplain;
 import com.chooshine.fep.communicate.CommunicationScheduler.SwitchMPInfo;
@@ -71,6 +76,7 @@ public class MessageExchange extends Thread {
 	private int TimeOut = 0; // 连接的超时时间
 	private SocketCommunicationBase sc = null; // socket服务底层类对象
 	private HashMap<String, CLDInfo> CLDInfoMap = new HashMap<String, CLDInfo>();
+	private HashMap<String, String> WarnDataItemMap = new HashMap<String, String>();
 	private Hashtable<SocketChannel, SocketLinkList> LinkList = null; // 与实时通讯模块的链路队列
 	private Hashtable<String, TerminalCommandNoList> TerminalCommandList = null; // 终端逻辑地址和命令序号的维护队列
 	private int Sequence = 0; // 流水号
@@ -129,6 +135,19 @@ public class MessageExchange extends Thread {
 		if (DataAccess_His.LogIn(10) == false) {
 			CommunicationServerConstants.Log1.WriteLog("Database connection failed(Save the history data)!");
 		}
+		
+		ResultSet rs;
+		try {
+			rs = DataAccess_His.executeQuery("SELECT WARNING_TYPE,DATAITEM FROM ent_w_content");
+			while (rs.next())
+			{
+				WarnDataItemMap.put(rs.getString("WARNING_TYPE"), rs.getString("DATAITEM"));
+			}
+			DataAccess_His.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 
 		// 取单位代码
 		// try{
@@ -1596,9 +1615,85 @@ public class MessageExchange extends Thread {
 		try {
 			if (rd.FunctionCode.equalsIgnoreCase("0C")) {
 				// 判断数据项为0C的F35
-				if (rd.FrameData.substring(3, 7).equalsIgnoreCase("0404")) {
+				if (rd.FrameData.substring(4, 8).equalsIgnoreCase("0404")) {
 					// 数据上来后，首先将数据插入【最近电量示度数据ENT_D_EQ_READING_LATELY】，需量具体值是对应写到最大需量及发生升级字段。
 					// 同时在通讯服务中判断帧的数据项是否为F35，进入需量处理流程，判断是否超过阀值，触发报警流程。
+					//100003和200003两个数据项
+					// <二>、解析规约数据区内容
+					SFE_DataListInfo DataInfo = null;
+					try {
+						// SFE_DataItem DataItem = new SFE_DataItem(); //数据项
+
+						DataInfo = FrameDataExplain.IFE_ExplainDataArea(rd.FrameData.toCharArray(), rd.TerminalLogicAdd.toCharArray(),
+								rd.TerminalProtocal, rd.ControlCode.toCharArray(), rd.FunctionCode.toCharArray());
+						CommunicationServerConstants.Trc1
+								.TraceLog("22-1、FrameDataExplain  GYH=" + rd.TerminalProtocal);
+					} catch (Exception ex2) {
+						
+					}
+					if (DataInfo!=null)
+					{
+						int iListSize = DataInfo.DataList.size();
+						for (int i=0;i<iListSize;i++)
+						{
+							SFE_NormalData normalData = (SFE_NormalData) DataInfo.DataList.get(i);
+							int iDataItemCount = normalData.DataItemList.size();
+							HashMap<String,String> DataItemMap = new HashMap<String,String>();
+							for (int j = 0; j < iDataItemCount; j++) {
+								SFE_DataItem dataItem = normalData.DataItemList.get(j);
+								if (dataItem.GetDataCaption().toString().equalsIgnoreCase("100003")) {
+									// 正向有功最大需量
+									DataItemMap.put("P_ACT_MAX_DEMAND", dataItem.GetDataContent().toString());
+									try
+									{
+										//检查告警关系，有对应的数据项则通过接口通知，入参：测量点编号、告警类型、数据项值
+										String sWarnType = "";
+										Iterator<Entry<String, String>> itr = WarnDataItemMap.entrySet().iterator();
+										while (itr.hasNext())
+										{
+											Entry<String, String> entry = itr.next();
+											if (entry.getValue().equalsIgnoreCase("100003"))
+											{
+												sWarnType = entry.getKey();
+												break;
+											}
+										}
+										if (sWarnType.length()>0)
+										{
+											String sKey = rd.TerminalLogicAdd.toString()+"_"+normalData.GetMeasuredPointNo();
+											CLDInfo cld = CLDInfoMap.get(sKey);
+											if (cld!=null)
+											{
+												
+											}
+											else
+											{
+												CommunicationServerConstants.Log1.WriteLog("Key["+sKey+"] no CLDInfo find.");
+											}
+										}
+									}catch(Exception e)
+									{
+										
+									}
+								} else if (dataItem.GetDataCaption().toString().equalsIgnoreCase("200003")) {
+									// 正向有功最大需量发生时间
+									DataItemMap.put("P_ACT_MAX_DEMAND_TIME",dataItem.GetDataContent().toString());
+								}
+							}
+							String sKey = rd.TerminalLogicAdd.toString()+"_"+normalData.GetMeasuredPointNo();
+							CLDInfo cld = CLDInfoMap.get(sKey);
+							if (cld!=null)
+							{
+								boolean b = DataAccess_His.SaveTaskLately(cld.CLDID, cld.CT, cld.PT, DataItemMap);
+								if (!b)
+									CommunicationServerConstants.Log1.WriteLog("SaveTaskLately Failed.");
+							}
+							else
+							{
+								CommunicationServerConstants.Log1.WriteLog("Key["+sKey+"] no CLDInfo find.");
+							}
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -1815,7 +1910,6 @@ public class MessageExchange extends Thread {
 					CommunicationServerConstants.Log1.WriteLog("Process CLDInfor Error,Msg:" + ex.toString());
 				}
 			}
-			rs.close();
 			data.LogOut(0);
 			data.close();
 		} catch (Exception e) {
