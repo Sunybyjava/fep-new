@@ -14,6 +14,9 @@ import java.util.LinkedList;
 
 import java.util.Map.Entry;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.chooshine.fep.ConstAndTypeDefine.Glu_ConstDefine;
 import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
 import com.chooshine.fep.FrameDataAreaExplain.DataSwitch;
@@ -98,6 +101,7 @@ public class MessageExchange extends Thread {
 	private List<TaskInfo> DeviceTaskInfo = new LinkedList<TaskInfo>();
 	@SuppressWarnings("unused")
 	private int DWDM = 0; //
+	private MQProducer producer;
 
 	public MessageExchange() {
 	}
@@ -132,7 +136,7 @@ public class MessageExchange extends Thread {
 		// CommunicationServerConstants.Log1.WriteLog("Database connection
 		// failed(Save the Alarm data)!");
 		// }
-		if (DataAccess_His.LogIn(10) == false) {
+		if (DataAccess_His.LogIn(40) == false) {
 			CommunicationServerConstants.Log1.WriteLog("Database connection failed(Save the history data)!");
 		}
 		
@@ -168,7 +172,7 @@ public class MessageExchange extends Thread {
 		}
 		// 初始化任务对照队列
 		// InitDeviceAndTaskList();
-
+		producer = new MQProducer();
 	}
 
 	public String GetDebugFlag() { // 获取当前的运行标志
@@ -1641,45 +1645,77 @@ public class MessageExchange extends Thread {
 							HashMap<String,String> DataItemMap = new HashMap<String,String>();
 							for (int j = 0; j < iDataItemCount; j++) {
 								SFE_DataItem dataItem = normalData.DataItemList.get(j);
-								if (dataItem.GetDataCaption().toString().equalsIgnoreCase("100003")) {
+								String sDataCaption = new String(dataItem.GetDataCaption());
+								String sDataContent = new String(dataItem.GetDataContent());
+								if (sDataCaption.equalsIgnoreCase("100003")) {
 									// 正向有功最大需量
-									DataItemMap.put("P_ACT_MAX_DEMAND", dataItem.GetDataContent().toString());
-									try
-									{
-										//检查告警关系，有对应的数据项则通过接口通知，入参：测量点编号、告警类型、数据项值
-										String sWarnType = "";
-										Iterator<Entry<String, String>> itr = WarnDataItemMap.entrySet().iterator();
-										while (itr.hasNext())
-										{
-											Entry<String, String> entry = itr.next();
-											if (entry.getValue().equalsIgnoreCase("100003"))
-											{
-												sWarnType = entry.getKey();
-												break;
-											}
-										}
-										if (sWarnType.length()>0)
-										{
-											String sKey = rd.TerminalLogicAdd.toString()+"_"+normalData.GetMeasuredPointNo();
-											CLDInfo cld = CLDInfoMap.get(sKey);
-											if (cld!=null)
-											{
-												
-											}
-											else
-											{
-												CommunicationServerConstants.Log1.WriteLog("Key["+sKey+"] no CLDInfo find.");
-											}
-										}
-									}catch(Exception e)
-									{
-										
-									}
-								} else if (dataItem.GetDataCaption().toString().equalsIgnoreCase("200003")) {
+									DataItemMap.put("P_ACT_MAX_DEMAND", sDataContent);
+									
+								} else if (sDataCaption.equalsIgnoreCase("200003")) {
 									// 正向有功最大需量发生时间
-									DataItemMap.put("P_ACT_MAX_DEMAND_TIME",dataItem.GetDataContent().toString());
+									DataItemMap.put("P_ACT_MAX_DEMAND_TIME",sDataContent);
+								} else if (sDataCaption.equalsIgnoreCase("HD0005")) {
+									// 终端抄表时间
+									DataItemMap.put("DATA_TIME",sDataContent);
 								}
 							}
+							
+							try
+							{
+								//检查告警关系，有对应的数据项则通过接口通知，入参：测量点编号、告警类型、数据项值
+								String sWarnType = "";
+								Iterator<Entry<String, String>> itr = WarnDataItemMap.entrySet().iterator();
+								while (itr.hasNext())
+								{
+									Entry<String, String> entry = itr.next();
+									if (entry.getValue().equalsIgnoreCase("100003"))
+									{
+										sWarnType = entry.getKey();
+										break;
+									}
+								}
+								if (sWarnType.length()>0)
+								{
+									String sKey = rd.TerminalLogicAdd.toString()+"_"+normalData.GetMeasuredPointNo();
+									CLDInfo cld = CLDInfoMap.get(sKey);
+									if (cld!=null)
+									{
+										//生成要发送的JSON的字符串，然后调用发送消息队列的类发送即可
+										JSONArray JsonArrayMpItems = new JSONArray();
+										JSONObject jsObj = new JSONObject();
+										jsObj.put("mp_id", cld.CLDID);
+										jsObj.put("data_time", DataItemMap.get("DATA_TIME"));
+										
+										JSONArray JsonArrayItems = new JSONArray();
+										JSONObject jsItem = new JSONObject();
+										jsItem.put("name", "正向有功最大需量");
+										jsItem.put("value", DataItemMap.get("P_ACT_MAX_DEMAND"));
+										JsonArrayItems.put(jsItem);
+										jsItem = new JSONObject();
+										jsItem.put("name", "正向有功最大需量发生时间");
+										jsItem.put("value", DataItemMap.get("P_ACT_MAX_DEMAND_TIME"));
+										JsonArrayItems.put(jsItem);
+										
+										jsObj.put("data_items", JsonArrayItems);
+										
+										JsonArrayMpItems.put(jsObj);
+										
+										JSONObject jsObjMp = new JSONObject();
+										jsObjMp.put("mp_items", JsonArrayMpItems);
+										
+										System.out.println("JSON Str:"+jsObjMp.toString());
+										producer.sendMessage(jsObjMp.toString());
+									}
+									else
+									{
+										CommunicationServerConstants.Log1.WriteLog("Key["+sKey+"] no CLDInfo find.");
+									}
+								}
+							}catch(Exception e)
+							{
+								e.printStackTrace();
+							}
+							
 							String sKey = rd.TerminalLogicAdd.toString()+"_"+normalData.GetMeasuredPointNo();
 							CLDInfo cld = CLDInfoMap.get(sKey);
 							if (cld!=null)
@@ -2501,51 +2537,53 @@ public class MessageExchange extends Thread {
 							{
 								HashMap<String,String> DataItemMap = new HashMap<String,String>();
 								SFE_HistoryData hisData = (SFE_HistoryData)DataInfo.DataList.get(i);
-								DataItemMap.put("DATA_TIME", hisData.GetTaskDateTime().toString());
+								DataItemMap.put("DATA_TIME", new String(hisData.GetTaskDateTime()));
 								int iDataItemCount = hisData.DataItemList.size();
 								for (int j=0;j<iDataItemCount;j++)
 								{
 									 SFE_DataItem item = hisData.DataItemList.get(j);
-									 if (item.GetDataCaption().toString().equalsIgnoreCase("000005"))
+									 String sDataCaption = new String(item.GetDataCaption());
+									 String sDataContent = new String(item.GetDataContent());
+									 if (sDataCaption.equalsIgnoreCase("000005"))
 									 {
 										 //正向有功总,入库ENT_D_EQ_READING，字段名为key，数据值为value
-										 DataItemMap.put("P_ACT_TOTAL", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000105"))
+										 DataItemMap.put("P_ACT_TOTAL", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("000105"))
 									 {
 										 //正向有功尖
-										 DataItemMap.put("P_ACT_SHARP", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000205"))
+										 DataItemMap.put("P_ACT_SHARP", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("000205"))
 									 {
 										 //正向有功峰
-										 DataItemMap.put("P_ACT_PEAK", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000305"))
+										 DataItemMap.put("P_ACT_PEAK", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("000305"))
 									 {
 										 //正向有功平
-										 DataItemMap.put("P_ACT_LEVEL", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("000405"))
+										 DataItemMap.put("P_ACT_LEVEL", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("000405"))
 									 {
 										 //正向有功谷
-										 DataItemMap.put("P_ACT_VALLEY", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("010005"))
+										 DataItemMap.put("P_ACT_VALLEY", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("010005"))
 									 {
 										 //反向有功总
-										 DataItemMap.put("I_ACT_TOTAL", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("020005"))
+										 DataItemMap.put("I_ACT_TOTAL", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("020005"))
 									 {
 										 //正向无功总
-										 DataItemMap.put("P_REACT_TOTAL", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("100005"))
+										 DataItemMap.put("P_REACT_TOTAL", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("100005"))
 									 {
 										 //正向有功最大需量
-										 DataItemMap.put("P_ACT_MAX_DEMAND", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("200005"))
+										 DataItemMap.put("P_ACT_MAX_DEMAND", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("200005"))
 									 {
 										 //正向有功最大需量发生时间
-										 DataItemMap.put("P_ACT_MAX_DEMAND_TIME", item.GetDataContent().toString());
+										 DataItemMap.put("P_ACT_MAX_DEMAND_TIME", sDataContent);
 									 }
 								}
 								
-								String sKey = acd.TerminalLogicAdd.toString()+"_"+hisData.GetMeasuredPointNo();
+								String sKey = new String(acd.TerminalLogicAdd)+"_"+hisData.GetMeasuredPointNo();
 								CLDInfo cld = CLDInfoMap.get(sKey);
 								if (cld!=null)
 								{
@@ -2566,54 +2604,56 @@ public class MessageExchange extends Thread {
 							{
 								HashMap<String,String> DataItemMap = new HashMap<String,String>();
 								SFE_HistoryData hisData = (SFE_HistoryData)DataInfo.DataList.get(i);
-								DataItemMap.put("DATA_TIME", hisData.GetTaskDateTime().toString());
+								DataItemMap.put("DATA_TIME", new String(hisData.GetTaskDateTime()));
 								int iDataItemCount = hisData.DataItemList.size();
 								for (int j=0;j<iDataItemCount;j++)
 								{
 									 SFE_DataItem item = hisData.DataItemList.get(j);
-									 if (item.GetDataCaption().toString().equalsIgnoreCase("000008"))
+									 String sDataCaption = new String(item.GetDataCaption());
+									 String sDataContent = new String(item.GetDataContent());
+									 if (sDataCaption.equalsIgnoreCase("000008"))
 									 {
 										 //正向有功总,入库ENT_D_EQ_READING，字段名为key，数据值为value
-										 DataItemMap.put("P_ACT_TOTAL", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("345008"))
+										 DataItemMap.put("P_ACT_TOTAL", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("345008"))
 									 {
 										 //有功功率
-										 DataItemMap.put("ACT_POWER", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("346008"))
+										 DataItemMap.put("ACT_POWER", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("346008"))
 									 {
 										 //无功功率
-										 DataItemMap.put("REACT_POWER", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("341008"))
+										 DataItemMap.put("REACT_POWER", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("341008"))
 									 {
 										 //A相电压
-										 DataItemMap.put("CUR_A", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("341108"))
+										 DataItemMap.put("CUR_A", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("341108"))
 									 {
 										 //B相电压
-										 DataItemMap.put("CUR_B", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("341208"))
+										 DataItemMap.put("CUR_B", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("341208"))
 									 {
 										 //C相电压
-										 DataItemMap.put("CUR_C", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("342008"))
+										 DataItemMap.put("CUR_C", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("342008"))
 									 {
 										 //A相电流
-										 DataItemMap.put("VOLT_A", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("342108"))
+										 DataItemMap.put("VOLT_A", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("342108"))
 									 {
 										 //B相电流
-										 DataItemMap.put("VOLT_B", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("342208"))
+										 DataItemMap.put("VOLT_B", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("342208"))
 									 {
 										 //C相电流
-										 DataItemMap.put("VOLT_C", item.GetDataContent().toString());
-									 }else if (item.GetDataCaption().toString().equalsIgnoreCase("343008"))
+										 DataItemMap.put("VOLT_C", sDataContent);
+									 }else if (sDataCaption.equalsIgnoreCase("343008"))
 									 {
 										 //功率因数
-										 DataItemMap.put("POWER_FACTOR", item.GetDataContent().toString());
+										 DataItemMap.put("POWER_FACTOR", sDataContent);
 									 }
 								}
-								String sKey = acd.TerminalLogicAdd.toString()+"_"+hisData.GetMeasuredPointNo();
+								String sKey = new String(acd.TerminalLogicAdd)+"_"+hisData.GetMeasuredPointNo();
 								CLDInfo cld = CLDInfoMap.get(sKey);
 								if (cld!=null)
 								{

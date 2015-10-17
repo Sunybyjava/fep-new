@@ -295,35 +295,35 @@ public class Glu_DataAccess {
 				String REACT_POWER = dataItemMap.get("REACT_POWER");
 				if (REACT_POWER==null)
 					return false;
-				PpstmtofTaskOne2.setString(7, dataItemMap.get("REACT_POWER"));
+				PpstmtofTaskOne2.setString(7, REACT_POWER);
 				String CUR_A = dataItemMap.get("CUR_A");
 				if (CUR_A==null)
 					return false;
-				PpstmtofTaskOne2.setString(8, dataItemMap.get("CUR_A"));
+				PpstmtofTaskOne2.setString(8, CUR_A);
 				String CUR_B = dataItemMap.get("CUR_B");
 				if (CUR_B==null)
 					return false;
-				PpstmtofTaskOne2.setString(9, dataItemMap.get("CUR_B"));
+				PpstmtofTaskOne2.setString(9, CUR_B);
 				String CUR_C = dataItemMap.get("CUR_C");
 				if (CUR_C==null)
 					return false;
-				PpstmtofTaskOne2.setString(10, dataItemMap.get("CUR_C"));
+				PpstmtofTaskOne2.setString(10, CUR_C);
 				String VOLT_A = dataItemMap.get("VOLT_A");
 				if (VOLT_A==null)
 					return false;
-				PpstmtofTaskOne2.setString(11, dataItemMap.get("VOLT_A"));
+				PpstmtofTaskOne2.setString(11, VOLT_A);
 				String VOLT_B = dataItemMap.get("VOLT_B");
 				if (VOLT_B==null)
 					return false;
-				PpstmtofTaskOne2.setString(12, dataItemMap.get("VOLT_B"));
+				PpstmtofTaskOne2.setString(12, VOLT_B);
 				String VOLT_C = dataItemMap.get("VOLT_C");
 				if (VOLT_C==null)
 					return false;
-				PpstmtofTaskOne2.setString(13, dataItemMap.get("VOLT_C"));
+				PpstmtofTaskOne2.setString(13, VOLT_C);
 				String POWER_FACTOR = dataItemMap.get("POWER_FACTOR");
 				if (POWER_FACTOR==null)
 					return false;
-				PpstmtofTaskOne2.setString(14, dataItemMap.get("POWER_FACTOR"));
+				PpstmtofTaskOne2.setString(14, POWER_FACTOR);
 				PpstmtofTaskOne2.executeUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -348,39 +348,39 @@ public class Glu_DataAccess {
 				String P_ACT_TOTAL = dataItemMap.get("P_ACT_TOTAL");
 				if (P_ACT_TOTAL==null)
 					return false;
-				PpstmtofTaskTwo.setString(6, dataItemMap.get("P_ACT_TOTAL"));
+				PpstmtofTaskTwo.setString(6, P_ACT_TOTAL);
 				String P_ACT_SHARP = dataItemMap.get("P_ACT_SHARP");
 				if (P_ACT_SHARP==null)
 					return false;
-				PpstmtofTaskTwo.setString(7, dataItemMap.get("P_ACT_SHARP"));
+				PpstmtofTaskTwo.setString(7, P_ACT_SHARP);
 				String P_ACT_PEAK = dataItemMap.get("P_ACT_PEAK");
 				if (P_ACT_PEAK==null)
 					return false;
-				PpstmtofTaskTwo.setString(8, dataItemMap.get("P_ACT_PEAK"));
+				PpstmtofTaskTwo.setString(8, P_ACT_PEAK);
 				String P_ACT_LEVEL = dataItemMap.get("P_ACT_LEVEL");
 				if (P_ACT_LEVEL==null)
 					return false;
-				PpstmtofTaskTwo.setString(9, dataItemMap.get("P_ACT_LEVEL"));
+				PpstmtofTaskTwo.setString(9, P_ACT_LEVEL);
 				String P_ACT_VALLEY = dataItemMap.get("P_ACT_VALLEY");
 				if (P_ACT_VALLEY==null)
 					return false;
-				PpstmtofTaskTwo.setString(10, dataItemMap.get("P_ACT_VALLEY"));
+				PpstmtofTaskTwo.setString(10, P_ACT_VALLEY);
 				String I_ACT_TOTAL = dataItemMap.get("I_ACT_TOTAL");
 				if (I_ACT_TOTAL==null)
 					return false;
-				PpstmtofTaskTwo.setString(11, dataItemMap.get("I_ACT_TOTAL"));
+				PpstmtofTaskTwo.setString(11, I_ACT_TOTAL);
 				String P_REACT_TOTAL = dataItemMap.get("P_REACT_TOTAL");
 				if (P_REACT_TOTAL==null)
 					return false;
-				PpstmtofTaskTwo.setString(12, dataItemMap.get("P_REACT_TOTAL"));
+				PpstmtofTaskTwo.setString(12, P_REACT_TOTAL);
 				String P_ACT_MAX_DEMAND = dataItemMap.get("P_ACT_MAX_DEMAND");
 				if (P_ACT_MAX_DEMAND==null)
 					return false;
-				PpstmtofTaskTwo.setString(13, dataItemMap.get("P_ACT_MAX_DEMAND"));
+				PpstmtofTaskTwo.setString(13, P_ACT_MAX_DEMAND);
 				String P_ACT_MAX_DEMAND_TIME = dataItemMap.get("P_ACT_MAX_DEMAND_TIME");
 				if (P_ACT_MAX_DEMAND_TIME==null)
 					return false;
-				PpstmtofTaskTwo.setString(14, dataItemMap.get("P_ACT_MAX_DEMAND_TIME"));
+				PpstmtofTaskTwo.setString(14, P_ACT_MAX_DEMAND_TIME);
 				PpstmtofTaskTwo.executeUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -398,18 +398,20 @@ public class Glu_DataAccess {
 				String DATA_TIME = dataItemMap.get("DATA_TIME");
 				if (DATA_TIME==null)
 					return false;
+				DATA_TIME = "20"+DATA_TIME+":00";
 				PpstmtofTaskLately.setString(2, DATA_TIME);
-				PpstmtofTaskLately.setString(3, DATA_TIME.substring(0, 8));
-				PpstmtofTaskLately.setInt(4, CT);
-				PpstmtofTaskLately.setInt(5, PT);
+				PpstmtofTaskLately.setInt(3, CT);
+				PpstmtofTaskLately.setInt(4, PT);
 				String P_ACT_MAX_DEMAND = dataItemMap.get("P_ACT_MAX_DEMAND");
 				if (P_ACT_MAX_DEMAND==null)
 					return false;
-				PpstmtofTaskLately.setString(6, dataItemMap.get("P_ACT_MAX_DEMAND"));
+				PpstmtofTaskLately.setString(5, P_ACT_MAX_DEMAND);
 				String P_ACT_MAX_DEMAND_TIME = dataItemMap.get("P_ACT_MAX_DEMAND_TIME");
 				if (P_ACT_MAX_DEMAND_TIME==null)
 					return false;
-				PpstmtofTaskLately.setString(7, dataItemMap.get("P_ACT_MAX_DEMAND_TIME"));
+				int iYear = Calendar.getInstance().get(Calendar.YEAR);
+				P_ACT_MAX_DEMAND_TIME = Integer.toString(iYear)+"-"+P_ACT_MAX_DEMAND_TIME+":00";
+				PpstmtofTaskLately.setString(6, P_ACT_MAX_DEMAND_TIME);
 				PpstmtofTaskLately.executeUpdate();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -455,9 +457,9 @@ public class Glu_DataAccess {
 	{
 		try
 		{
-			String sSql = "REPLACE INTO ent_d_eq_reading_lately(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,"
+			String sSql = "REPLACE INTO ent_d_eq_reading_lately(MP_ID,DATA_TIME,RECEIVE_TIME,CT_RATIO,PT_RATIO,"
 					+ "P_ACT_MAX_DEMAND,P_ACT_MAX_DEMAND_TIME,DATA_FLAG) "
-					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,1)";
+					+ "VALUES(?,?,SYSDATE(),?,?,?,?,1)";
 			PpstmtofTaskLately = conn.prepareStatement(sSql);
 			return true;
 		}catch (Exception e)
