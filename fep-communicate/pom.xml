@@ -15,6 +15,17 @@
 			<artifactId>fep-frame</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<!-- rabbitMQ -->
+		<dependency>
+			<groupId>com.chooshine.rabbitmq.client</groupId>
+			<artifactId>rabbitmqClient</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20150729</version>
+		</dependency>
 	</dependencies>
 
 </project>
