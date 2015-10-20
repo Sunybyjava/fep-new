@@ -1,5 +1,7 @@
 package com.chooshine.fep.communicate;
 
+import org.apache.commons.lang.StringUtils;
+
 //import hexing.fep.communicate.*;
 
 /**
@@ -15,42 +17,47 @@ package com.chooshine.fep.communicate;
  * @version 1.0
  */
 public class CommunicationServer {
-	  
-  public static void main(String args[]) {
-    String Debug = "";
-    if (args.length == 1) {  
-      Debug = args[0];
+    //Start Debug、Start LogWrite、Finish Debug、Finish LogWrite
+    private static final String STARTDEBUG = "Start Debug";
+    private static final String STARTLOG = "Start LogWrite";
+    private static final String FINISHDEBUG = "Finish Debug";
+    private static final String FINISHLOG = "Finish LogWrite";
+    private MessageExchange mx;
+    private CommunicationScheduler cs;
+    private DebugInfoInputThread dt;
+
+    public static void main(String args[]) {
+        new CommunicationServer().start(STARTDEBUG);
     }
-    MessageExchange mx = new MessageExchange(CommunicationServerConstants.
-                                             COMMSERVICE_MESSAGEEXCHANGE_PORT,
-                                             CommunicationServerConstants.
-                                             COMMSERVICE_MESSAGEEXCHANGE_MAXCOUNT,
-                                             CommunicationServerConstants.
-                                             COMMSERVICE_MESSAGEEXCHANGE_TIMEOUT,
-                                             Debug);
-    mx.start();
-    //utils.PrintDebugMessage("Start CommunicationScheduler Object.....", Debug);
-    CommunicationServerConstants.Trc1.TraceLog("Start CommunicationScheduler Object.....");
 
-    CommunicationScheduler cs = new CommunicationScheduler(
-        CommunicationServerConstants.COMMSERVICE_COMMUNICATIONSCHEDULER_PORT,
-        CommunicationServerConstants.
-        COMMSERVICE_COMMUNICATIONSCHEDULER_MAXCOUNT,
-        CommunicationServerConstants.
-        COMMSERVICE_COMMUNICATIONSCHEDULER_TIMEOUT,
-        CommunicationServerConstants.
-        COMMSERVICE_COMMUNICATIONSCHEDULER_TIMEOUT230M,
-        CommunicationServerConstants.
-        COMMSERVICE_COMMUNICATIONSCHEDULER_BatchSave
-        , Debug);
-    cs.start();
+    public void start(String debug) {
+        if (StringUtils.isBlank(debug))
+            debug = STARTLOG;
+        mx = new MessageExchange(CommunicationServerConstants.COMMSERVICE_MESSAGEEXCHANGE_PORT,
+                CommunicationServerConstants.COMMSERVICE_MESSAGEEXCHANGE_MAXCOUNT,
+                CommunicationServerConstants.COMMSERVICE_MESSAGEEXCHANGE_TIMEOUT, debug);
+        mx.start();
+        //utils.PrintDebugMessage("Start CommunicationScheduler Object.....", Debug);
+        CommunicationServerConstants.Trc1.TraceLog("Start CommunicationScheduler Object.....");
+        cs = new CommunicationScheduler(CommunicationServerConstants.COMMSERVICE_COMMUNICATIONSCHEDULER_PORT,
+                CommunicationServerConstants.COMMSERVICE_COMMUNICATIONSCHEDULER_MAXCOUNT,
+                CommunicationServerConstants.COMMSERVICE_COMMUNICATIONSCHEDULER_TIMEOUT,
+                CommunicationServerConstants.COMMSERVICE_COMMUNICATIONSCHEDULER_TIMEOUT230M,
+                CommunicationServerConstants.COMMSERVICE_COMMUNICATIONSCHEDULER_BatchSave, debug);
+        cs.start();
+        dt = new DebugInfoInputThread(mx, cs);
+        dt.start();
+    }
 
-//    UpdateFramePushThread fpt = new UpdateFramePushThread();
-//    fpt.start();
-    DebugInfoInputThread dt = new DebugInfoInputThread(mx, cs);
-    dt.start();
-  }
+    public void stop() {
+        if (mx != null)
+            mx.interrupt();
+        if (cs != null)
+            cs.interrupt();
+        if (dt != null)
+            dt.interrupt();
+    }
 
-  public CommunicationServer() {
+    public CommunicationServer() {
   }
 }

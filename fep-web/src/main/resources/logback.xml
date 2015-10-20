@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${user.dir}/logs/fep.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${user.dir}/logs/fep-%d{yyyy-MM-dd}.%i.log</fileNamePattern> 
+            <timeBasedFileNamingAndTriggeringPolicy 
+            	class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+            	<maxFileSize>10MB</maxFileSize> 
+            </timeBasedFileNamingAndTriggeringPolicy> 
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration>
