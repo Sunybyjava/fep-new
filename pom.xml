@@ -14,6 +14,7 @@
 		<module>fep-frame</module>
 		<module>fep-realtimecom</module>
 		<module>fep-tcpchannel</module>
+		<module>fep-web</module>
 	</modules>
 	
 	<properties>
