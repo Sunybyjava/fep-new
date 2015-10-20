@@ -1,8 +1,5 @@
 package com.chooshine.fep.newtcpchannel;
 
-import com.chooshine.fep.ConstAndTypeDefine.ConvertUtil;
-import com.chooshine.fep.communicate.utils;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +15,9 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+
+import com.chooshine.fep.ConstAndTypeDefine.ConvertUtil;
+import com.chooshine.fep.communicate.utils;
 
 public class TCPControl {
 	private Selector selector;
@@ -44,30 +44,47 @@ public class TCPControl {
 
 	private static int ListenPort = 0; // 总共TCP端口的数量
 
-	public static void main(String[] args) {
-		// 从配置文件获取通道配置信息
-		InputStream filecon = null;
-		try {
-			String file_name = "./NewTCPChannel.config";
-			Properties prop = new Properties();
-			filecon = new FileInputStream(file_name); // 读取配置文件中的内容
-			prop.load(filecon);
-			CommService_Ip = (String) prop.getProperty("CommService_Ip", InetAddress.getLocalHost().getHostAddress()); // 通讯服务所在的Ip，默认为本机IP
-			CommService_Port = Integer.parseInt((String) prop.getProperty("CommService_Port", "5000")); // 通讯服务监听前置机的端口，默认为5000
-			ListenPort = Integer.parseInt((String) prop.getProperty("ListenPort", "6000")); // TCP端口数量，默认为1
-			NamedChannelTimeOut = Integer.parseInt((String) prop.getProperty("Connection_TimeOut", "15")); // 连接超时时间，默认为15分钟
-		} catch (Exception fe) { // 配置文件没有找到，需要填入默认的信息
-			try {
-				CommService_Ip = InetAddress.getLocalHost().getHostAddress();
-			} catch (Exception e) {
-			}
-			CommService_Port = 5000;
-			ListenPort = 6000;
-			NamedChannelTimeOut = 15;
-		}
+    public TCPControl() {
+        // 从配置文件获取通道配置信息
+        InputStream filecon = null;
+        try {
+            String file_name = "./NewTCPChannel.config";
+            Properties prop = new Properties();
+            filecon = new FileInputStream(file_name); // 读取配置文件中的内容
+            prop.load(filecon);
+            CommService_Ip = (String) prop.getProperty("CommService_Ip", InetAddress.getLocalHost().getHostAddress()); // 通讯服务所在的Ip，默认为本机IP
+            CommService_Port = Integer.parseInt((String) prop.getProperty("CommService_Port", "5000")); // 通讯服务监听前置机的端口，默认为5000
+            ListenPort = Integer.parseInt((String) prop.getProperty("ListenPort", "6000")); // TCP端口数量，默认为1
+            NamedChannelTimeOut = Integer.parseInt((String) prop.getProperty("Connection_TimeOut", "15")); // 连接超时时间，默认为15分钟
+        } catch (Exception fe) { // 配置文件没有找到，需要填入默认的信息
+            try {
+                CommService_Ip = InetAddress.getLocalHost().getHostAddress();
+            } catch (Exception e) {
+            }
+            CommService_Port = 5000;
+            ListenPort = 6000;
+            NamedChannelTimeOut = 15;
+        }
+    }
 
+    public TCPControl connect() {
+        ChannelInit(ListenPort);
+        return this;
+    }
+
+    public void disConnect() {
+        if (selector != null)
+            try {
+                //关闭多路复用器,所有注册在上面的channel和 Pipe等资源都会被自动去注册并关闭
+                selector.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+	public static void main(String[] args) {
 		TCPControl tcp = new TCPControl();
-		tcp.ChannelInit(ListenPort);
+        //tcp.ChannelInit(ListenPort);
+        tcp.connect();
 	}
 
 	private String CalcFrameLength(String FrameContent) {
@@ -83,7 +100,7 @@ public class TCPControl {
 		return sDataLen;
 	}
 
-	public void ChannelInit(int listenPort) {
+    private void ChannelInit(int listenPort) {
 		ListMaxCount = 5000;
 		ChannelSetCheckInterval = 1;
 		UnNamedChannelTimeOut = 1000;
