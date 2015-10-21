@@ -99,7 +99,8 @@ public class applicationFunction {
     	}
     	try {
             bResult = rtc.SendBatchToFep(1, TerminalCount,terminalInfoStructList, DataContentInfo, sGnm.toCharArray(),
-                    1, 0, 0, 3);
+                    0, 0, 0, 3);
+            
             int iRealTime = 0;
             while (!bResult && iRealTime < 3) {
                 RealTimeReconnection(rtc);

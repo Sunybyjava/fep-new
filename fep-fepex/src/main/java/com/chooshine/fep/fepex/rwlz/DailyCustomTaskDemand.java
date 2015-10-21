@@ -128,7 +128,7 @@ public class DailyCustomTaskDemand extends Thread {
                 zdpz.remove(0);                    
             }
             try {
-                Thread.sleep(500);
+                Thread.sleep(15000);
                 rtc.DisConnect();
             } catch (InterruptedException ex6) {
             }
