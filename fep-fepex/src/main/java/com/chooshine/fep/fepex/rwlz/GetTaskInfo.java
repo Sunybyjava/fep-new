@@ -1,14 +1,14 @@
 package com.chooshine.fep.fepex.rwlz;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.LinkedList;
 //import java.util.List;
 //import java.util.ArrayList;
 import java.sql.ResultSet;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 //import java.sql.*;
 //import java.util.Hashtable;
+import java.util.LinkedList;
 
 import com.chooshine.fep.communicate.utils;
 import com.chooshine.fep.fepex.common.DataAccess;
@@ -29,7 +29,7 @@ public class GetTaskInfo {
     public GetTaskInfo(DataAccess das) {
         try {
             dataAccess = das;
-            applicationFunction.gTaskTerminalList = new LinkedList<TerminalTaskInfo>();
+            //            applicationFunction.gTaskTerminalList = new LinkedList<TerminalTaskInfo>();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

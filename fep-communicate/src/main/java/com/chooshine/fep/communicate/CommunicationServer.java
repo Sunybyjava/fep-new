@@ -18,10 +18,10 @@ import org.apache.commons.lang.StringUtils;
  */
 public class CommunicationServer {
     //Start Debug、Start LogWrite、Finish Debug、Finish LogWrite
-    private static final String STARTDEBUG = "Start Debug";
-    private static final String STARTLOG = "Start LogWrite";
-    private static final String FINISHDEBUG = "Finish Debug";
-    private static final String FINISHLOG = "Finish LogWrite";
+    public static final String STARTDEBUG = "Start Debug";
+    public static final String STARTLOG = "Start LogWrite";
+    public static final String FINISHDEBUG = "Finish Debug";
+    public static final String FINISHLOG = "Finish LogWrite";
     private MessageExchange mx;
     private CommunicationScheduler cs;
     private DebugInfoInputThread dt;

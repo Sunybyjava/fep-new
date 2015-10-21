@@ -1,20 +1,27 @@
 package com.chooshine.fep.glumethodtest;
 
-import com.chooshine.fep.ConstAndTypeDefine.FileLogger;
-import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
-import com.chooshine.fep.ConstAndTypeDefine.Struct_CommRecordItem;
-
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
-
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import com.chooshine.fep.FrameDataAreaExplain.SFE_HistoryData;
-import com.chooshine.fep.FrameDataAreaExplain.SPE_CommandInfoList;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 //import hexing.fep.FrameDataAreaExplain.SPE_TaskInfoList;
+import java.util.Calendar;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
+import com.chooshine.fep.ConstAndTypeDefine.Struct_CommRecordItem;
+import com.chooshine.fep.FrameDataAreaExplain.SFE_HistoryData;
+import com.chooshine.fep.FrameDataAreaExplain.SPE_CommandInfoList;
 
 /**
  * <p>Title: </p>
@@ -28,8 +35,8 @@ import java.util.ArrayList;
  * @author not attributable
  * @version 1.0
  */
-public class Frame1
-    extends JFrame {
+public class Frame1 extends JFrame {
+    private static Logger log = LoggerFactory.getLogger(Frame1.class.getName());
   /**
 	 * 
 	 */
@@ -141,11 +148,12 @@ JPanel contentPane;
 
   public void jButton1_actionPerformed(ActionEvent e) {
     //String sDirectory = jTF_Directory.getText().trim();
-    String sFileName = jTF_FileName.getText().trim();
+        //    String sFileName = jTF_FileName.getText().trim();
     //String sFullName=sDirectory+"\\"+sFileName;
-    FileLogger MyLog = new FileLogger(sFileName);
-    MyLog.WriteLog("��¡���Ӽ������޹�˾��");
-    MyLog.WriteLog("DataProcessErr!");
+        //    FileLogger MyLog = new FileLogger(sFileName);
+        //    MyLog.WriteLog("��¡���Ӽ������޹�˾��");
+        //    MyLog.WriteLog("DataProcessErr!");
+        log.info("DataProcessErr!");
   }
 
   public void jButton2_actionPerformed(ActionEvent e) {

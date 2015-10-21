@@ -1,7 +1,7 @@
 package com.chooshine.fep.fepex.rwlz;
 
-import java.util.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import com.chooshine.fep.communicate.utils;
 import com.chooshine.fep.fepex.common.CommonClass;
@@ -14,6 +14,8 @@ public class CustomTaskAutomaticDemand extends Thread {
 //    private String StartNow = "";
     SimpleDateFormat formatter = null;
     SimpleDateFormat formatter1 = null;
+
+    private volatile boolean start = true;
     public CustomTaskAutomaticDemand() {
         try {
             dataAccess = new DataAccess(CommonClass.JDBC_DATABASETYPE,
@@ -37,7 +39,10 @@ public class CustomTaskAutomaticDemand extends Thread {
         } catch (Exception ex) {
         }
     }
-    
+
+    public void exit() {
+        this.start = false;
+    }
     public void run() {
         Calendar RedoTime = null;
         try {
@@ -61,7 +66,7 @@ public class CustomTaskAutomaticDemand extends Thread {
             }
         } catch (Exception ex2) {
         } 
-        while (true) {
+        while (start) {
             //2、判断时间是否到达
             Calendar c = Calendar.getInstance();
             if (c.after(RedoTime)) {
@@ -86,6 +91,7 @@ public class CustomTaskAutomaticDemand extends Thread {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ex1) {
+                start = false;
             }
         }
     }

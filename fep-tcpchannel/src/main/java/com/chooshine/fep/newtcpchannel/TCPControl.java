@@ -1,6 +1,5 @@
 package com.chooshine.fep.newtcpchannel;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -15,6 +14,9 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import com.chooshine.fep.ConstAndTypeDefine.ConvertUtil;
 import com.chooshine.fep.communicate.utils;
@@ -48,9 +50,12 @@ public class TCPControl {
         // 从配置文件获取通道配置信息
         InputStream filecon = null;
         try {
-            String file_name = "./NewTCPChannel.config";
+            //            String file_name = "/NewTCPChannel.config";
+            Resource resource = new ClassPathResource("NewTCPChannel.config");
+
+            //            File file = ResourceUtils.getFile("NewTCPChannel.config");
             Properties prop = new Properties();
-            filecon = new FileInputStream(file_name); // 读取配置文件中的内容
+            filecon = resource.getInputStream();//new FileInputStream(file); // 读取配置文件中的内容
             prop.load(filecon);
             CommService_Ip = (String) prop.getProperty("CommService_Ip", InetAddress.getLocalHost().getHostAddress()); // 通讯服务所在的Ip，默认为本机IP
             CommService_Port = Integer.parseInt((String) prop.getProperty("CommService_Port", "5000")); // 通讯服务监听前置机的端口，默认为5000

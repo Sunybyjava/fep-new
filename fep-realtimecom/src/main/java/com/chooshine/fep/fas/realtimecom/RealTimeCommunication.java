@@ -1,13 +1,22 @@
 package com.chooshine.fep.fas.realtimecom;
 
-import java.io.*;
-import java.util.*;
-import java.net.*;
-import java.nio.*;
-import java.nio.channels.*;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-import com.chooshine.fep.ConstAndTypeDefine.FileLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.chooshine.fep.communicate.utils;
 
 /**
@@ -23,6 +32,8 @@ import com.chooshine.fep.communicate.utils;
  * @version 
  */
 public class RealTimeCommunication {
+    private static Logger log = LoggerFactory.getLogger(RealTimeCommunication.class.getName());
+
   private Selector selector;
   private SocketChannel client;
   private List <RealTimeCommunicationInfo>RealTimeList; //下发和上送数据的对应关系
@@ -37,7 +48,7 @@ public class RealTimeCommunication {
   private boolean AckBack = true; //确认信号是否返回的标志
   public boolean ConnectFlag = false; //连接前置机是否成功的标志，决定是否需要上层重新创建新对象
   private boolean FStop = false;
-  private FileLogger fl = null;
+    //  private FileLogger fl = null;
   private MonitorThread mh = null;
   private RealTimeCommunicationInfoListThread rh = null;
   private boolean GetTerminalOnLineStatus = false;
@@ -57,7 +68,7 @@ public class RealTimeCommunication {
   }
 
   public RealTimeCommunication(String hostName, int port) { //重构构造函数，传入Ip和端口
-    fl = new FileLogger("RealTimeCommunication");
+        //    fl = new FileLogger("RealTimeCommunication");
     ReConnectTimes = 1;
     HostName = hostName;
     Port = port;
@@ -721,10 +732,10 @@ public class RealTimeCommunication {
       AddCallInfoToList(AppID, new String(TerminalAddr), GYH, 10, 0); //保存终端信息和AppID到队列中
       FormData = true;
       Sequence = Sequence + 1;
-      fl.WriteLog("实时通讯组成命令，应用ID：" + AppID + "，终端逻辑地址：" +
+            log.info("实时通讯组成命令，应用ID：" + AppID + "，终端逻辑地址：" +
                   new String(TerminalAddr) + "，数据区内容" + new String(SJQNR));
       if ( (data != null) && (FormData)) { //发送数据的条件：缓存中有数据并且消息组成完成
-        fl.WriteLog("实时通讯准备发送命令，应用ID：" + AppID + "，终端逻辑地址：" +
+                log.info("实时通讯准备发送命令，应用ID：" + AppID + "，终端逻辑地址：" +
                     new String(TerminalAddr) + "，数据区内容" + new String(SJQNR));
         SocketChannel keyChannel = (SocketChannel) key.channel(); //通过对应的通道来写入数据
         bBuffer.clear();
@@ -733,7 +744,7 @@ public class RealTimeCommunication {
         keyChannel.write(bBuffer); //如果在这里出现异常，则说明无法连接成功
         bBuffer.clear();
         AckBack = false;
-        fl.WriteLog("实时通讯发送命令，应用ID：" + AppID + "，终端逻辑地址：" +
+                log.info("实时通讯发送命令，应用ID：" + AppID + "，终端逻辑地址：" +
                     new String(TerminalAddr) + "，数据区内容" + new String(SJQNR));
       }
       return;
@@ -873,7 +884,7 @@ public class RealTimeCommunication {
           keyChannel.write(bBuffer); //如果在这里出现异常，则说明无法连接成功
           bBuffer.clear();
           AckBack = false;
-          fl.WriteLog("实时通讯发送命令，应用ID：" + AppID + "，终端逻辑地址：" +
+                    log.info("实时通讯发送命令，应用ID：" + AppID + "，终端逻辑地址：" +
                       new String(TerminalAddr) + "，数据区内容" + new String(SJQNR));
         }
         catch (IOException ex) {
@@ -1349,7 +1360,7 @@ public boolean SendBatchToFep(int AppID, int TerminalCount, List TerminalInfo,
           si.Priority = Priority;
           si.ArithmeticNo = tis.ArithmeticNo;
           SendInfoList.add(si);
-          fl.WriteLog("发送数据加入队列，应用ID：" + AppID + "，终端逻辑地址：" +
+                    log.info("发送数据加入队列，应用ID：" + AppID + "，终端逻辑地址：" +
                       si.TerminalAddress + "，数据区内容：" + si.DataContent);
           LastTime = Calendar.getInstance();
         }
@@ -2051,7 +2062,7 @@ public List GetNewListMessage(int AppID) {
     public void run() {
       while (true) {
         if (FStop) {
-          fl.WriteLog("实时通讯监控线程退出！");
+                    log.info("实时通讯监控线程退出！");
           return;
         }
         try {
@@ -2109,7 +2120,7 @@ public List GetNewListMessage(int AppID) {
     public void run() {
       while (true) {
         if (FStop) {
-          fl.WriteLog("定时发送数据线程退出！");
+                    log.info("定时发送数据线程退出！");
           return;
         }
         try {
@@ -2215,7 +2226,7 @@ public List GetNewListMessage(int AppID) {
                                           si.ArithmeticNo);
                   }
                   catch (Exception ex1) {
-                    fl.WriteLog("发送实时通讯数据异常，异常内容:" + ex1.toString());
+                                        log.info("发送实时通讯数据异常，异常内容:" + ex1.toString());
                   }
                   SendTime = Calendar.getInstance();
                   SendTime.add(Calendar.MILLISECOND, 100);
@@ -2226,7 +2237,7 @@ public List GetNewListMessage(int AppID) {
                          (ReSendTimes < 2)) {
                   if (si != null) {
                     //System.err.println("ReSend");
-                    fl.WriteLog("实时通讯重发命令，应用ID：" + si.AppID + "，终端逻辑地址：" +
+                                        log.info("实时通讯重发命令，应用ID：" + si.AppID + "，终端逻辑地址：" +
                                 si.TerminalAddress + "，数据区内容：" + si.DataContent);
                     ReSendTimes = ReSendTimes + 1;
                     try {
@@ -2244,7 +2255,7 @@ public List GetNewListMessage(int AppID) {
                                             si.ArithmeticNo);
                     }
                     catch (Exception ex2) {
-                      fl.WriteLog("发送实时通讯数据异常，异常内容:" + ex2.toString());
+                                            log.info("发送实时通讯数据异常，异常内容:" + ex2.toString());
                     }
                     SendTime = Calendar.getInstance();
                     SendTime.add(Calendar.MILLISECOND, 100);
@@ -2273,7 +2284,7 @@ public List GetNewListMessage(int AppID) {
         }
       }
       catch (Exception ex4) {
-        fl.WriteLog("实时通讯链路异常，异常内容：" + ex4.toString());
+                log.info("实时通讯链路异常，异常内容：" + ex4.toString());
         try {
           Thread.sleep(1000 * ReConnectTimes); //根据重连次数决定需要等待的时间
         }

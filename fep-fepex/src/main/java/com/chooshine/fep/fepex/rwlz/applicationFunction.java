@@ -1,17 +1,21 @@
 package com.chooshine.fep.fepex.rwlz;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.chooshine.fep.fas.realtimecom.RealTimeCommunication;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
+import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
 import com.chooshine.fep.FrameDataAreaExplain.IFE_FrameDataAreaExplain;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_ParamItem;
-import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_QGSer_TimeLabel;
 import com.chooshine.fep.communicate.utils;
+import com.chooshine.fep.fas.realtimecom.DataContentStruct;
+import com.chooshine.fep.fas.realtimecom.RealTimeCommunication;
+import com.chooshine.fep.fas.realtimecom.TerminalInfoStruct;
 import com.chooshine.fep.fepex.common.CommonClass;
 import com.chooshine.fep.fepex.common.TerminalInfo;
-import com.chooshine.fep.fas.realtimecom.TerminalInfoStruct;
-import com.chooshine.fep.fas.realtimecom.DataContentStruct;
 
 /*应用功能类  */
 public class applicationFunction {
@@ -25,8 +29,9 @@ public class applicationFunction {
     }
     static void init() {
         try {
-            FrameDataAreaExplain = new IFE_FrameDataAreaExplain();
-            dataAccess = new Glu_DataAccess("");
+            Resource result = new ClassPathResource("CommService.config");
+            FrameDataAreaExplain = new IFE_FrameDataAreaExplain(result.getURL().getPath());
+            dataAccess = new Glu_DataAccess(result.getURL().getPath());
             gTaskTerminalList = new LinkedList<TerminalTaskInfo>();
             gTerminalList = new LinkedList<TerminalTaskInfo>();
         } catch (Exception e) {
@@ -175,5 +180,8 @@ public class applicationFunction {
     
     private void jbInit() throws Exception {
     }
-    
+
+    public static void main(String[] args) {
+        new applicationFunction();
+    }
 }

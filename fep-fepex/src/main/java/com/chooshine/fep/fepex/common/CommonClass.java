@@ -2,8 +2,9 @@ package com.chooshine.fep.fepex.common;
 
 import java.io.InputStream;
 import java.util.Properties;
-import java.io.FileInputStream;
-import java.io.File;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 public class CommonClass {
     public static String REALTIME_COMMUNICATION_IP = "127.0.0.1";
@@ -34,10 +35,11 @@ public class CommonClass {
     static void init() {
         InputStream filecon = null;
         try {
-            File file = new File("CustomTaskDemand.config");
-            String pfile = file.getAbsolutePath().replace('\\', '/');
+            //            File file = new File("CustomTaskDemand.config");
+            Resource resource = new ClassPathResource("CustomTaskDemand.config");
+            //            String pfile = "./CustomTaskDemand.config";//file.getAbsolutePath().replace('\\', '/');
             Properties prop = new Properties();
-            filecon = new FileInputStream(pfile); //读取配置文件中的内容
+            filecon = resource.getInputStream();//new FileInputStream(pfile); //读取配置文件中的内容
             prop.load(filecon);
             REALTIME_COMMUNICATION_IP = prop.getProperty(
                     "REALTIME_COMMUNICATION_IP", "127.0.0.1");
