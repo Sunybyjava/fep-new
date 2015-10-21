@@ -5,7 +5,11 @@ import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Trc4Fep {
+    private static Logger log = LoggerFactory.getLogger("com.chooshine.fep.trc");
 	private String TraceFileName = "";
 	
 	public static void main(String args[]){
@@ -26,6 +30,7 @@ public class Trc4Fep {
 	
 	//��д����־����ǰ����Ҫȷ�����ڣ����޸���־�ļ�·�����
 	public void TraceLog(String Msg) {
+        log.info(Msg);
 		Calendar cLogTime = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd");
 		String sLogTime = formatter.format(cLogTime.getTime());
