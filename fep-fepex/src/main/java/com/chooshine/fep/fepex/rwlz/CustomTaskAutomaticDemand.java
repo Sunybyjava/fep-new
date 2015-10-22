@@ -1,21 +1,24 @@
 package com.chooshine.fep.fepex.rwlz;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chooshine.fep.communicate.utils;
 import com.chooshine.fep.fepex.common.CommonClass;
 import com.chooshine.fep.fepex.common.DataAccess;
 
-public class CustomTaskAutomaticDemand extends Thread {
-    Calendar NowDateTime; //当前时间
-    Calendar StartTime; //程序启动时间
+public class CustomTaskAutomaticDemand {
+    private static Logger log = LoggerFactory.getLogger(CustomTaskAutomaticDemand.class.getName());
     DataAccess dataAccess = null;
-//    private String StartNow = "";
-    SimpleDateFormat formatter = null;
-    SimpleDateFormat formatter1 = null;
+    private static ExecutorService execeutor = Executors.newFixedThreadPool(1);
+    private static ScheduledThreadPoolExecutor schedule = new ScheduledThreadPoolExecutor(1);
 
-    private volatile boolean start = true;
     public CustomTaskAutomaticDemand() {
         try {
             dataAccess = new DataAccess(CommonClass.JDBC_DATABASETYPE,
@@ -26,84 +29,37 @@ public class CustomTaskAutomaticDemand extends Thread {
         } catch (Exception ex) {
         }
     }
-
-    public CustomTaskAutomaticDemand(String StartFlag) {
-//        StartNow = StartFlag;
-        try {
-            dataAccess = new DataAccess(CommonClass.JDBC_DATABASETYPE,
-                                        CommonClass.JDBC_CONNECTIONURL,
-                                        CommonClass.JDBC_USERNAME,
-                                        CommonClass.JDBC_PASSWORD);
-            dataAccess.LogIn(0);
-            //applicationFunction.gAmmeterInfoList = GetAmmeterInfoList();
-        } catch (Exception ex) {
-        }
-    }
-
     public void exit() {
-        this.start = false;
+        schedule.shutdown();
+        execeutor.shutdown();
     }
-    public void run() {
-        Calendar RedoTime = null;
-        try {
-            StartTime = Calendar.getInstance(); //程序启动时间
-            NowDateTime = Calendar.getInstance();
-            RedoTime = Calendar.getInstance();
-        } catch (Exception ex3) {
-        }
-        //1、调整补召时间，为明天的0点15以后
-        try {
-            formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            RedoTime.add(Calendar.MINUTE, CommonClass.REDO_INTERVAL);
-            RedoTime.set(Calendar.SECOND, 0);
-            String sDate = formatter.format(RedoTime.getTime());// + " " +CommonClass.STARTTIME;
-            formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                java.util.Date d = formatter1.parse(sDate);
-                RedoTime.setTime(d);
-                utils.PrintDebugMessage("轮召开始时间为：" + sDate,"D");
-            } catch (Exception ex) {
-            }
-        } catch (Exception ex2) {
-        } 
-        while (start) {
-            //2、判断时间是否到达
-            Calendar c = Calendar.getInstance();
-            if (c.after(RedoTime)) {
-                GetTaskInfo gti = new GetTaskInfo(dataAccess);
-                gti.GetTerminalInforList();
-//                gti.GetTaskInforList();
-                DailyCustomTaskDemand dt = new DailyCustomTaskDemand();
-                dt.start();
-                utils.PrintDebugMessage("Start Today DailyTaskDemand.........","D");
-                formatter = new SimpleDateFormat("yyyy-MM-dd");
-//                RedoTime = Calendar.getInstance();
-                RedoTime.add(Calendar.MINUTE, CommonClass.REDO_INTERVAL);
-                RedoTime.set(Calendar.SECOND, 0);
-//                String sDate = formatter.format(RedoTime.getTime()) + " " +CommonClass.STARTTIME;
-//                formatter1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//                try {
-//                    java.util.Date d = formatter1.parse(sDate);
-//                    RedoTime.setTime(d);
-//                } catch (Exception ex) {
-//                }
-            }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex1) {
-                start = false;
-            }
-        }
+
+    public void start() {
+        log.info("轮召程序启动,开始时间:[{}]", new Date());
+        schedule.scheduleAtFixedRate(new Worker(dataAccess), 60, 60, TimeUnit.SECONDS);
     }
+
+    public static class Worker implements Runnable {
+        private DataAccess dataAccess;
+
+        public Worker(DataAccess dataAccess) {
+            this.dataAccess = dataAccess;
+        }
+
+        @Override
+        public void run() {
+            GetTaskInfo gti = new GetTaskInfo(dataAccess);
+            gti.GetTerminalInforList();
+            execeutor.execute(new DailyCustomTaskDemand(dataAccess));
+        }
+
+    }
+
     public static void main(String[] args) {
 	    try {
-//	      String sDebug="";
-//	      if (args.length >0) {  
-//	    	  sDebug = args[0];
-//	      }
-	      CustomTaskAutomaticDemand td = new CustomTaskAutomaticDemand("startnow");
+            CustomTaskAutomaticDemand td = new CustomTaskAutomaticDemand();
 	   //   TaskDataRedoZJ td = new TaskDataRedoZJ(sDebug);
-	      td.start();
+            td.start();
 	    }
 	    catch (Exception ex) {
 	      StackTraceElement[] s = ex.getStackTrace();

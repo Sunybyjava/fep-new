@@ -21,6 +21,42 @@
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
+	<appender name="FILE-TRC" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${user.dir}/trc/trc.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${user.dir}/trc/trc-%d{yyyy-MM-dd}.%i.log</fileNamePattern> 
+            <timeBasedFileNamingAndTriggeringPolicy 
+            	class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+            	<maxFileSize>10MB</maxFileSize> 
+            </timeBasedFileNamingAndTriggeringPolicy> 
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	<appender name="FILE-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${user.dir}/log/trc.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${user.dir}/log/trc-%d{yyyy-MM-dd}.%i.log</fileNamePattern> 
+            <timeBasedFileNamingAndTriggeringPolicy 
+            	class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+            	<maxFileSize>10MB</maxFileSize> 
+            </timeBasedFileNamingAndTriggeringPolicy> 
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	<Logger name="com.chooshine.fep.trc" level="INFO">
+		<appender-ref ref="FILE-TRC"/>
+	</Logger>
+	<Logger name="com.chooshine.fep.log" level="INFO">
+		<appender-ref ref="FILE-LOG"/>
+	</Logger>
   <root level="INFO">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE"/>

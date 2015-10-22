@@ -1,6 +1,10 @@
 package com.chooshine.fep.fepex.common;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DataAccess {
     private int FDataBaseType = 10; //默认为Oracle数据库
@@ -72,6 +76,8 @@ public class DataAccess {
      0:只建立链接,不与具体操作绑定
      */
     public boolean LogIn(int FunctionType) {
+        if (conn != null)
+            return true;
         gFunctionType = FunctionType;
         //oracle 数据库
         if (FDataBaseType == 10) { //Oracle  数据库

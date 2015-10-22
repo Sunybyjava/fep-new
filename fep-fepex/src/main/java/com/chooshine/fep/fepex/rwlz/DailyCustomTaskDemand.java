@@ -1,13 +1,13 @@
 package com.chooshine.fep.fepex.rwlz;
 
-import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-//import java.util.Enumeration;
-import java.util.List;
+import java.util.Calendar;
 import java.util.LinkedList;
 //import java.util.Hashtable;
 //import java.sql.ResultSet;
+//import java.util.Enumeration;
+import java.util.List;
 
 import com.chooshine.fep.FrameDataAreaExplain.SFE_ParamItem;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_QGSer_TimeLabel;
@@ -36,7 +36,10 @@ public class DailyCustomTaskDemand extends Thread {
         } catch (Exception ex) {
         }
     }
-    
+
+    public DailyCustomTaskDemand(DataAccess dataAccess) {
+        this.dataAccess = dataAccess;
+    }
     private void TaskDemand() {
         //根据执行顺序，决定从开头执行还是结束执行
         StartTime = Calendar.getInstance(); //程序启动时间

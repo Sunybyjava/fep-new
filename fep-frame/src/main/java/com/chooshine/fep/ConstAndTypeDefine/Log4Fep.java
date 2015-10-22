@@ -5,7 +5,11 @@ import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Log4Fep {
+    private static Logger log = LoggerFactory.getLogger("com.chooshine.fep.log");
 private String FFullLogFirName = "./"; //Ĭ��Ϊ��ǰĿ¼
 	
 	//����һ�����ټ������ڲ�ͬ����µ���Ϣ��¼
@@ -27,6 +31,7 @@ private String FFullLogFirName = "./"; //Ĭ��Ϊ��ǰĿ¼
 	}
 
 	public void WriteLog(String info) {
+        log.info(info);
 		Calendar cLogTime = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd");
 		String sLogTime = formatter.format(cLogTime.getTime());
