@@ -2816,7 +2816,7 @@ public class MessageExchange extends Thread {
 				int n = 0;
 				try {
 					try {
-						n = sc.selector.select(); // 通过select函数判断当前socket是否存在事件需要处理
+						n = sc.selector.selectNow(); // 通过select函数判断当前socket是否存在事件需要处理
 					} catch (IOException ex) {
 						CommunicationServerConstants.Log1.WriteLog(
 								"MessageExchange:ListenThread sc.selector.select() IOerror,error is " + ex.toString());
@@ -2829,6 +2829,10 @@ public class MessageExchange extends Thread {
 					}
 				}
 				if (n == 0) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException ex3) {
+					}
 					continue; // select结果为0，则表示没有socket事件需要处理，继续执行select
 				} else if (n != 0) {
 					Iterator it = sc.selector.selectedKeys().iterator(); // 返回结果不为0，则对于取到的socket事件，一个个的循环处理
