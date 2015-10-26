@@ -231,7 +231,7 @@ public class TCPPort extends Thread {
 				slen = Integer.toHexString(ilen);
 				slen = "0000".substring(0, 4 - slen.length()) + slen;
 				slen = slen.substring(2, 4) + slen.substring(0, 2);
-				String sQRBWTemp = "68" + slen + slen + "680B" + sd.DataContent.substring(14, 24) + "006"
+				String sQRBWTemp = "6832003200680B" + sd.DataContent.substring(14, 24) + "006"
 						+ sd.DataContent.substring(27, 28) + "000001000016";// + "02" + sd.DataContent.substring(28, 36) + "00"
 						//+ "0016";
 				sQRBWTemp = GetFrameInfo.gGetParityByteOfQuanGuo(sQRBWTemp);
