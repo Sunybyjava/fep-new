@@ -1688,11 +1688,11 @@ public class MessageExchange extends Thread {
 										
 										JSONArray JsonArrayItems = new JSONArray();
 										JSONObject jsItem = new JSONObject();
-										jsItem.put("name", "正向有功最大需量");
+										jsItem.put("name", "100003");
 										jsItem.put("value", DataItemMap.get("P_ACT_MAX_DEMAND"));
 										JsonArrayItems.put(jsItem);
 										jsItem = new JSONObject();
-										jsItem.put("name", "正向有功最大需量发生时间");
+										jsItem.put("name", "200003");
 										jsItem.put("value", DataItemMap.get("P_ACT_MAX_DEMAND_TIME"));
 										JsonArrayItems.put(jsItem);
 										
