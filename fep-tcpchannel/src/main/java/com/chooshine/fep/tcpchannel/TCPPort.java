@@ -197,7 +197,7 @@ public class TCPPort extends Thread {
 
 		TCPServerConstants.Trc1
 				.TraceLog(" B、RecUpData. FromIp:" + sd.FromIp + " FromPort:" + sd.FromPort + " DataContent:"
-						+ sd.DataContent + " ReceiveListSize:" + TCPServerConstants.GlobalReceiveList.size() + 1);
+						+ sd.DataContent + " ReceiveListSize:" + (TCPServerConstants.GlobalReceiveList.size() + 1));
 		TCPServerConstants.GlobalReceiveList.add(0, sd);
 
 		if (iProtocolTag == 20) /*
@@ -231,9 +231,9 @@ public class TCPPort extends Thread {
 				slen = Integer.toHexString(ilen);
 				slen = "0000".substring(0, 4 - slen.length()) + slen;
 				slen = slen.substring(2, 4) + slen.substring(0, 2);
-				String sQRBWTemp = "68" + slen + slen + "68" + "09" + sd.DataContent.substring(14, 24) + "006"
-						+ sd.DataContent.substring(27, 28) + "00000400" + "02" + sd.DataContent.substring(28, 36) + "00"
-						+ "0016";
+				String sQRBWTemp = "68" + slen + slen + "680B" + sd.DataContent.substring(14, 24) + "006"
+						+ sd.DataContent.substring(27, 28) + "000001000016";// + "02" + sd.DataContent.substring(28, 36) + "00"
+						//+ "0016";
 				sQRBWTemp = GetFrameInfo.gGetParityByteOfQuanGuo(sQRBWTemp);
 				SendTCPMessage(sd.FromIp, sd.FromPort, sQRBWTemp);
 			}
