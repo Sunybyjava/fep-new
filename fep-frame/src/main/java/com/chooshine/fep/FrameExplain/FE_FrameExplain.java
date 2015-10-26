@@ -2,8 +2,9 @@ package com.chooshine.fep.FrameExplain;
 
 import com.chooshine.fep.FrameExplain.Struct_FrameInfo;
 import com.chooshine.fep.FrameDataAreaExplain.DataSwitch;
-import com.chooshine.fep.FrameDataAreaExplain.SFE_FrameInfo;
+//import com.chooshine.fep.FrameDataAreaExplain.SFE_FrameInfo;
 import com.chooshine.fep.ConstAndTypeDefine.*;
+
 import java.util.ArrayList;
 
 //import Glu_ConstAndTypeDefine.Glu_TypeDefine;
@@ -16,6 +17,13 @@ public class FE_FrameExplain {
 		  
 	 // }
 
+	  
+	  public static void main(String[] args)
+	  {
+		  FE_FrameExplain fe = new FE_FrameExplain();
+		  char[] cFrame = fe.IFE_BuildFrame("6666000110".toCharArray(), 106, 1, 1, "0C".toCharArray(), "0101010404".toCharArray());
+		  System.out.println("Frame:"+new String(cFrame));
+	  }
 	  //组命令帧
 	  //TerminalLogicAdd	In	char(20)	终端逻辑地址
 	  //TermialProtocolNo	In	int	终端规约号
@@ -398,7 +406,7 @@ public class FE_FrameExplain {
 	      if (Gyh == Glu_ConstDefine.GY_ZD_698){
 	    	  iDataLen = (iDataLen << 2) | 2;
 	      } else {
-	    	  iDataLen = (iDataLen << 2) | 1;
+	    	  iDataLen = (iDataLen << 2) | 2;
 	      }      
 	      String sDataLen = Integer.toHexString(iDataLen);
 	      if (sDataLen.length() > 4) {
@@ -1005,6 +1013,8 @@ public class FE_FrameExplain {
 	      return null;
 	    }
 	  }
+	  
+	  @SuppressWarnings("rawtypes")
 	  private ArrayList ExplainCommandList(String sDT, String sGNM) { //解释国网命令列表
 	    ArrayList <String>sCommandList = new ArrayList<String>();
 	    try {
@@ -1035,7 +1045,8 @@ public class FE_FrameExplain {
 	    return sCommandList;
 	  }
 
-	  private int GetQuanGuoDataType(String DT, String FunctionCode) { //得到数据类型:10普通数据;11中继数据(普通数据结构);21小时冻结数据;22曲线数据;23日冻结数据;24月冻结数据;25天津模块表主动上送数据;30告警数据;40设置返回数据
+	  @SuppressWarnings("rawtypes")
+	private int GetQuanGuoDataType(String DT, String FunctionCode) { //得到数据类型:10普通数据;11中继数据(普通数据结构);21小时冻结数据;22曲线数据;23日冻结数据;24月冻结数据;25天津模块表主动上送数据;30告警数据;40设置返回数据
 	    int iResult = 0;
 	    try {
 	      try {

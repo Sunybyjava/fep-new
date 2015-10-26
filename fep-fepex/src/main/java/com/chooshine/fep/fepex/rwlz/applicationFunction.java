@@ -88,7 +88,7 @@ public class applicationFunction {
     	SFE_ParamItem[] DataItem = new SFE_ParamItem[1];
     	DataItem[0] = new SFE_ParamItem();
     	DataItem[0].SetParamCaption("C03500");
-    	SFE_QGSer_TimeLabel TimeLabel = null;
+    	SFE_QGSer_TimeLabel TimeLabel = new SFE_QGSer_TimeLabel();
     	List<DataContentStruct> DataContentInfo = new LinkedList<DataContentStruct>(); //数据区内容列表
     	List<TerminalInfoStruct> terminalInfoStructList = new LinkedList<TerminalInfoStruct>(); //调用前置机接口用的终端信息列表
     	for (int i = 0; i < TerminalCount; i++) {
