@@ -1,17 +1,24 @@
 package com.chooshine.fep.communicate;
 
-import java.nio.ByteBuffer;
-import java.util.Calendar;
-import java.util.Iterator;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Hashtable;
-import java.nio.channels.Selector;
-import java.util.*;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chooshine.fep.ConstAndTypeDefine.Glu_ConstDefine;
 import com.chooshine.fep.ConstAndTypeDefine.Glu_DataAccess;
@@ -44,6 +51,7 @@ import com.chooshine.fep.FrameExplain.Struct_FrameInfo;
  * @version 1.0
  */
 public class CommunicationScheduler extends Thread {
+    private static Logger log = LoggerFactory.getLogger(CommunicationScheduler.class.getName());
 	private int Port = 0; // 通讯调度模块本地监听端口号
 
 	private int MaxCount = 0; // 本地监听最大连接数（包括前置机链路与预付费链路列表总和）
@@ -122,6 +130,7 @@ public class CommunicationScheduler extends Thread {
 				da_SaveRecord = new Glu_DataAccess("./CommService.config");
 				da_SaveRecord.LogIn(30);
 			} catch (Exception ex3) {
+                log.error("Establish Database connection failed(Save the raw data)! {}", ex3.getMessage());
 				CommunicationServerConstants.Log1.WriteLog("Establish Database connection failed(Save the raw data)!");
 			}
 
@@ -129,6 +138,7 @@ public class CommunicationScheduler extends Thread {
 				da = new Glu_DataAccess("./CommService.config");
 				da.LogIn(30);
 			} catch (Exception ex3) {
+                log.error("Establish Database connection failed! {}", ex3.getMessage());
 				CommunicationServerConstants.Log1.WriteLog("Establish Database connection failed！");
 			}
 			FepCommList = new ArrayList<FepLinkList>(); // 初始化前置机通道连接队列
@@ -143,6 +153,7 @@ public class CommunicationScheduler extends Thread {
 			try {
 				sc.init(Port); // Socket服务端初始化
 			} catch (Exception ex) {
+                log.error("CommunicationScheduler:Init Socket Server Port error,{}", ex.getMessage());
 				CommunicationServerConstants.Log1
 						.WriteLog("CommunicationScheduler:Init Socket Server Port error,error is " + ex.toString());
 				// 服务初始化失败，说明端口被占用，关闭应用
@@ -312,6 +323,8 @@ public class CommunicationScheduler extends Thread {
 					rset.next();
 
 				} catch (Exception ex) {
+                    log.error("InitSwitchMeasurePointList Error,Terminal is[{}],{}", rset.getString("ZDLJDZ"),
+                            ex.getMessage());
 					CommunicationServerConstants.Log1
 							.WriteLog("InitSwitchMeasurePointList Error,Terminal is " + rset.getString("ZDLJDZ"));
 				}

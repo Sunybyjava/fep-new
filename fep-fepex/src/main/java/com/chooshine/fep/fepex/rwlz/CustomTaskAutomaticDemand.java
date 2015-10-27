@@ -1,8 +1,6 @@
 package com.chooshine.fep.fepex.rwlz;
 
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +14,7 @@ import com.chooshine.fep.fepex.common.DataAccess;
 public class CustomTaskAutomaticDemand {
     private static Logger log = LoggerFactory.getLogger(CustomTaskAutomaticDemand.class.getName());
     DataAccess dataAccess = null;
-    private static ExecutorService execeutor = Executors.newFixedThreadPool(1);
+    //    private static ExecutorService execeutor = Executors.newFixedThreadPool(2);
     private static ScheduledThreadPoolExecutor schedule = new ScheduledThreadPoolExecutor(1);
 
     public CustomTaskAutomaticDemand() {
@@ -31,7 +29,7 @@ public class CustomTaskAutomaticDemand {
     }
     public void exit() {
         schedule.shutdown();
-        execeutor.shutdown();
+        //        execeutor.shutdown();
     }
 
     public void start() {
@@ -50,7 +48,8 @@ public class CustomTaskAutomaticDemand {
         public void run() {
             GetTaskInfo gti = new GetTaskInfo(dataAccess);
             gti.GetTerminalInforList();
-            execeutor.execute(new DailyCustomTaskDemand(dataAccess));
+            //            execeutor.execute(new DailyCustomTaskDemand(dataAccess));
+            new DailyCustomTaskDemand(dataAccess).start();
         }
 
     }

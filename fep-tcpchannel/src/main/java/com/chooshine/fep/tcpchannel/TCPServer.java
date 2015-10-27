@@ -1,12 +1,13 @@
 package com.chooshine.fep.tcpchannel;
 
-import java.io.InputStream;
-import java.util.Properties;
-import java.io.FileInputStream;
-import java.net.InetAddress;
 import java.io.FileNotFoundException;
-import java.util.Calendar;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Properties;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 /**
  * <p>
@@ -36,17 +37,28 @@ public class TCPServer extends Thread {
 	private static int Connection_TimeOut = 0; // socket连接的超时时间
 	private String Debug = "";
 
+    //	private ExecutorService
 	public TCPServer(String DebugFlag) {
 		this.Debug = DebugFlag;
-		for (int i = 0; i < TCPPortCount; i++) {
-			GlobalTCPPortList[i].PortObject = new TCPPort(Debug); // 创建具体的TCPPort对象
-			if (GlobalTCPPortList[i].PortObject.CreateTCPPort(i, GlobalTCPPortList[i].LocalIp,
-					GlobalTCPPortList[i].LocalPort, Connection_TimeOut) == 0) { // 只有创建TCP端口成功，即TCP服务启动成功才启动处理TCP接收数据的线程
-				GlobalTCPPortList[i].PortObject.start();
-			}
-		}
 	}
 
+    public void connect() {
+        InitTCPChannelInfo(); // 获取TCP通道的信息
+
+        for (int i = 0; i < TCPPortCount; i++) {
+            GlobalTCPPortList[i].PortObject = new TCPPort(Debug); // 创建具体的TCPPort对象
+            if (GlobalTCPPortList[i].PortObject.CreateTCPPort(i, GlobalTCPPortList[i].LocalIp,
+                    GlobalTCPPortList[i].LocalPort, Connection_TimeOut) == 0) { // 只有创建TCP端口成功，即TCP服务启动成功才启动处理TCP接收数据的线程
+                GlobalTCPPortList[i].PortObject.start();
+            }
+        }
+        //        TCPServer ts = new TCPServer(Debug); // 启动TCP服务类
+        this.start();
+        CommunicateWithCommService cc = new CommunicateWithCommService(CommService_Ip, CommService_Port, Debug); // 创建和通讯服务通讯的线程对象
+        cc.start();
+        DebugInfoInputThread dt = new DebugInfoInputThread(cc, GlobalTCPPortList, TCPPortCount);
+        dt.start(); // 创建修改调试、记录日志的标志线程
+    }
 	@SuppressWarnings("unused")
 	public void run() {
 		while (true) { // 轮询需要发送的全局发送队列，通过某个TCP端口发送出去
@@ -79,12 +91,13 @@ public class TCPServer extends Thread {
 	}
 
 	private static void InitTCPChannelInfo() { // 从配置文件读取TCP的通道配置信息
-		InputStream filecon = null;
+        //		InputStream filecon = null;
 		try {
-			String file_name = "./TCPChannel.config";
-			Properties prop = new Properties();
-			filecon = new FileInputStream(file_name); // 读取配置文件中的内容
-			prop.load(filecon);
+            //			String file_name = "./TCPChannel.config";
+            Resource resource = new ClassPathResource("TCPChannel.config");
+            Properties prop = new Properties();
+            //			filecon = new FileInputStream(file_name); // 读取配置文件中的内容
+            prop.load(resource.getInputStream());
 			CommService_Ip = (String) prop.getProperty("CommService_Ip", InetAddress.getLocalHost().getHostAddress()); // 通讯服务所在的Ip，默认为本机IP
 			CommService_Port = Integer.parseInt((String) prop.getProperty("CommService_Port", "5000")); // 通讯服务监听前置机的端口，默认为5000
 			TCPPortCount = Integer.parseInt((String) prop.getProperty("TCPPortCount", "1")); // TCP端口数量，默认为1
@@ -128,18 +141,19 @@ public class TCPServer extends Thread {
 	}
 
 	public static void main(String[] args) {
-		String Debug = "";
-		if (args.length == 1) {
-			Debug = args[0];
-		}
+        //		String Debug = "";
+        //		if (args.length == 1) {
+        //			Debug = args[0];
+        //		}
 
-		InitTCPChannelInfo(); // 获取TCP通道的信息
-		TCPServer ts = new TCPServer(Debug); // 启动TCP服务类
-		ts.start();
-		CommunicateWithCommService cc = new CommunicateWithCommService(CommService_Ip, CommService_Port, Debug); // 创建和通讯服务通讯的线程对象
-		cc.start();
-		DebugInfoInputThread dt = new DebugInfoInputThread(cc, GlobalTCPPortList, TCPPortCount);
-		dt.start(); // 创建修改调试、记录日志的标志线程
+        //		InitTCPChannelInfo(); // 获取TCP通道的信息
+        TCPServer ts = new TCPServer("D"); // 启动TCP服务类
+        ts.connect();
+        //		ts.start();
+        //		CommunicateWithCommService cc = new CommunicateWithCommService(CommService_Ip, CommService_Port, Debug); // 创建和通讯服务通讯的线程对象
+        //		cc.start();
+        //		DebugInfoInputThread dt = new DebugInfoInputThread(cc, GlobalTCPPortList, TCPPortCount);
+        //		dt.start(); // 创建修改调试、记录日志的标志线程
 	}
 
 	public static void PrintDebugMessage(String Msg, String DebugFlag) {

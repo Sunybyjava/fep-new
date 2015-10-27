@@ -10,12 +10,13 @@ import org.springframework.stereotype.Component;
 
 import com.chooshine.fep.communicate.CommunicationServer;
 import com.chooshine.fep.fepex.rwlz.CustomTaskAutomaticDemand;
-import com.chooshine.fep.newtcpchannel.TCPControl;
+import com.chooshine.fep.tcpchannel.TCPServer;
 
 @Component
 public class FEPServer implements ApplicationListener<ApplicationEvent> {
     private static Logger log = LoggerFactory.getLogger(FEPServer.class.getName());
-    private TCPControl tcp;
+    //    private TCPControl tcp;
+    private TCPServer tcp;
     private CustomTaskAutomaticDemand td;
     private CommunicationServer cs;
     private volatile boolean isStart = false;
@@ -25,7 +26,7 @@ public class FEPServer implements ApplicationListener<ApplicationEvent> {
         if (!isStart) {
             log.info("启动前置机服务");
             if (tcp == null)
-                tcp = new TCPControl();
+                tcp = new TCPServer("");
             tcp.connect();
             log.info("启动轮召程序");
             if (td == null)
@@ -40,11 +41,12 @@ public class FEPServer implements ApplicationListener<ApplicationEvent> {
     public void stop() {
         log.info("FEPServer stop");
         if (tcp != null)
-            tcp.disConnect();
+            tcp.interrupt();
         if (td != null)
             td.exit();
         if (cs != null)
             cs.stop();
+        isStart = false;
     }
 
     public void onApplicationEvent(ApplicationEvent event) {

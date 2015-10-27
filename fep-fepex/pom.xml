@@ -10,6 +10,40 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<profiles>
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<jdbc.mysql.fep.url>
+				<![CDATA[
+					jdbc:mysql://localhost:3306/fep?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+				]]>
+				</jdbc.mysql.fep.url>
+				<jdbc.mysql.fep.user>root</jdbc.mysql.fep.user>
+				<jdbc.mysql.fep.password>123456</jdbc.mysql.fep.password>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<jdbc.mysql.fep.url>
+				<![CDATA[
+					jdbc:mysql://localhost:3306/fepdb?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+				]]>
+				</jdbc.mysql.fep.url>
+				<jdbc.mysql.fep.user>root</jdbc.mysql.fep.user>
+				<jdbc.mysql.fep.password>chooshine</jdbc.mysql.fep.password>
+			</properties>
+		</profile>
+	</profiles>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.chooshine.fep</groupId>
@@ -35,6 +69,15 @@
 	</dependencies>
 	
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>*.config</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
