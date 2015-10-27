@@ -380,6 +380,8 @@ public class Glu_DataAccess {
 				String P_ACT_MAX_DEMAND_TIME = dataItemMap.get("P_ACT_MAX_DEMAND_TIME");
 				if (P_ACT_MAX_DEMAND_TIME==null)
 					return false;
+				int iYear = Calendar.getInstance().get(Calendar.YEAR);
+				P_ACT_MAX_DEMAND_TIME = Integer.toString(iYear)+"-"+P_ACT_MAX_DEMAND_TIME+":00";
 				PpstmtofTaskTwo.setString(14, P_ACT_MAX_DEMAND_TIME);
 				PpstmtofTaskTwo.executeUpdate();
 			} catch (Exception e) {
