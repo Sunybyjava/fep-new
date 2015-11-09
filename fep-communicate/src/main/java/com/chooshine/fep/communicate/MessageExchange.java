@@ -142,7 +142,7 @@ public class MessageExchange extends Thread {
 		
 		ResultSet rs;
 		try {
-			rs = DataAccess_His.executeQuery("SELECT WARNING_TYPE,DATAITEM FROM ent_w_content");
+			rs = DataAccess_His.executeQuery("SELECT WARNING_TYPE,NVL(DATAITEM,'') as DATAITEM FROM ent_w_content");
 			while (rs.next())
 			{
 				WarnDataItemMap.put(rs.getString("WARNING_TYPE"), rs.getString("DATAITEM"));
