@@ -17,7 +17,7 @@ private String FFullLogFirName = "./"; //Ĭ��Ϊ��ǰĿ¼
 
 	public static void main(String args[]){
 		Log4Fep log = new Log4Fep("test");
-		log.WriteLog("test");
+        log.WriteLog("test");
 	}
 	
 	public Log4Fep(String LogFileName) {
@@ -30,7 +30,7 @@ private String FFullLogFirName = "./"; //Ĭ��Ϊ��ǰĿ¼
 		}
 	}
 
-	public void WriteLog(String info) {
+    public void WriteLog(String info) {
         log.info(info);
 		Calendar cLogTime = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd");

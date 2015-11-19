@@ -19,6 +19,7 @@ public class MQProducer {
 		
 	}
 	public void sendMessage(String Msg) throws SendRefuseException{
-		eventTemplate.send(CommunicationServerConstants.defaultMQHost, CommunicationServerConstants.defaultMQExchange, Msg);
+        eventTemplate.send(CommunicationServerConstants.defaultQueue, CommunicationServerConstants.defaultMQExchange,
+                Msg);
 	}
 }

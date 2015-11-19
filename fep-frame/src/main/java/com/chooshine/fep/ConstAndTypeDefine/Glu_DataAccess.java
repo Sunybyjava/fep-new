@@ -1,19 +1,29 @@
 package com.chooshine.fep.ConstAndTypeDefine;
 
-import java.util.Properties;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 //import java.net.MalformedURLException;
 import java.net.URI;
 //import java.net.UnknownHostException;
-import java.sql.*;
-import java.util.*;
-
-import com.chooshine.fep.ConstAndTypeDefine.Struct_CommRecordItem;
-import com.chooshine.fep.FrameDataAreaExplain.SFE_AlarmData;
-import com.chooshine.fep.FrameDataAreaExplain.SFE_DataItem;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Properties;
+
+import com.chooshine.fep.FrameDataAreaExplain.SFE_AlarmData;
+import com.chooshine.fep.FrameDataAreaExplain.SFE_CommandInfo;
+import com.chooshine.fep.FrameDataAreaExplain.SFE_DataItem;
 
 //import jcifs.smb.SmbException;
 //import jcifs.smb.SmbFile;
@@ -21,9 +31,8 @@ import java.util.Calendar;
 
 
 import com.chooshine.fep.FrameDataAreaExplain.SFE_HistoryData;
-import com.chooshine.fep.FrameDataAreaExplain.SFE_CommandInfo;
-import com.chooshine.fep.FrameDataAreaExplain.SPE_CommandInfoList;
 import com.chooshine.fep.FrameDataAreaExplain.SFE_TaskInfo;
+import com.chooshine.fep.FrameDataAreaExplain.SPE_CommandInfoList;
 import com.chooshine.fep.FrameDataAreaExplain.SPE_TaskInfoList;
 
 //import hexing.fep.communicate.utils;
@@ -79,35 +88,6 @@ public class Glu_DataAccess {
 		InputStream filecon = null;
 		if (path.length()==0)
 			path = "./CommService.config";
-//		if (path!=null && !path.equals("") && path.substring(0,4).equals("smb:")){
-//			SmbFile file = null;
-//    		try {
-//    			file = new SmbFile(path);
-//    			try {
-//					if (!file.exists()) {
-//						FFileName = "C:/hexing/CommService.config";
-//						file = new SmbFile(FFileName);
-//						if (!file.exists()) {
-//							DataAccessLog.WriteLog("获取数据库配置信息出错!");
-//						}
-//					}
-//				} catch (SmbException e) {
-//					e.printStackTrace();
-//				}
-//    		} catch (MalformedURLException e) {    
-//    			DataAccessLog.WriteLog("new SmbFile()MalformedURLException:"+e.getMessage());
-//    		}
-//    		
-//    		try {
-//    			filecon = new SmbFileInputStream(file);
-//    		} catch (SmbException e) {
-//    			DataAccessLog.WriteLog("new SmbFileInputStream() SmbException:"+e.getMessage());
-//    		} catch (MalformedURLException e) {
-//    			DataAccessLog.WriteLog("new SmbFileInputStream() MalformedURLException:"+e.getMessage());
-//    		} catch (UnknownHostException e) {
-//    			DataAccessLog.WriteLog("new SmbFileInputStream() UnknownHostException:"+e.getMessage());
-//    		} 
-//		}else{
 			File file = new File(path);
 			if (!file.exists()) {
 				FFileName = "C:/hexing/CommService.config";
@@ -134,7 +114,7 @@ public class Glu_DataAccess {
 		FConnectURL = (String) prop.get("JDBC_CONNECTION_URL");
 		FUserName = (String) prop.get("JDBC_CONNECTION_USERNAME");
 		FPassWord = (String) prop.get("JDBC_CONNECTION_PASSWORD");
-		DataAccessTrc.TraceLog("Glu_DataAccess->FConnectURL:" + FConnectURL + " FUserName:"+FUserName+" FPassWord:"+FPassWord);
+        DataAccessTrc.TraceLog("Glu_DataAccess->FConnectURL:" + FConnectURL + " FUserName:" + FUserName);
 		try {
 			jbInit();
 		} catch (Exception ex) {
@@ -385,7 +365,7 @@ public class Glu_DataAccess {
 				if (P_ACT_MAX_DEMAND_TIME==null)
 					return false;
 				int iYear = Calendar.getInstance().get(Calendar.YEAR);
-				P_ACT_MAX_DEMAND_TIME = Integer.toString(iYear)+"-"+P_ACT_MAX_DEMAND_TIME+":00";
+                P_ACT_MAX_DEMAND_TIME = Integer.toString(iYear)+"-"+P_ACT_MAX_DEMAND_TIME+":00";
 				PpstmtofTaskTwo.setString(14, P_ACT_MAX_DEMAND_TIME);
 				PpstmtofTaskTwo.executeUpdate();
 			} catch (Exception e) {

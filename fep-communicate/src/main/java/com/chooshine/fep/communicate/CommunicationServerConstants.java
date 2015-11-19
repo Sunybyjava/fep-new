@@ -1,7 +1,13 @@
 package com.chooshine.fep.communicate;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import com.chooshine.fep.ConstAndTypeDefine.Log4Fep;
 import com.chooshine.fep.ConstAndTypeDefine.Trc4Fep;
@@ -117,22 +123,23 @@ public class CommunicationServerConstants {
 			Trc1 = new Trc4Fep(TrcFileName);
 
 			// String file_name = "C:/hexing/CommService.config";
-			String file_name = "./CommService.config";
-			File file = new File(file_name);
-			if (!file.exists()) {
-				file_name = "/hexing/CommService.config";
-				file = new File(file_name);
-				if (!file.exists()) {
-					utils.PrintDebugMessage("Can not find CommService.config", "D");
-					System.exit(1);
-				}
-			}
+            //			String file_name = "./CommService.config";
+            //			File file = new File(file_name);
+            //			if (!file.exists()) {
+            //				file_name = "/hexing/CommService.config";
+            //				file = new File(file_name);
+            //				if (!file.exists()) {
+            //					utils.PrintDebugMessage("Can not find CommService.config", "D");
+            //					System.exit(1);
+            //				}
+            //			}
 
 			// 读取配置文件中的内容
 			// Trc1.TraceLog("CommunicationServerConstants->file_name:" +
 			// file_name);
-			filecon = new FileInputStream(file_name);
-			prop.load(filecon);
+            //			filecon = new FileInputStream(file_name);
+            prop = PropertiesLoaderUtils.loadAllProperties("CommService.config");
+            //			prop.load(filecon);
 			COMMSERVICE_MESSAGEEXCHANGE_PORT = Integer
 					.parseInt(((String) prop.getProperty("COMMSERVICE_MESSAGEEXCHANGE_PORT", "3000")).trim());
 			JMS_MAXCOUNT = Integer.parseInt(((String) prop.getProperty("JMS_MAXCOUNT", "5000")).trim());
