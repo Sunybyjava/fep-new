@@ -2636,27 +2636,27 @@ public class MessageExchange extends Thread {
 									 }else if (sDataCaption.equalsIgnoreCase("341008"))
 									 {
 										 //A相电压
-										 DataItemMap.put("CUR_A", sDataContent);
+										 DataItemMap.put("VOLT_A", sDataContent);
 									 }else if (sDataCaption.equalsIgnoreCase("341108"))
 									 {
 										 //B相电压
-										 DataItemMap.put("CUR_B", sDataContent);
+										 DataItemMap.put("VOLT_B", sDataContent);
 									 }else if (sDataCaption.equalsIgnoreCase("341208"))
 									 {
 										 //C相电压
-										 DataItemMap.put("CUR_C", sDataContent);
+										 DataItemMap.put("VOLT_C", sDataContent);
 									 }else if (sDataCaption.equalsIgnoreCase("342008"))
 									 {
 										 //A相电流
-										 DataItemMap.put("VOLT_A", sDataContent);
+										 DataItemMap.put("CUR_A", sDataContent);
 									 }else if (sDataCaption.equalsIgnoreCase("342108"))
 									 {
 										 //B相电流
-										 DataItemMap.put("VOLT_B", sDataContent);
+										 DataItemMap.put("CUR_B", sDataContent);
 									 }else if (sDataCaption.equalsIgnoreCase("342208"))
 									 {
 										 //C相电流
-										 DataItemMap.put("VOLT_C", sDataContent);
+										 DataItemMap.put("CUR_C", sDataContent);
 									 }else if (sDataCaption.equalsIgnoreCase("343008"))
 									 {
 										 //功率因数
