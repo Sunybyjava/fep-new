@@ -1722,7 +1722,12 @@ public class MessageExchange extends Thread {
 							{
 								boolean b = DataAccess_His.SaveTaskLately(cld.CLDID, cld.CT, cld.PT, DataItemMap);
 								if (!b)
+								{
 									CommunicationServerConstants.Log1.WriteLog("SaveTaskLately Failed.");
+									b = DataAccess_His.SaveTaskLately(cld.CLDID, cld.CT, cld.PT, DataItemMap);
+									if (!b)
+										CommunicationServerConstants.Log1.WriteLog("SaveTaskLately Failed again,Check DB Connection");
+								}
 							}
 							else
 							{
@@ -2589,7 +2594,12 @@ public class MessageExchange extends Thread {
 								{
 									boolean b = DataAccess_His.SaveTaskTwo(cld.CLDID, cld.CT, cld.PT, DataItemMap);
 									if (!b)
+									{
 										CommunicationServerConstants.Log1.WriteLog("SaveTaskTwo Failed.");
+										b = DataAccess_His.SaveTaskTwo(cld.CLDID, cld.CT, cld.PT, DataItemMap);
+										if (!b)
+											CommunicationServerConstants.Log1.WriteLog("SaveTaskTwo Failed again,Check DB Connection");
+									}
 								}
 								else
 								{
@@ -2659,7 +2669,13 @@ public class MessageExchange extends Thread {
 								{
 									boolean b = DataAccess_His.SaveTaskOne(cld.CLDID, cld.CT, cld.PT, DataItemMap);
 									if (!b)
-										CommunicationServerConstants.Log1.WriteLog("SaveTaskTwo Failed.");
+									{
+										CommunicationServerConstants.Log1.WriteLog("SaveTaskOne Failed.");
+										//同样记录尝试再次保存
+										b = DataAccess_His.SaveTaskOne(cld.CLDID, cld.CT, cld.PT, DataItemMap);
+										if (!b)
+											CommunicationServerConstants.Log1.WriteLog("SaveTaskOne Failed again,Check DB Connection");
+									}
 								}
 								else
 								{

@@ -336,10 +336,10 @@ public class CommunicationScheduler extends Thread {
 			ResultSet rset;
 			if (Updatetype == 10) { // 更新数据库所有终端
 				rset = da.executeQuery(
-						"SELECT A.ZDLJDZ as ZDLJDZ,A.GYH as GYH,NVL(A.GJMM,'8888') AS ZDMM,NVL(A.JMSF,0) as JMSF,NVL(A.ZDSX,'01') as ZDSX,A.SIM as SIMID,NVL(A.DQTXFS,10) as DQTXFS,NVL(A.Yxzt,'3')as YXZT,NVL(B.ZDTXFS,0) as TXFS,B.ZDWLDZ as WLDZ,B.TDIP as TDIP,B.TDDZ as TDDZ FROM DA_ZDGZ A,RUN_ZDDZXX B WHERE A.ZDLJDZ=B.ZDLJDZ AND rownum<=50000 ");
+						"SELECT A.ZDLJDZ as ZDLJDZ,A.GYH as GYH,IFNULL(A.GJMM,'8888') AS ZDMM,IFNULL(A.JMSF,0) as JMSF,IFNULL(A.ZDSX,'01') as ZDSX,A.SIM as SIMID,IFNULL(A.DQTXFS,50) as DQTXFS,IFNULL(A.Yxzt,'3')as YXZT,IFNULL(B.ZDTXFS,0) as TXFS,B.ZDWLDZ as WLDZ,B.TDIP as TDIP,B.TDDZ as TDDZ FROM DA_ZDGZ A,RUN_ZDDZXX B WHERE A.ZDLJDZ=B.ZDLJDZ limit 0,50000");
 			} else { // 更新指定的单个终端
 				rset = da.executeQuery(
-						"SELECT A.ZDLJDZ as ZDLJDZ,A.GYH as GYH,NVL(A.GJMM,'8888') AS ZDMM,NVL(A.JMSF,0) as JMSF,NVL(A.ZDSX,'01') as ZDSX,A.SIM as SIMID,NVL(A.DQTXFS,10) as DQTXFS,NVL(A.Yxzt,'3')as YXZT,NVL(B.ZDTXFS,0) as TXFS,B.ZDWLDZ as WLDZ,B.TDIP as TDIP,B.TDDZ as TDDZ FROM DA_ZDGZ A,RUN_ZDDZXX B WHERE A.ZDLJDZ=B.ZDLJDZ AND A.ZDLJDZ='"
+						"SELECT A.ZDLJDZ as ZDLJDZ,A.GYH as GYH,IFNULL(A.GJMM,'8888') AS ZDMM,IFNULL(A.JMSF,0) as JMSF,IFNULL(A.ZDSX,'01') as ZDSX,A.SIM as SIMID,IFNULL(A.DQTXFS,50) as DQTXFS,IFNULL(A.Yxzt,'3')as YXZT,IFNULL(B.ZDTXFS,0) as TXFS,B.ZDWLDZ as WLDZ,B.TDIP as TDIP,B.TDDZ as TDDZ FROM DA_ZDGZ A,RUN_ZDDZXX B WHERE A.ZDLJDZ='"
 								+ TerminalAddr + "'");
 			}
 			while (rset.next()) {
@@ -663,12 +663,6 @@ public class CommunicationScheduler extends Thread {
 		try {
 			String sOldZDLJDZ = "";
 			TerminalInfo ti = new TerminalInfo();
-			// ResultSet rset = da.executeQuery("SELECT A.ZDLJDZ as ZDLJDZ,A.GYH
-			// as GYH,NVL(A.GJMM,'8888') AS ZDMM,NVL(A.JMSF,0) as
-			// JMSF,NVL(A.ZDSX,'01') as ZDSX,A.SIM as SIMID,NVL(A.DQTXFS,10) as
-			// DQTXFS,NVL(B.ZDTXFS,0) as TXFS,B.ZDWLDZ as WLDZ,B.TDIP as
-			// TDIP,B.TDDZ as TDDZ FROM DA_ZDGZ A,RUN_ZDDZXX B WHERE
-			// A.ZDLJDZ=B.ZDLJDZ AND LENGTH(A.ZDLJDZ)>=8 AND rownum<=50000");
 			ResultSet rset = da.executeQuery(
 					"SELECT A.ZDLJDZ as ZDLJDZ,A.GYH as GYH,IFNULL(A.GJMM,'8888') AS ZDMM,IFNULL(A.JMSF,0) as JMSF,IFNULL(A.ZDSX,'01') as ZDSX,A.SIM as SIMID,IFNULL(A.DQTXFS,50) as DQTXFS,IFNULL(A.Yxzt,'3')as YXZT,IFNULL(B.ZDTXFS,0) as TXFS,B.ZDWLDZ as WLDZ,B.TDIP as TDIP,B.TDDZ as TDDZ FROM DA_ZDGZ A,RUN_ZDDZXX B WHERE A.ZDLJDZ=B.ZDLJDZ limit 0,50000");
 			if (!rset.next()) {
@@ -1256,9 +1250,6 @@ public class CommunicationScheduler extends Thread {
 				PreLinkList l = null;
 				for (int j = PreCommList.size() - 1; j >= 0; j--) {
 					l = (PreLinkList) PreCommList.get(j); // 根据终端通讯方式查找对应的通道
-					// CommunicationServerConstants.Trc1
-					// .TraceLog("31、Pre Info LinkFepType"
-					// + l.GetFepType() + " ,FepType " + iFepType);
 					if ((l.GetSocketUpChannel() != null) && (l.GetFepType() == iFepType)) {
 						if (l.GetSocketUpChannel().socket().getInetAddress().getHostAddress().equals(sd.MobileNo)) {
 							// 通道地址与终端指定的发送地址一致
@@ -1348,11 +1339,6 @@ public class CommunicationScheduler extends Thread {
 							sd.MessageContent = ReBuildFrameOfEncrypt(sd.MessageContent, "192.168.1.217:0000",
 									sd.TerminalAddress, sd.ArithmeticNo);
 							sd.MessageLength = sd.MessageContent.length();
-							// 判断要下发的链路IP是否和终端最近从串口有上送数据的IP相同
-							// CommunicationServerConstants.Trc1
-							// .TraceLog("33、Send Msg With Com, ComLocalAddress
-							// is "
-							// + ti.COMLocalAddress);
 							BuildUpFepReceiveFrameAndSend(l.GetSocketDownChannel(), sd.MessageLength, sd.MessageContent,
 									ti.TerminalCOMAddress, ti.COMLocalAddress, sd.TerminalCommunication, sd.YXJ); // 组成命令并下发
 							SaveDownFlowRecordToDB(ti.TerminalCOMAddress, sd.TerminalCommunication, sd.MessageContent,
@@ -1397,12 +1383,6 @@ public class CommunicationScheduler extends Thread {
 							sd.MessageContent = ReBuildFrameOfEncrypt(sd.MessageContent, "192.168.1.217:0000",
 									sd.TerminalAddress, sd.ArithmeticNo);
 							sd.MessageLength = sd.MessageContent.length();
-							// CommunicationServerConstants.Trc1
-							// .TraceLog("33、Send Msg With TCP, TCPLocalAddress
-							// is "
-							// + ti.TCPLocalAddress
-							// + " TerminalTCPAddress is "
-							// + ti.TerminalTCPAddress);
 							BuildUpFepReceiveFrameAndSend(l.GetSocketDownChannel(), sd.MessageLength, sd.MessageContent,
 									ti.TerminalTCPAddress, ti.TCPLocalAddress, sd.TerminalCommunication, sd.YXJ);
 							SaveDownFlowRecordToDB(ti.TerminalTCPAddress, sd.TerminalCommunication, sd.MessageContent,
@@ -1434,12 +1414,6 @@ public class CommunicationScheduler extends Thread {
 		ls.start();
 		SaveUpAndDownRecordThread SaveUpAndDownRecord = new SaveUpAndDownRecordThread();
 		SaveUpAndDownRecord.start();
-//		SendDLMSThread SendDLMS = new SendDLMSThread();
-//		SendDLMS.start();
-		/*
-		 * 20090924 此版本暂时不需要支持230M通道 Send230MThread Send230M = new
-		 * Send230MThread(); Send230M.start();
-		 */
 
 		Calendar detectDateTime = null;
 		Calendar TerminalInfoSyncTime = null; // 终端档案同步时间
@@ -1491,7 +1465,7 @@ public class CommunicationScheduler extends Thread {
 
 					if (TerminalInfoSyncTime.before(Calendar.getInstance())) {
 						ManualUpdateTerminalInfo(10, "");
-						ManualUpdateSwitchMPInfo(10, "", 0);
+//						ManualUpdateSwitchMPInfo(10, "", 0);
 						TerminalInfoSyncTime = Calendar.getInstance();
 						// TerminalInfoSyncTime.add(Calendar.MINUTE, 30);
 						// //每隔30分钟同步一次档案
@@ -1504,15 +1478,15 @@ public class CommunicationScheduler extends Thread {
 					} else if (CommunicationServerConstants.BuildMPTag
 							&& !CommunicationServerConstants.TerminalAddr.equals("")
 							&& CommunicationServerConstants.CLDXH != -1) {
-						ManualUpdateSwitchMPInfo(20, CommunicationServerConstants.TerminalAddr,
-								CommunicationServerConstants.CLDXH); // 更新指定终端档案
+//						ManualUpdateSwitchMPInfo(20, CommunicationServerConstants.TerminalAddr,
+//								CommunicationServerConstants.CLDXH); // 更新指定终端档案
 						CommunicationServerConstants.BuildMPTag = false;
 						CommunicationServerConstants.TerminalAddr = "";
 						CommunicationServerConstants.CLDXH = -1;
 					}
 
 					if (UpdateDB.before(Calendar.getInstance())) {
-						WriteTerminalInfotoDataBase();
+//						WriteTerminalInfotoDataBase();
 						UpdateDB = Calendar.getInstance(); // 更新本次更新时间
 						UpdateDB.add(Calendar.MINUTE, DBSaveMinute); // 默认每隔半个小时回写一次数据库
 					}
@@ -1527,7 +1501,7 @@ public class CommunicationScheduler extends Thread {
 
 					if (detectDateTime.before(Calendar.getInstance())) {
 						try {
-							OnLineStatusCheck();
+//							OnLineStatusCheck();
 							detectDateTime = Calendar.getInstance(); // 更新本次更新时间
 							detectDateTime.add(Calendar.MINUTE, 5); // 每隔5分钟检查一次终端在线状态、写回终端物理地址
 						} catch (Exception ex5) {

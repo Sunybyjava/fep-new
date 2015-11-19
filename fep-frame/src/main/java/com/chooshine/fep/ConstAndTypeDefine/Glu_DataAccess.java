@@ -274,7 +274,9 @@ public class Glu_DataAccess {
 				PpstmtofTaskOne1.setString(6, P_ACT_TOTAL);
 				PpstmtofTaskOne1.executeUpdate();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				DataAccessLog.WriteLog("SaveTaskOne出错,错误信息:"	+ e.toString());
+				ReConnect();
+				return false;
 			}
 		}
 		if (dataItemMap.size()>=11)
@@ -326,7 +328,9 @@ public class Glu_DataAccess {
 				PpstmtofTaskOne2.setString(14, POWER_FACTOR);
 				PpstmtofTaskOne2.executeUpdate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				DataAccessLog.WriteLog("SaveTaskOne出错,错误信息:"	+ e.toString());
+				ReConnect();
+				return false;
 			}
 		}
 		return true;
@@ -385,7 +389,9 @@ public class Glu_DataAccess {
 				PpstmtofTaskTwo.setString(14, P_ACT_MAX_DEMAND_TIME);
 				PpstmtofTaskTwo.executeUpdate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				DataAccessLog.WriteLog("SaveTaskTwo出错,错误信息:"	+ e.toString());
+				ReConnect();
+				return false;
 			}
 		}
 		return true;
@@ -416,7 +422,9 @@ public class Glu_DataAccess {
 				PpstmtofTaskLately.setString(6, P_ACT_MAX_DEMAND_TIME);
 				PpstmtofTaskLately.executeUpdate();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				DataAccessLog.WriteLog("SaveTaskLately出错,错误信息:"+ e.toString());
+				ReConnect();
+				return false;
 			}
 		}
 		return true;
@@ -599,6 +607,7 @@ public class Glu_DataAccess {
 
 	private boolean ReConnect() {
 		try {
+			LogOut(gFunctionType);
 			return LogIn(gFunctionType);
 		} catch (Exception ex) {
 			DataAccessLog.WriteLog("ReConnect Failed,E:" + ex.toString());
