@@ -2606,9 +2606,9 @@ public class MessageExchange extends Thread {
 									CommunicationServerConstants.Log1.WriteLog("Key["+sKey+"] no CLDInfo find.");
 								}
 							}
-						} else if ((dataArea.substring(4, 8).equalsIgnoreCase("010D"))
+						} else if ((dataArea.substring(4, 8).equalsIgnoreCase("200C"))
 								|| (dataArea.substring(4, 8).equalsIgnoreCase("041B"))) {
-							// F219和F105不一定那个开头的
+							// F219和F102不一定那个开头的
 							int iTaskCount = DataInfo.DataList.size();
 							for (int i = 0;i<iTaskCount;i++)
 							{
@@ -2657,10 +2657,10 @@ public class MessageExchange extends Thread {
 									 {
 										 //C相电流
 										 DataItemMap.put("CUR_C", sDataContent);
-									 }else if (sDataCaption.equalsIgnoreCase("343008"))
+									 }else if (sDataCaption.equalsIgnoreCase("020008"))
 									 {
-										 //功率因数
-										 DataItemMap.put("POWER_FACTOR", sDataContent);
+										 //正向无功总
+										 DataItemMap.put("P_REACT_TOTAL", sDataContent);
 									 }
 								}
 								String sKey = new String(acd.TerminalLogicAdd)+"_"+hisData.GetMeasuredPointNo();

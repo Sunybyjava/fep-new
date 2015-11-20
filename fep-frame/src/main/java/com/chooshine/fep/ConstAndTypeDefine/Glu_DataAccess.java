@@ -238,7 +238,8 @@ public class Glu_DataAccess {
 	public boolean SaveTaskOne(int CLDBH,int CT,int PT,HashMap<String,String> dataItemMap)
 	{
 		String P_ACT_TOTAL = dataItemMap.get("P_ACT_TOTAL");
-		if (P_ACT_TOTAL!=null)
+		String P_REACT_TOTAL = dataItemMap.get("P_REACT_TOTAL");
+		if ((P_ACT_TOTAL!=null) &&(P_REACT_TOTAL!=null))
 		{
 			try {
 				//数据时间可能需要根据调试情况进行调整，后续保存的数据由于数据库格式和保存处理的格式不同也需要进行调试
@@ -252,6 +253,7 @@ public class Glu_DataAccess {
 				PpstmtofTaskOne1.setInt(4, CT);
 				PpstmtofTaskOne1.setInt(5, PT);
 				PpstmtofTaskOne1.setString(6, P_ACT_TOTAL);
+				PpstmtofTaskOne1.setString(7, P_REACT_TOTAL);
 				PpstmtofTaskOne1.executeUpdate();
 			} catch (SQLException e) {
 				DataAccessLog.WriteLog("SaveTaskOne出错,错误信息:"	+ e.toString());
@@ -302,10 +304,10 @@ public class Glu_DataAccess {
 				if (VOLT_C==null)
 					return false;
 				PpstmtofTaskOne2.setString(13, VOLT_C);
-				String POWER_FACTOR = dataItemMap.get("POWER_FACTOR");
-				if (POWER_FACTOR==null)
-					return false;
-				PpstmtofTaskOne2.setString(14, POWER_FACTOR);
+//				String POWER_FACTOR = dataItemMap.get("POWER_FACTOR");
+//				if (POWER_FACTOR==null)
+//					return false;
+//				PpstmtofTaskOne2.setString(14, POWER_FACTOR);
 				PpstmtofTaskOne2.executeUpdate();
 			} catch (Exception e) {
 				DataAccessLog.WriteLog("SaveTaskOne出错,错误信息:"	+ e.toString());
@@ -414,12 +416,12 @@ public class Glu_DataAccess {
 	{
 		try
 		{
-			String sSql = "INSERT INTO ent_d_eq_reading(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,P_ACT_TOTAL,DATA_FLAG) "
-					+ "VALUES(?,?,SYSDATE(),?,?,?,?,1)";
+			String sSql = "INSERT INTO ent_d_eq_reading(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,P_ACT_TOTAL,P_REACT_TOTAL,DATA_FLAG) "
+					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,1)";
 			PpstmtofTaskOne1 = conn.prepareStatement(sSql);
 			String sSql1 = "INSERT INTO ent_d_power(MP_ID,DATA_TIME,RECEIVE_TIME,DDATE,CT_RATIO,PT_RATIO,"
-					+ "ACT_POWER,REACT_POWER,CUR_A,CUR_B,CUR_C,VOLT_A,VOLT_B,VOLT_C,POWER_FACTOR,DATA_FLAG) "
-					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,?,?,?,?,?,?,?,1)";
+					+ "ACT_POWER,REACT_POWER,CUR_A,CUR_B,CUR_C,VOLT_A,VOLT_B,VOLT_C,DATA_FLAG) "
+					+ "VALUES(?,?,SYSDATE(),?,?,?,?,?,?,?,?,?,?,?,1)";
 			PpstmtofTaskOne2 = conn.prepareStatement(sSql1);
 			return true;
 		}catch (Exception e)
