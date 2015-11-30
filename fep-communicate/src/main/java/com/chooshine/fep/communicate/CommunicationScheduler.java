@@ -2678,6 +2678,7 @@ public class CommunicationScheduler extends Thread {
 			}
 			if (count == -1) { // 前置机的socket通道出现异常时，也需要处理链路队列，保证队列中的数据正确
 				FepLinkDisconnect(socketChannel);
+				CommunicationServerConstants.Trc1.TraceLog("FepLinkDisconnect happened.");
 				return;
 			}
 			if (count == 12) {
@@ -2698,9 +2699,10 @@ public class CommunicationScheduler extends Thread {
 					String strMessbody = utils.bytes2str(data, Integer.parseInt(mb.TotalLength, 16));
 					processData(Integer.parseInt(mb.CommandID, 16), socketChannel, strMessbody, data);
 					// 对于有效的报文处理后，退出本次数据的读取处理过程，如果还有数据需要处理会再次进入本函数处理
+					CommunicationServerConstants.Trc1.TraceLog("processData happened.");
 				}
 			}
-			System.gc();
+//			System.gc();
 		} catch (Exception ex3) {
 			CommunicationServerConstants.Log1
 					.WriteLog("CommunicationScheduler:receiveData() IOerror,error is " + ex3.toString());
@@ -2762,6 +2764,7 @@ public class CommunicationScheduler extends Thread {
 								if (key.isValid() && key.isReadable()) { // Server端主要处理接收消息的事件，发送数据由接口部分出发或者定时发送
 									// 接收消息的事件
 									receiveData(key);
+									CommunicationServerConstants.Trc1.TraceLog("receiveData happened.");
 								}
 
 								it.remove();
