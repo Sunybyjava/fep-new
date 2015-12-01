@@ -164,7 +164,7 @@ public class CommunicateWithCommService extends Thread {
 					// 对于有效的报文处理后，退出本次数据的读取处理过程，如果还有数据需要处理会再次进入本函数处理
 				}
 			}
-			System.gc();
+//			System.gc();
 		} catch (Exception ex3) {
 			// fl.WriteLog("CommunicationScheduler:receiveData() IOerror,error
 			// message is " +ex3.toString());
