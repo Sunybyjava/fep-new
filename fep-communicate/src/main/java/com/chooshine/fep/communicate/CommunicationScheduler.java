@@ -2581,12 +2581,12 @@ public class CommunicationScheduler extends Thread {
 	private void processData(int CommandID, SocketChannel channel, String ReceiveData, byte[] Data) {
 		switch (CommandID) { // 根据命令类型不同分别处理
 		case 1: { // 前置机通道注册
-			CommunicationServerConstants.Trc1.TraceLog("  RegisterFep " + ReceiveData + channel.toString());
+			CommunicationServerConstants.Trc1.TraceLog("  RegisterFep " + ReceiveData + "," + channel.toString());
 			RegisterFepInfo(ReceiveData, channel); // 注册通道，加入队列
-			CommunicationServerConstants.Trc1.TraceLog("  " + FepCommList.size());
+			CommunicationServerConstants.Trc1.TraceLog("FepCommList:" + FepCommList.size());
 			UpdateLastCommDate(channel); // 更新最近通讯时间
 			AckMessage(ReceiveData.substring(10, 16), ReceiveData, channel); // 返回确认消息
-			CommunicationServerConstants.Trc1.TraceLog("  AckMessage " + ReceiveData + channel.toString());
+			CommunicationServerConstants.Trc1.TraceLog("  AckMessage " + ReceiveData + "," + channel.toString());
 			break;
 		}
 		case 2: { // 前置机提交的消息
@@ -2630,10 +2630,15 @@ public class CommunicationScheduler extends Thread {
 	}
 
 	private void FepLinkDisconnect(SocketChannel socketChannel) {
+		CommunicationServerConstants.Trc1.TraceLog("DisConnectedChannel:"+socketChannel.toString());
 		try {
+			boolean bFep = false;
 			for (int j = 0; j < FepCommList.size(); j++) {
 				FepLinkList l = (FepLinkList) FepCommList.get(j);
+				CommunicationServerConstants.Trc1.TraceLog("UpChannel:"+l.GetSocketUpChannel().toString());
+				CommunicationServerConstants.Trc1.TraceLog("DownChannel:"+l.GetSocketDownChannel().toString());
 				if ((l.GetSocketUpChannel() != null) && (l.GetSocketUpChannel() == socketChannel)) {
+					bFep = true;
 					socketChannel.close();
 					socketChannel.socket().close();
 					l.SetSocketUpChannel(null);
@@ -2646,6 +2651,7 @@ public class CommunicationScheduler extends Thread {
 					}
 					break;
 				} else if ((l.GetSocketDownChannel() != null) && (l.GetSocketDownChannel() == socketChannel)) {
+					bFep = true;
 					socketChannel.close();
 					socketChannel.socket().close();
 					l.SetSocketDownChannel(null);
@@ -2659,7 +2665,14 @@ public class CommunicationScheduler extends Thread {
 					break;
 				}
 			}
+			if (!bFep)
+			{
+				CommunicationServerConstants.Trc1.TraceLog("Other Connection Closed.");
+				socketChannel.close();
+				socketChannel.socket().close();
+			}
 		} catch (Exception ex) {
+			CommunicationServerConstants.Trc1.TraceLog("FepLinkDisconnect:"+ex.toString());
 		}
 	}
 
@@ -2674,11 +2687,12 @@ public class CommunicationScheduler extends Thread {
 			try {
 				count = socketChannel.read(buffer, 0, 1);
 			} catch (IOException ex1) {
+				CommunicationServerConstants.Trc1.TraceLog("socketChannel.read:"+ex1.toString());
 				count = -1;
 			}
 			if (count == -1) { // 前置机的socket通道出现异常时，也需要处理链路队列，保证队列中的数据正确
 				FepLinkDisconnect(socketChannel);
-				CommunicationServerConstants.Trc1.TraceLog("FepLinkDisconnect happened.");
+				CommunicationServerConstants.Trc1.TraceLog("FepLinkDisconnect happened.Socket:"+socketChannel.toString());
 				return;
 			}
 			if (count == 12) {
@@ -2690,6 +2704,12 @@ public class CommunicationScheduler extends Thread {
 				mb.TotalLength = strMesshead.substring(0, 8);
 				mb.CommandID = strMesshead.substring(8, 16);
 				mb.SeqID = strMesshead.substring(16, 24);
+				if (Integer.parseInt(mb.CommandID, 16)>20)
+				{
+					CommunicationServerConstants.Trc1.TraceLog("Invalid CommandID:"+mb.CommandID+",Length:"+mb.TotalLength);
+					data = null;
+					return;
+				}
 				// 如果报文头有效，则继续读取后面的报文体内容，进行处理，否则丢失当前报文头，继续读取12个字符
 				buffer[1] = ByteBuffer.allocateDirect(Integer.parseInt(mb.TotalLength, 16) - 12); // 用于接收的缓冲
 				count = socketChannel.read(buffer, 1, 1);
@@ -2758,6 +2778,7 @@ public class CommunicationScheduler extends Thread {
 												"CommunicationScheduler:ListenThread server.accept() IOerror,error is "
 														+ ex1.toString());
 									}
+									CommunicationServerConstants.Trc1.TraceLog("New Connection:"+channel.toString());
 									// 注册本次连接的通道信息
 									registerChannel(sc.selector, channel, SelectionKey.OP_READ);
 								}
