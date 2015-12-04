@@ -2667,9 +2667,18 @@ public class CommunicationScheduler extends Thread {
 			}
 			if (!bFep)
 			{
+				try
+				{
 				CommunicationServerConstants.Trc1.TraceLog("Other Connection Closed.");
 				socketChannel.close();
+				socketChannel.socket().shutdownInput();
+				socketChannel.socket().shutdownOutput();
 				socketChannel.socket().close();
+				}
+				catch(Exception e)
+				{
+					CommunicationServerConstants.Trc1.TraceLog("Close Invalid Connection:"+e.toString());
+				}
 			}
 		} catch (Exception ex) {
 			CommunicationServerConstants.Trc1.TraceLog("FepLinkDisconnect:"+ex.toString());
@@ -2704,10 +2713,11 @@ public class CommunicationScheduler extends Thread {
 				mb.TotalLength = strMesshead.substring(0, 8);
 				mb.CommandID = strMesshead.substring(8, 16);
 				mb.SeqID = strMesshead.substring(16, 24);
-				if (Integer.parseInt(mb.CommandID, 16)>20)
+				if ((Integer.parseInt(mb.CommandID, 16)>20)||(Integer.parseInt(mb.TotalLength, 16)>1000))
 				{
 					CommunicationServerConstants.Trc1.TraceLog("Invalid CommandID:"+mb.CommandID+",Length:"+mb.TotalLength);
 					data = null;
+					FepLinkDisconnect(socketChannel);
 					return;
 				}
 				// 如果报文头有效，则继续读取后面的报文体内容，进行处理，否则丢失当前报文头，继续读取12个字符
