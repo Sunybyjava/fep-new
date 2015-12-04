@@ -96,6 +96,7 @@ public class CommunicationServerConstants {
 	public static String MQUserName = "";
 	public static String MQUserPass = "";
 	public static String MQVirtulHost = "";
+	public static String CommunicationBlackIpList = "";
 
 	static {
 		init();
@@ -184,7 +185,7 @@ public class CommunicationServerConstants {
 			MQUserName = ((String) prop.getProperty("MQUserName", "chooshine")).trim();
 			MQUserPass = ((String) prop.getProperty("MQUserPass", "chooshine_2012")).trim();
 			MQVirtulHost = ((String) prop.getProperty("MQVirtulHost", "alarm")).trim();
-			
+			CommunicationBlackIpList= ((String) prop.getProperty("BlackIpList", "")).trim();
 			/*
 			 * DAILY_F62FRAME =((String) prop.getProperty("DAILY_F62FRAME",
 			 * "")).trim(); DAILY_SLEEPDO =((String)

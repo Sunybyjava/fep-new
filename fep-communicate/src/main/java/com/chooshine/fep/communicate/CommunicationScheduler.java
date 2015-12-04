@@ -1,6 +1,7 @@
 package com.chooshine.fep.communicate;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -145,8 +146,8 @@ public class CommunicationScheduler extends Thread {
 			PreCommList = new ArrayList<PreLinkList>(); // 初始化预付费链路连接队列
 			UpFlowRecordSaveList = new ArrayList<Struct_CommRecordItem>();
 			DownFlowRecordSaveList = new ArrayList<Struct_CommRecordItem>();
-			CommunicationServerConstants.TerminalLocalList = new Hashtable<String, TerminalInfo>(50000);
-			CommunicationServerConstants.MPInfoList = new Hashtable<String, SwitchMPInfo>(50000);
+			CommunicationServerConstants.TerminalLocalList = new Hashtable<String, TerminalInfo>();
+			CommunicationServerConstants.MPInfoList = new Hashtable<String, SwitchMPInfo>();
 			InitTerminalLocalList(); // 初始化终端本地信息
 			// InitSwitchMeasurePointList();//initialize measere point list
 			// which switched concentrator
@@ -677,7 +678,7 @@ public class CommunicationScheduler extends Thread {
 			String sOldZDLJDZ = "";
 			TerminalInfo ti = new TerminalInfo();
 			ResultSet rset = da.executeQuery(
-					"SELECT A.ZDLJDZ as ZDLJDZ,A.GYH as GYH,IFNULL(A.GJMM,'8888') AS ZDMM,IFNULL(A.JMSF,0) as JMSF,IFNULL(A.ZDSX,'01') as ZDSX,A.SIM as SIMID,IFNULL(A.DQTXFS,50) as DQTXFS,IFNULL(A.Yxzt,'3')as YXZT,IFNULL(B.ZDTXFS,0) as TXFS,B.ZDWLDZ as WLDZ,B.TDIP as TDIP,B.TDDZ as TDDZ FROM DA_ZDGZ A,RUN_ZDDZXX B WHERE A.ZDLJDZ=B.ZDLJDZ limit 0,50000");
+					"SELECT A.ZDLJDZ as ZDLJDZ,A.GYH as GYH,IFNULL(A.GJMM,'8888') AS ZDMM,IFNULL(A.JMSF,0) as JMSF,'02' as ZDSX,'' as SIMID,IFNULL(A.DQTXFS,50) as DQTXFS,'3'as YXZT,50 as TXFS,'' as WLDZ,'' as TDIP,'' as TDDZ FROM DA_ZDGZ A limit 0,50000");
 			if (!rset.next()) {
 				return;
 			}
@@ -2735,7 +2736,15 @@ public class CommunicationScheduler extends Thread {
 //			System.gc();
 		} catch (Exception ex3) {
 			CommunicationServerConstants.Log1
-					.WriteLog("CommunicationScheduler:receiveData() IOerror,error is " + ex3.toString());
+					.WriteLog("CommunicationScheduler:receiveData() IO,error is " + ex3.toString());
+			try{
+				SocketChannel socketChannel = (SocketChannel) key.channel();
+				FepLinkDisconnect(socketChannel);
+			}catch (Exception e)
+			{
+				CommunicationServerConstants.Log1.WriteLog("Close Invalid Connection,Err:"+e.toString());
+			}
+			
 		}
 	}
 
@@ -2788,16 +2797,38 @@ public class CommunicationScheduler extends Thread {
 												"CommunicationScheduler:ListenThread server.accept() IOerror,error is "
 														+ ex1.toString());
 									}
+									try
+									{
+										InetSocketAddress addr = (InetSocketAddress) channel.getRemoteAddress();
+										String sIp = addr.getHostString();
+										if (CommunicationServerConstants.CommunicationBlackIpList.indexOf(sIp)!=-1)
+										{
+											CommunicationServerConstants.Log1.WriteLog("Connection:"+channel.toString()+" is in BlackList.");
+											try{
+												channel.socket().shutdownInput();
+												channel.socket().shutdownOutput();
+												channel.socket().close();
+												channel.close();
+											}catch (Exception e1)
+											{
+												CommunicationServerConstants.Log1.WriteLog("Close Channel:"+channel.toString()+",Error:"+e1.toString());
+											}
+											continue;
+										}
+									}
+									catch(Exception e)
+									{
+										CommunicationServerConstants.Log1.WriteLog("Process RemoteAddr Error:"+e.toString());
+									}
 									CommunicationServerConstants.Trc1.TraceLog("New Connection:"+channel.toString());
 									// 注册本次连接的通道信息
 									registerChannel(sc.selector, channel, SelectionKey.OP_READ);
 								}
 								if (key.isValid() && key.isReadable()) { // Server端主要处理接收消息的事件，发送数据由接口部分出发或者定时发送
 									// 接收消息的事件
-									receiveData(key);
 									CommunicationServerConstants.Trc1.TraceLog("receiveData happened.");
+									receiveData(key);
 								}
-
 								it.remove();
 								try {
 									Thread.sleep(1);

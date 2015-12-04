@@ -1,6 +1,7 @@
 package com.chooshine.fep.communicate;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
@@ -1547,8 +1548,16 @@ public class MessageExchange extends Thread {
 					// CommunicationServerConstants.Trc1.TraceLog("MasterStation
 					// Connection failed,LinkList size:"+LinkList.size());
 					LinkList.remove(sc.GetSocketChannel());
-					sc.GetSocketChannel().close();
-					sc.GetSocketChannel().socket().close();
+				}
+				try
+				{
+					socketChannel.socket().shutdownInput();
+					socketChannel.socket().shutdownOutput();
+					socketChannel.socket().close();
+					socketChannel.close();
+				}catch(Exception e)
+				{
+					CommunicationServerConstants.Log1.WriteLog("Close MessageExchange Invalid Connection,Err:"+e.toString());
 				}
 				return;
 			}
@@ -1561,6 +1570,20 @@ public class MessageExchange extends Thread {
 				mb.TotalLength = strMesshead.substring(0, 8);
 				mb.CommandID = strMesshead.substring(8, 16);
 				mb.SeqID = strMesshead.substring(16, 24);
+				if (Integer.parseInt(mb.TotalLength, 16)>5000)
+				{
+					try
+					{
+						socketChannel.socket().shutdownInput();
+						socketChannel.socket().shutdownOutput();
+						socketChannel.socket().close();
+						socketChannel.close();
+					}catch(Exception e)
+					{
+						CommunicationServerConstants.Log1.WriteLog("Close MessageExchange Invalid Connection,Err:"+e.toString());
+					}
+					return;
+				}
 				// 如果报文头有效，则继续读取后面的报文体内容，进行处理，否则丢失当前报文头，继续读取12个字符
 				int iLen = Integer.parseInt(mb.TotalLength, 16) - 12;
 				// CommunicationServerConstants.Trc1.TraceLog("00、Recv Buffer
@@ -2866,6 +2889,30 @@ public class MessageExchange extends Thread {
 											.WriteLog("MessageExchange:ListenThread server.accept() IOerror,error is "
 													+ ex1.toString());
 								}
+								try
+								{
+									InetSocketAddress addr = (InetSocketAddress) channel.getRemoteAddress();
+									String sIp = addr.getHostString();
+									if (CommunicationServerConstants.CommunicationBlackIpList.indexOf(sIp)!=-1)
+									{
+										CommunicationServerConstants.Log1.WriteLog("Connection:"+channel.toString()+" is in BlackList.");
+										try{
+											channel.socket().shutdownInput();
+											channel.socket().shutdownOutput();
+											channel.socket().close();
+											channel.close();
+										}catch (Exception e1)
+										{
+											CommunicationServerConstants.Log1.WriteLog("Close Channel:"+channel.toString()+",Error:"+e1.toString());
+										}
+										continue;
+									}
+								}
+								catch(Exception e)
+								{
+									CommunicationServerConstants.Log1.WriteLog("Process RemoteAddr Error:"+e.toString());
+								}
+								
 								registerChannel(sc.selector, channel, SelectionKey.OP_READ);
 							}
 							if (key.isValid() && key.isReadable()) {
